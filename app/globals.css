@@ -1,0 +1,26 @@
+:root {
+  --primary-light: #dcd7f3;
+  --primary-base: #5235c5;
+  --primary-dark: #39258a;
+  
+  --secondary-light: #8e6a1c;
+  --secondary-base: #ecb12e;
+  --secondary-dark: #f7e0ab;
+
+  --accent: #e4324f;
+
+  --navbar: #bcacff;
+  --background: #f6f4fd;
+}
+
+html, body {
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+  color: var(--text-main);
+  overscroll-behavior: none;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
