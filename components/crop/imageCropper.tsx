@@ -9,10 +9,7 @@ import { ref, getDownloadURL, uploadBytes } from "firebase/storage";
 import { storage } from '@/config/firebase.config';
 
 
-//Create cropped image and then save to firebase storage
-//Create save button which toggles disabled state
-
-const ImageCropper = ({handleDialogClose, savePath}: {handleDialogClose: () => void, savePath: string}) => {
+const ImageCropper = ({handleDialogClose, savePath, setURL, cropShape, aspectRatio}: {handleDialogClose: () => void, savePath: string, setURL: (url: string) => void, cropShape: "rect" | "round" | undefined, aspectRatio: number}) => {
     const [image, setImage] = useState<null | string>(null);
     const [crop, setCrop] = useState({x: 0, y: 0});
     const [zoom, setZoom] = useState(1);
@@ -20,7 +17,7 @@ const ImageCropper = ({handleDialogClose, savePath}: {handleDialogClose: () => v
 
     //Creates cropped image from crop detials and original image
     const getCroppedImage = (imageSrc: string, cropArea: Record<string, number>): Promise<Blob> => {
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
             const image = new Image();
             image.src = imageSrc;
 
@@ -53,19 +50,23 @@ const ImageCropper = ({handleDialogClose, savePath}: {handleDialogClose: () => v
                 
                 //Takes whatever is on the canvas and turns it into an image format then a blob
                 canvas.toBlob((blob) => {
-                    resolve(blob);
+                    if(!blob) {
+                        reject(new Error("Canvas is empty"))
+                    } else {
+                        resolve(blob);
+                    }
                 }, "image/jpeg")
             }
         })
     }
 
     //Saves crop details when user is done cropping
-    const onCropComplete = useCallback((_, croppedPixels: Record<string, number>) => {
+    const onCropComplete = useCallback((_ : Record<string, number>, croppedPixels: Record<string, number>): void => {
         setCroppedAreaPixels(croppedPixels);
     }, [])
 
     //Creates a url for the image uploaded
-    const onSelectFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const onSelectFile = (e: React.ChangeEvent<HTMLInputElement>): void => {
         const file = e.target.files?.[0];
 
         if(!file) {
@@ -77,22 +78,26 @@ const ImageCropper = ({handleDialogClose, savePath}: {handleDialogClose: () => v
     }
 
     const onSave = async (save_path: string) => {
-        if(!image || !croppedAreaPixels) return;
+        try{
+            if(!image || !croppedAreaPixels) return;
 
-        const cropped_img: Blob = await getCroppedImage(image, croppedAreaPixels)
-        
-        //Define where you want to store the image
-        const imageRef = ref(storage, save_path);
-        
-        //Store the image
-        await uploadBytes(imageRef, cropped_img);
+            const cropped_img: Blob = await getCroppedImage(image, croppedAreaPixels)
+            
+            //Define where you want to store the image
+            const imageRef = ref(storage, save_path);
+            
+            //Store the image
+            await uploadBytes(imageRef, cropped_img);
 
-        //Get link to the storage location
-        const downloadURL = getDownloadURL(imageRef);
+            //Get link to the storage location
+            const downloadURL = await getDownloadURL(imageRef);
 
-        //save url in db and assign to parent component image state
-        
-        handleDialogClose()
+            //Saves url in db and UI
+            setURL(downloadURL)
+            handleDialogClose()
+        } catch(error) {
+            return;
+        }
     }
 
     return (
@@ -127,6 +132,8 @@ const ImageCropper = ({handleDialogClose, savePath}: {handleDialogClose: () => v
             }}>
                 {image != null ? (
                     <Cropper 
+                        cropShape={cropShape}
+                        aspect={aspectRatio}
                         image={image}
                         crop={crop}
                         zoom={zoom}

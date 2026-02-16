@@ -17,7 +17,7 @@ const ProfileCrop = () => {
       <Button onClick={() => setOpen(true)}>Add Photo</Button>
       <Dialog open={open} onClose={handleDialogClose} fullWidth={true} maxWidth="sm">
         <DialogActions>
-            <ImageCropper handleDialogClose={handleDialogClose}></ImageCropper>
+            <ImageCropper cropShape={"round"} aspectRatio={1} handleDialogClose={handleDialogClose} setURL={() => {}} savePath={"/test"}></ImageCropper>
         </DialogActions>
         <DialogContent>
 
