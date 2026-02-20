@@ -40,10 +40,20 @@ const page = () => {
 
   //Fetch all available tags from db
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/quizzes/tags")
+    const token = localStorage.getItem("access_token");
+    console.log(token)
+
+    fetch("http://127.0.0.1:8000/quizzes/tags", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+      },
+    })
     .then((res) => res.json())
-    .then(data => setTags(data))
+    .then(data => setTags(data.tags));
   }, []);
+
 
   const changeTagIds = (newValue: number[]) => 
     setPageData((prev) => ({
@@ -92,10 +102,22 @@ const page = () => {
             <Button sx={{ width: "120px"}} variant={page === "questions" ? "contained" : "outlined"} onClick={() => setPage("questions")}>Questions</Button>
           </Stack>
         </Container>
-        { page === "description" ? <DescriptionPage tag_ids={pageData.tag_ids} tags={tags} changeTagIds={changeTagIds} title={pageData.title} 
-        coverImageUrl={pageData.cover_image_url} changeCoverImageUrl={changeCoverImageUrl}
-        changeTitle={changeTitle} isPublic={pageData.is_public} changeIsPublic={changePublicStatus} 
-        description={pageData.description} changeDescription={changeDescription}></DescriptionPage> : <></>}
+        { page === "description" ? 
+          <DescriptionPage 
+            tagIds={pageData.tag_ids} 
+            tags={tags} 
+            changeTagIds={changeTagIds} 
+            title={pageData.title} 
+            coverImageUrl={pageData.cover_image_url} 
+            changeCoverImageUrl={changeCoverImageUrl}
+            changeTitle={changeTitle} 
+            isPublic={pageData.is_public} 
+            changeIsPublic={changePublicStatus} 
+            description={pageData.description} 
+            changeDescription={changeDescription}>
+          </DescriptionPage> : 
+          <></>
+        }
       </Box>
     </Box>
   )

@@ -1,12 +1,10 @@
 'use client'
 
+import { CreateQuiz, Tag } from '@/types/index';
 import { useState } from "react";
 import { Autocomplete, TextField, Chip, Box } from "@mui/material";
 
-const tagOptions = ["Math", "Science", "History", "Programming"];
-
-export default function TagSelect() {
-  const [tags, setTags] = useState<string[]>([]);
+export default function TagSelect({tags, tagIds, changeTagIds} : { tags: Tag[], tagIds: number[], changeTagIds: (newValue: number[]) => void}) {
 
   return (
     <Autocomplete
@@ -18,9 +16,15 @@ export default function TagSelect() {
             }
         }}
         multiple
-        options={tagOptions}
-        value={tags}
-        onChange={(_, newValue) => setTags(newValue)}
+        options={tags.map((tag) => tag.name)}
+        value={tags
+            .filter((tag) => tagIds.includes(tag.id))
+            .map((filteredTag) => filteredTag.name)}
+        
+        onChange={(_, newValue) => changeTagIds(tags
+            .filter((tag) => newValue.includes(tag.name))
+            .map((tag) => tag.id)
+        )}
         renderInput={(params) => (
             <TextField sx={{
                 width: "100%"

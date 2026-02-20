@@ -7,7 +7,7 @@ import { Box, Button, Container, FormControlLabel, Stack, Switch, TextField, Typ
 import TagSelect from './tagSelect';
 
 type DescriptionPageProps = {
-  tag_ids: CreateQuiz["tag_ids"]
+  tagIds: CreateQuiz["tag_ids"]
   tags: Tag[]
 
   title: CreateQuiz["title"]
@@ -22,7 +22,7 @@ type DescriptionPageProps = {
   changeDescription: (newDescription: string) => void
 }
 
-const DescriptionPage = ({tag_ids, tags, title, isPublic, coverImageUrl, description, changeTagIds, changeTitle,
+const DescriptionPage = ({tagIds, tags, title, isPublic, coverImageUrl, description, changeTagIds, changeTitle,
   changeIsPublic, changeCoverImageUrl, changeDescription}: DescriptionPageProps) => {
 
   return (
