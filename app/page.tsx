@@ -139,7 +139,7 @@ export default function Login() {
               <Typography variant="h6" color="var(--text-muted)">Welcome to my quiz app!</Typography>
             </Stack>
             <Stack spacing={2}>
-              <TextField variant="outlined" value={username} onChange={(e) => setUsername(e.target.value)}label="Username" sx={{
+              <TextField variant="outlined" value={username} onChange={(e) => setUsername(e.target.value)} label="Username" sx={{
                 minWidth: "300px",
                 '& .MuiInputLabel-root': {
                   color: 'text.secondary',
