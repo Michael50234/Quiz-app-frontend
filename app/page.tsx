@@ -145,7 +145,7 @@ export default function Login() {
                   color: 'text.secondary',
                 }
               }}>Username</TextField>
-              <TextField variant="outlined" label="Password" value={password} onChange={(e) => setPassword(e.target.value)} sx={{
+              <TextField type="password" variant="outlined" label="Password" value={password} onChange={(e) => setPassword(e.target.value)} sx={{
                 '& .MuiInputLabel-root': {
                   color: 'text.secondary',
                 }

@@ -3,8 +3,9 @@
 import { CreateQuiz, Tag } from '@/types/index';
 import React, { useState } from 'react';
 import ProfileCrop from '@/components/crop/profileCrop';
-import { Box, Button, Container, FormControlLabel, Stack, Switch, TextField, Typography } from '@mui/material';
+import { Box, Button, Container, Dialog, DialogActions, DialogContent, FormControlLabel, Stack, Switch, TextField, Typography } from '@mui/material';
 import TagSelect from './tagSelect';
+import ImageCropper from './crop/imageCropper';
 
 type DescriptionPageProps = {
   tagIds: CreateQuiz["tag_ids"]
@@ -19,31 +20,49 @@ type DescriptionPageProps = {
   changeTitle: (newTitle: string) => void
   changeIsPublic: (value: boolean) => void
   changeCoverImageUrl: (newUrl: string) => void
+  changeCoverImageBlob: (blob: Blob) => void
   changeDescription: (newDescription: string) => void
 }
 
 const DescriptionPage = ({tagIds, tags, title, isPublic, coverImageUrl, description, changeTagIds, changeTitle,
-  changeIsPublic, changeCoverImageUrl, changeDescription}: DescriptionPageProps) => {
+  changeIsPublic, changeCoverImageUrl, changeCoverImageBlob, changeDescription}: DescriptionPageProps) => {
+
+  const [open, setOpen] = useState(false);
+  const handleDialogClose = () => {
+    setOpen(false);
+  }
 
   return (
     <div>
         <Container sx={{
           width: "70%", 
-          height: "500px",
+          minheight: "400px",
           display: "flex",
           justifyContent: "space-around",
-          alignItems: "center",
           backgroundColor: "var(--primary-light)",
           borderRadius: "32px",
-          boxShadow: "0px 0px 20px 1px rgba(0,0,0, 0.1)"
+          boxShadow: "0px 0px 20px 1px rgba(0,0,0, 0.1)",
+          pt: "50px",
+          pb: "50px"
           }}>
-          <Stack alignItems="center" direction={"row"} sx={{height: "100%"}}>
-            <img src={coverImageUrl} style={{height: '80%', objectFit: "cover"}}></img>
+          <Stack spacing={1} sx={{width: "35%"}}>
+            <Box sx={{height: "360px", aspectRatio: {8:12}}}>
+              <img src={coverImageUrl} style={{height: '100%', width: "100%", objectFit: "cover"}}></img>
+            </Box>
+            <Button variant="contained" onClick={() => setOpen(true)} sx={{
+              padding: "5px"
+            }}>Select Image</Button>
+            <Dialog open={open} onClose={handleDialogClose} fullWidth={true} maxWidth="sm">
+              <DialogActions>
+                  <ImageCropper cropShape={"rect"} aspectRatio={8/12} handleDialogClose={handleDialogClose} setBlob={changeCoverImageBlob} setUrl={changeCoverImageUrl}></ImageCropper>
+              </DialogActions>
+              <DialogContent>
+              </DialogContent>
+            </Dialog>
           </Stack>
           <Stack spacing={2} sx={{
             width: "50%",
             height: "80%",
-            justifyContent: "center"
           }}>
             <Box sx={{width: "100%"}}>
               <Typography fontWeight={550} sx={{
@@ -90,8 +109,8 @@ const DescriptionPage = ({tagIds, tags, title, isPublic, coverImageUrl, descript
                 height: "80%",
                 "& .MuiInputBase-root": {
                   borderRadius: "2px",
+                  fontSize: "0.8rem", 
                   flex: 1,
-                  fontSize: "0.8rem"
                 }
               }}></TextField>
             </Box>

@@ -5,11 +5,11 @@ import style from './ImageCropper.module.css';
 import React, { useCallback, useState } from 'react';
 import CloseIcon from '@mui/icons-material/Close';
 import Cropper from 'react-easy-crop';
-import { ref, getDownloadURL, uploadBytes } from "firebase/storage";
-import { storage } from '@/config/firebase.config';
 
 
-const ImageCropper = ({handleDialogClose, savePath, setURL, cropShape, aspectRatio}: {handleDialogClose: () => void, savePath: string, setURL: (url: string) => void, cropShape: "rect" | "round" | undefined, aspectRatio: number}) => {
+const ImageCropper = ({handleDialogClose, changeImageUrl, cropShape, aspectRatio, changeImageBlob}: 
+    {handleDialogClose: () => void, changeImageUrl: (url: string) => void, changeImageBlob: (blob: Blob) => void, cropShape: "rect" | "round" | undefined, aspectRatio: number}) => {
+    
     const [image, setImage] = useState<null | string>(null);
     const [crop, setCrop] = useState({x: 0, y: 0});
     const [zoom, setZoom] = useState(1);
@@ -77,24 +77,16 @@ const ImageCropper = ({handleDialogClose, savePath, setURL, cropShape, aspectRat
         setImage(image_url);
     }
 
-    const onSave = async (save_path: string) => {
+    //Changes pass in the cropAreaPixels as a state from outside, also pass in the image link state as a prop
+    const onSave = async () => {
         try{
             if(!image || !croppedAreaPixels) return;
 
-            const cropped_img: Blob = await getCroppedImage(image, croppedAreaPixels)
-            
-            //Define where you want to store the image
-            const imageRef = ref(storage, save_path);
-            
-            //Store the image
-            await uploadBytes(imageRef, cropped_img);
+            const croppedImgBlob: Blob = await getCroppedImage(image, croppedAreaPixels);
+            const croppedImgUrl = URL.createObjectURL(croppedImgBlob);
+            changeImageUrl(croppedImgUrl);
+            changeImageBlob(croppedImgBlob);
 
-            //Get link to the storage location
-            const downloadURL = await getDownloadURL(imageRef);
-
-            //Saves url in db and UI
-            setURL(downloadURL)
-            handleDialogClose()
         } catch(error) {
             return;
         }
@@ -120,7 +112,7 @@ const ImageCropper = ({handleDialogClose, savePath, setURL, cropShape, aspectRat
                         onChange={onSelectFile}
                     ></input>
                 </Button>
-                <Button disabled={!croppedAreaPixels || !image} onClick={() => onSave(savePath)}>Save Image</Button>
+                <Button disabled={!croppedAreaPixels || !image} onClick={() => onSave()}>Save Image</Button>
                 <IconButton onClick={handleDialogClose}>
                     <CloseIcon />
                 </IconButton>

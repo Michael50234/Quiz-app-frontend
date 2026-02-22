@@ -5,6 +5,16 @@ import React, { useEffect, useState } from 'react';
 import ProfileCrop from '@/components/crop/profileCrop';
 import { Box, Button, Container, Stack } from '@mui/material';
 import DescriptionPage from '@/components/descriptionPage';
+import { ref, getDownloadURL, uploadBytes } from "firebase/storage";
+import { storage } from '@/config/firebase.config';
+import QuestionsPage from '@/components/questionsPage';
+
+//Alter your cropper system 
+//The cropper save function should return a blob and a url for the cropped image 
+//You need to create a questionImageSetter and a coverImageSetter
+//These should take a uid, a blob, and a image url for the question and set it. These will be used in the cropper function to call the setter functions and save.
+
+
 
 const page = () => {
   const [page, setPage] = useState<string>("description");
@@ -14,21 +24,26 @@ const page = () => {
     cover_image_url: "/placeholder.jpg",
     description: "",
     questions: [{
+      uid: crypto.randomUUID(),
       question: "",
-      question_image_url: "",
+      question_image_url: "/placeholder.jpg",
       choices: [{
+        uid: crypto.randomUUID(),
         choice: "",
         is_answer: false
       }, 
       {
+        uid: crypto.randomUUID(),
         choice: "",
         is_answer: false
       }, 
       {
+        uid: crypto.randomUUID(),
         choice: "",
         is_answer: false
       },
       {
+        uid: crypto.randomUUID(),
         choice: "",
         is_answer: false
       }]
@@ -54,6 +69,22 @@ const page = () => {
     .then(data => setTags(data.tags));
   }, []);
 
+  const SaveImagesInFirebase = async (croppedImageBlob: Blob, save_path: string): Promise<(string | void)> => {
+    try{    
+          //Define where you want to store the image
+          const imageRef = ref(storage, save_path);
+            
+          //Store the image
+          await uploadBytes(imageRef, croppedImageBlob);
+
+          //Get link to the storage location
+          const downloadURL = await getDownloadURL(imageRef);
+
+          return downloadURL
+      } catch(error) {
+          return;
+      }
+  }
 
   const changeTagIds = (newValue: number[]) => 
     setPageData((prev) => ({
@@ -86,6 +117,57 @@ const page = () => {
       cover_image_url: newUrl
     }))
 
+  const changeCoverImageBlob = (blob: Blob) => {
+      setPageData((prev) => ({
+      ...prev,
+      coverImageBlob: blob
+    }))
+  }
+
+  const changeQuestionImageUrl = (uid: string, url: string): void => {
+    const questions = pageData.questions.filter((question) => {
+        return question.uid != uid
+    })
+
+    let targetQuestion = pageData.questions.find((question) => {
+      return uid === question.uid
+    })
+
+    if(!targetQuestion) return;
+
+    targetQuestion.question_image_url = url
+
+    setPageData((prev) => ({
+      ...prev,
+      questions: [
+        ...questions,
+        targetQuestion
+      ]
+    }))
+  }
+
+  const changeQuestionImageBlob = (uid: string, blob: Blob): void => {
+    const questions = pageData.questions.filter((question) => {
+        return question.uid != uid
+    })
+
+    let targetQuestion = pageData.questions.find((question) => {
+      return uid === question.uid
+    })
+
+    if(!targetQuestion) return;
+
+    targetQuestion.questionImageBlob = blob
+
+    setPageData((prev) => ({
+      ...prev,
+      questions: [
+        ...questions,
+        targetQuestion
+      ]
+    }))
+  }
+
   return (
     <Box sx={{
       backgroundColor: "var(--background)",
@@ -104,19 +186,22 @@ const page = () => {
         </Container>
         { page === "description" ? 
           <DescriptionPage 
+            changeCoverImageUrl={changeCoverImageUrl}
+            changeCoverImageBlob={changeCoverImageBlob}
             tagIds={pageData.tag_ids} 
             tags={tags} 
             changeTagIds={changeTagIds} 
             title={pageData.title} 
             coverImageUrl={pageData.cover_image_url} 
-            changeCoverImageUrl={changeCoverImageUrl}
             changeTitle={changeTitle} 
             isPublic={pageData.is_public} 
             changeIsPublic={changePublicStatus} 
             description={pageData.description} 
             changeDescription={changeDescription}>
           </DescriptionPage> : 
-          <></>
+          <QuestionsPage>
+
+          </QuestionsPage>
         }
       </Box>
     </Box>

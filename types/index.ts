@@ -17,14 +17,14 @@ export type Quiz = {
     owner: User,
     tags: Tag[],
     is_public: boolean,
-    cover_image_url: string,
+    cover_image_url?: string,
     description: string,
 };
 
 export type Question = {
     id: number,
     question: string,
-    question_image_url: string
+    question_image_url?: string
 };
 
 export type Choice = {
@@ -42,30 +42,42 @@ export type Submission = {
 
 //Editing Types
 
-export type EditChoice = Pick<Choice, 'id' | 'choice' | 'is_answer'>
+export type EditChoice = Pick<Choice, 'id' | 'choice' | 'is_answer'> & {
+    uid?: string
+}
 
 
 export type EditQuestion = Pick<Question, "question" | "question_image_url"> & {
+    uid?: string,
     id?: number,
-    choices: EditChoice[]
+    choices: EditChoice[],
+    questionImageBlob?: Blob
 };
 
 export type EditQuiz = Pick<Quiz, "title" | "is_public" | "cover_image_url" | "description"> & {
     tag_ids: number[],
-    questions: EditQuestion[]
+    questions: EditQuestion[],
+    coverImageBlob?: Blob
 };
 
 //Creating Types
 
-export type CreateChoice = Pick<Choice, "choice" | "is_answer">;
+export type CreateChoice = Pick<Choice, "choice" | "is_answer"> & {
+    uid?: string
+};
 
 export type CreateQuestion = Pick<Question, "question" | "question_image_url"> & {
-    choices: CreateChoice[]
+    id?: number,
+    uid: string,
+    choices: CreateChoice[],
+    questionImageBlob?: Blob
 };
 
 export type CreateQuiz = Pick<Quiz, "title" | "is_public" | "cover_image_url" | "description"> & {
+    id?: number
     questions: CreateQuestion[],
-    tag_ids: number[]
+    tag_ids: number[],
+    coverImageBlob?: Blob
 };
 
 
