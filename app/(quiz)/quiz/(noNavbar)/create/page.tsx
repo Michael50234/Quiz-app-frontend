@@ -9,13 +9,6 @@ import { ref, getDownloadURL, uploadBytes } from "firebase/storage";
 import { storage } from '@/config/firebase.config';
 import QuestionsPage from '@/components/questionsPage';
 
-//Alter your cropper system 
-//The cropper save function should return a blob and a url for the cropped image 
-//You need to create a questionImageSetter and a coverImageSetter
-//These should take a uid, a blob, and a image url for the question and set it. These will be used in the cropper function to call the setter functions and save.
-
-
-
 const page = () => {
   const [page, setPage] = useState<string>("description");
   const [pageData, setPageData] = useState<CreateQuiz>({
@@ -66,7 +59,10 @@ const page = () => {
       },
     })
     .then((res) => res.json())
-    .then(data => setTags(data.tags));
+    .then(data => {
+      if(data.tags){
+        setTags(data.tags)
+    }});
   }, []);
 
   const SaveImagesInFirebase = async (croppedImageBlob: Blob, save_path: string): Promise<(string | void)> => {
@@ -115,56 +111,94 @@ const page = () => {
     setPageData((prev) => ({
       ...prev,
       cover_image_url: newUrl
-    }))
+    }));
 
   const changeCoverImageBlob = (blob: Blob) => {
       setPageData((prev) => ({
       ...prev,
       coverImageBlob: blob
-    }))
-  }
+    }));
+  };
 
-  const changeQuestionImageUrl = (uid: string, url: string): void => {
-    const questions = pageData.questions.filter((question) => {
-        return question.uid != uid
-    })
-
-    let targetQuestion = pageData.questions.find((question) => {
-      return uid === question.uid
-    })
-
-    if(!targetQuestion) return;
-
-    targetQuestion.question_image_url = url
-
-    setPageData((prev) => ({
-      ...prev,
-      questions: [
-        ...questions,
-        targetQuestion
-      ]
-    }))
+  const changeQuestionImageUrl = (uid: string, newUrl: string): void => {
+    setPageData((prev) => 
+      ({
+        ...prev,
+        questions: prev.questions.map((question) => {
+          return question.uid != uid ? question : {
+            ...question,
+            question_image_url: newUrl
+          }
+        })
+      })
+    );
   }
 
   const changeQuestionImageBlob = (uid: string, blob: Blob): void => {
-    const questions = pageData.questions.filter((question) => {
-        return question.uid != uid
-    })
+    setPageData((prev) => 
+      ({
+        ...prev,
+        questions: prev.questions.map((question) => {
+          return question.uid != uid ? question : {
+            ...question,
+            questionImageBlob: blob
+          }
+        })
+      })
+    );
+  }
 
-    let targetQuestion = pageData.questions.find((question) => {
-      return uid === question.uid
-    })
+  const changeChoice = (questionUid: string, choiceUid: string, newChoice: string) => {
+    setPageData((prev) => 
+      ({
+        ...prev,
+        questions: prev.questions.map((question) => {
+          return question.uid != questionUid? question : {
+            ...question,
+            choices: question.choices.map((choice) => {
+              return choice.uid != choiceUid ? choice : 
+              {
+                ...choice,
+                choice: newChoice
+              }
+            })
+          }
+        })
+      })
+    );
+  }
 
-    if(!targetQuestion) return;
+  const changeQuestion = (uid: string, newQuestion: string) => {
+    setPageData((prev) => 
+      ({
+        ...prev,
+        questions: prev.questions.map((question) => {
+          return question.uid != uid ? question : {
+            ...question,
+            question: newQuestion
+          }
+        })
+      })
+    )
+  }
 
-    targetQuestion.questionImageBlob = blob
-
+  const changeCorrectChoice = (questionUid: string, choiceUid: string) => {
     setPageData((prev) => ({
       ...prev,
-      questions: [
-        ...questions,
-        targetQuestion
-      ]
+      questions: prev.questions.map((question) => {
+        return question.uid != questionUid ? question : {
+          ...question,
+          choices: question.choices.map((choice) => {
+            return choice.uid === choiceUid ? {
+              ...choice,
+              is_answer: true
+            } : {
+              ...choice,
+              is_answer: false
+            }
+          })
+        }
+      })
     }))
   }
 

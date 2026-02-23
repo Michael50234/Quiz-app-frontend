@@ -54,7 +54,7 @@ const DescriptionPage = ({tagIds, tags, title, isPublic, coverImageUrl, descript
             }}>Select Image</Button>
             <Dialog open={open} onClose={handleDialogClose} fullWidth={true} maxWidth="sm">
               <DialogActions>
-                  <ImageCropper cropShape={"rect"} aspectRatio={8/12} handleDialogClose={handleDialogClose} setBlob={changeCoverImageBlob} setUrl={changeCoverImageUrl}></ImageCropper>
+                  <ImageCropper cropShape={"rect"} aspectRatio={8/12} handleDialogClose={handleDialogClose} changeImageBlob={changeCoverImageBlob} changeImageUrl={changeCoverImageUrl}></ImageCropper>
               </DialogActions>
               <DialogContent>
               </DialogContent>

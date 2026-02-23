@@ -63,7 +63,7 @@ export type EditQuiz = Pick<Quiz, "title" | "is_public" | "cover_image_url" | "d
 //Creating Types
 
 export type CreateChoice = Pick<Choice, "choice" | "is_answer"> & {
-    uid?: string
+    uid: string
 };
 
 export type CreateQuestion = Pick<Question, "question" | "question_image_url"> & {
