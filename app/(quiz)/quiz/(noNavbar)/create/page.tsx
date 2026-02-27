@@ -202,12 +202,56 @@ const page = () => {
     }))
   }
 
+  const addNewQuestion = () => {
+    setPageData((prev) => ({
+      ...prev,
+      questions: [
+        ...prev.questions,
+        {
+          uid: crypto.randomUUID(),
+          question: "",
+          question_image_url: "/placeholder.jpg",
+          choices: [{
+            uid: crypto.randomUUID(),
+            choice: "",
+            is_answer: false
+          }, 
+          {
+            uid: crypto.randomUUID(),
+            choice: "",
+            is_answer: false
+          }, 
+          {
+            uid: crypto.randomUUID(),
+            choice: "",
+            is_answer: false
+          },
+          {
+            uid: crypto.randomUUID(),
+            choice: "",
+            is_answer: false
+          }]
+        }
+      ]
+    }))
+  }
+
+  const deleteQuestion = (uid: string) => {
+    setPageData((prev) => ({
+      ...prev,
+      questions: prev.questions.filter((question) => question.uid != uid)
+    }))
+  }
+
   return (
     <Box sx={{
       backgroundColor: "var(--background)",
       minHeight: "100vh"
     }}>
-      <Box sx={{height: "100%", pl: "20px", pr: "20px"}}>
+      <Box sx={{
+        height: "100%",
+         pl: "20px", 
+         pr: "20px"}}>
         <Container>
           <Stack direction="row" justifyContent={"center"} spacing={2} sx={{
             p: "10px",
@@ -233,8 +277,15 @@ const page = () => {
             description={pageData.description} 
             changeDescription={changeDescription}>
           </DescriptionPage> : 
-          <QuestionsPage>
-
+          <QuestionsPage
+            deleteQuestion={deleteQuestion}
+            addNewQuestion={addNewQuestion}
+            questions={pageData.questions} 
+            changeQuestionImageUrl={changeQuestionImageUrl}
+            changeQuestionImageBlob={changeQuestionImageBlob}
+            changeChoice={changeChoice} 
+            changeQuestion={changeQuestion}
+            changeCorrectChoice={changeCorrectChoice}>
           </QuestionsPage>
         }
       </Box>

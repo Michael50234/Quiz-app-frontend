@@ -36,7 +36,6 @@ const DescriptionPage = ({tagIds, tags, title, isPublic, coverImageUrl, descript
     <div>
         <Container sx={{
           width: "70%", 
-          minheight: "400px",
           display: "flex",
           justifyContent: "space-around",
           backgroundColor: "var(--primary-light)",
@@ -104,14 +103,14 @@ const DescriptionPage = ({tagIds, tags, title, isPublic, coverImageUrl, descript
                 maxRows={5}
                 multiline
                 sx={{
-                mt: "5px",
-                width: "100%",
-                height: "80%",
-                "& .MuiInputBase-root": {
-                  borderRadius: "2px",
-                  fontSize: "0.8rem", 
-                  flex: 1,
-                }
+                  mt: "5px",
+                  width: "100%",
+                  height: "80%",
+                  "& .MuiInputBase-root": {
+                    borderRadius: "2px",
+                    fontSize: "0.8rem", 
+                    flex: 1,
+                  }
               }}></TextField>
             </Box>
           </Stack>
