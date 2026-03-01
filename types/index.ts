@@ -91,6 +91,14 @@ export type CheckChoice = Pick<Choice, "id" | "choice">;
 
 //API Response Types
 
+export type createQuizResponse = {
+    quiz_ids: number,
+    question_ids: Record<string, number>,
+    detail: string
+};
+
+export type updateQuizResponse = createQuizResponse;
+
 //Display Types
 export type QuizDisplay = Pick<Quiz, "id" | "title" | "cover_image_url" | "description"> & {
     owner: Pick<User, "id" | "nickname">
@@ -110,7 +118,7 @@ export type QuizPlay = Pick<Quiz, "id" | "title"> & {
     tags: {name: string}[]
 };
 
-//Submission Return Format
+//Submission Return Format (return format for get all submissions route)
 
 export type SubmissionReturn = Pick<Submission, "submission_time" | "score" | "number_of_questions"> & {
     quiz_title: string,

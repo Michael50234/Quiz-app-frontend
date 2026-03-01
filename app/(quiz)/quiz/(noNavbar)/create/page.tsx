@@ -3,15 +3,17 @@
 import React, { useEffect, useState } from 'react';
 import { getAuth } from "firebase/auth"
 
-import { CreateQuiz, Tag } from '@/types/index';
+import { CreateQuiz, createQuizResponse, Tag, updateQuizResponse } from '@/types/index';
 import ProfileCrop from '@/components/crop/profileCrop';
 import { Box, Button, Container, Stack } from '@mui/material';
 import DescriptionPage from '@/components/descriptionPage';
 import { ref, getDownloadURL, uploadBytes } from "firebase/storage";
 import { storage } from '@/config/firebase.config';
 import QuestionsPage from '@/components/questionsPage';
+import { useRouter } from 'next/navigation';
 
 const page = () => {
+  const router = useRouter();
   const [page, setPage] = useState<string>("description");
   const [pageData, setPageData] = useState<CreateQuiz>({
     title: "",
@@ -51,7 +53,6 @@ const page = () => {
   //Fetch all available tags from db
   useEffect(() => {
     const token = localStorage.getItem("access_token");
-    console.log(token)
 
     fetch("http://127.0.0.1:8000/quizzes/tags", {
       method: "GET",
@@ -245,78 +246,121 @@ const page = () => {
     }))
   }
 
+  //Saves quiz to database and the images to firebase 
   const saveQuiz = async () => {
-    const token = localStorage.getItem("access_token");
-    let {
-      coverImageBlob,
-      ...saveRequestData
-    } = pageData;
+    try{
+      const token = localStorage.getItem("access_token");
+      let {
+        coverImageBlob,
+        ...saveRequestData
+      } = pageData;
 
-    saveRequestData = {
-      ...saveRequestData,
-      questions: saveRequestData.questions.map((question) => {
-        if(question.questionImageBlob) {
-          const {
-            questionImageBlob, ...cleanedQuestionData
-          } = question;
+      saveRequestData = {
+        ...saveRequestData,
+        questions: saveRequestData.questions.map((question) => {
+          if(question.questionImageBlob) {
+            const {
+              questionImageBlob, ...cleanedQuestionData
+            } = question;
 
-          return cleanedQuestionData;
-        }
-        return question;
-      })
-    }
+            return cleanedQuestionData;
+          }
+          return question;
+        })
+      }
 
-    //Save quiz and get the ids for the quiz and questions
-    const response = await fetch("http://127.0.0.1:8000/quizzes/create-quiz", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`,
-      },
-      body: JSON.stringify(pageData)
-    });
+      //Save quiz and get the ids for the quiz and questions
+      const response = await fetch("http://127.0.0.1:8000/quizzes/create-quiz", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
+        body: JSON.stringify(saveRequestData)
+      });
 
-    const data: {
-      quiz_id: number,
-      question_ids: Record<string, number>,
-      detail: string
-    } = await response.json();
+      const data: createQuizResponse = await response.json();
 
-    //Add ids to the current data
-    //Work here
-    
-    //Get firebase uid
-    const auth = getAuth();
-    const uid = auth.currentUser?.uid;
+      if(!response.ok){
+        throw new Error(data.detail);
+      }
 
+      console.log("done creating")
 
-    if(!pageData.coverImageBlob) return;
-    //Add cover image to firebase and save link in page data
-    const coverImageUrl = await saveImageInFirebase(pageData.coverImageBlob, `/users/${uid}/quizzes/${data.quiz_id}/icon.jpg`)
-    setPageData((prev) => ({
-      ...prev,
-      coverImageUrl: coverImageUrl
-    }))
-
-    //Add question images to firebase and save link in page data
-    for(let questionObject of pageData.questions){
-      if(!questionObject.questionImageBlob) return;
-
-      const question_id = data.question_ids[questionObject.uid]
-      const questionImageUrl = await saveImageInFirebase(questionObject.questionImageBlob, `/users/${uid}/quizzes/${data.quiz_id}/questions/${question_id}.jpg`)
+      //Add ids to the questions and quiz
       setPageData((prev) => ({
         ...prev,
-        questions: prev.questions.map((question) => question.uid === questionObject.uid ? {
-          ...question,
-          question_image_url: questionImageUrl
-        } : question)
+        id: data.quiz_id,
+        questions: prev.questions.map((question) => ({
+          id: data.question_ids[question.uid],
+          ...question
+        }))
+      }));
+
+      //Get firebase uid
+      const auth = getAuth();
+      const uid = auth.currentUser?.uid;
+
+      if(!pageData.coverImageBlob) return;
+      //Add cover image to firebase and save link in page data
+      const coverImageUrl = await saveImageInFirebase(pageData.coverImageBlob, `/users/${uid}/quizzes/${data.quiz_id}/icon.jpg`);
+      setPageData((prev) => ({
+        ...prev,
+        coverImageUrl: coverImageUrl
       }))
+
+      //Add question images to firebase and save link in pageData
+      for(let questionObject of pageData.questions){
+        if(!questionObject.questionImageBlob) continue;
+        const questionImageUrl = await saveImageInFirebase(questionObject.questionImageBlob, `/users/${uid}/quizzes/${data.question_ids[questionObject.uid]}/questions/${questionObject.id}.jpg`);
+        setPageData((prev) => ({
+          ...prev,
+          questions: prev.questions.map((question) => question.uid === questionObject.uid ? {
+            ...question,
+            question_image_url: questionImageUrl
+          } : question)
+        }));
+      }
+
+      console.log("done saving in firebase")
+
+      //Save new firebase image urls in db
+      let {coverImageBlob: _, id: quiz_id, ...updateRequestData} = pageData;
+
+
+      updateRequestData = {
+        ...updateRequestData,
+        questions: updateRequestData.questions.map((question) => {
+          const {questionImageBlob, ...cleanedQuestion} = question;
+          
+          return cleanedQuestion;
+        })
+      };
+
+      const updateResponse = await fetch(`http://127.0.0.1:8000/quizzes/quiz/${quiz_id}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "Application/Json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify(updateRequestData),
+      });
+
+      const updateData: updateQuizResponse = await updateResponse.json();
+
+      console.log("done updating")
+
+      if(!updateResponse.ok){
+        throw new Error(updateData.detail)
+      } else {
+        console.log("Successfully saved quiz")
+      }
+
+      router.push("/quiz/view/all");
+    } catch(error) {
+      console.warn(error)
     }
-
-    //Now we need to save the new image urls in the database
-
   }
-
 
   return (
     <Box sx={{
@@ -391,6 +435,7 @@ const page = () => {
             changeDescription={changeDescription}>
           </DescriptionPage> : 
           <QuestionsPage
+            saveQuiz={saveQuiz}
             deleteQuestion={deleteQuestion}
             addNewQuestion={addNewQuestion}
             questions={pageData.questions} 

@@ -15,11 +15,10 @@ type QuestionCardProps = {
   changeChoice: (choiceUid: string, newChoice: string) => void,
   changeQuestion: (newQuestion: string) => void,
   changeCorrectChoice: (choiceUid: string) => void,
-  deleteQuestion: () => void
+  deleteQuestion: () => void,
 }
 
-//Need to create ui element and method to set option as correct
-const QuestionCard = ({deleteQuestion, question, changeQuestionImageUrl, changeQuestionImageBlob, changeChoice, changeQuestion, changeCorrectChoice}: QuestionCardProps) => {
+const QuestionCard = ({ deleteQuestion, question, changeQuestionImageUrl, changeQuestionImageBlob, changeChoice, changeQuestion, changeCorrectChoice}: QuestionCardProps) => {
   const [open, setOpen] = useState<boolean>(false)
 
   const handleDialogClose = () => {

@@ -15,9 +15,10 @@ type QuestionsPageProps = {
   changeQuestion: (uid: string, newQuestion: string) => void, 
   changeCorrectChoice: (questionUid: string, choiceUid: string) => void,
   deleteQuestion: (uid: string) => void,
+  saveQuiz: () => Promise<void>
 }
 
-const QuestionsPage = ({deleteQuestion, addNewQuestion, questions, changeQuestionImageUrl, changeQuestionImageBlob, changeChoice, changeQuestion, changeCorrectChoice}: QuestionsPageProps) => {
+const QuestionsPage = ({saveQuiz, deleteQuestion, addNewQuestion, questions, changeQuestionImageUrl, changeQuestionImageBlob, changeChoice, changeQuestion, changeCorrectChoice}: QuestionsPageProps) => {
   const [saveDialogOpen, setSaveDialogOpen] = useState<boolean>(false);
   return (
     <Stack spacing={2}>
@@ -59,7 +60,7 @@ const QuestionsPage = ({deleteQuestion, addNewQuestion, questions, changeQuestio
               Are you sure you want to save your changes? This action cannot be undone.
             </DialogContentText>
             <DialogActions>
-              <Button>Save</Button>
+              <Button onClick={saveQuiz}>Save</Button>
             </DialogActions>
           </DialogContent>
         </Dialog>
