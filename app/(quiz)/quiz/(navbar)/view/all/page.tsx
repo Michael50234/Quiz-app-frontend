@@ -95,14 +95,13 @@ const pages = () => {
       mt: "10px",
       pl: "10px",
       pr: "10px",
-      height: "minmax(100vh, auto)",
+      minHeight: "100vh",
       width: "100vw",
-      backgroundColor: "var(--background)",
+      backgroundColor: "var(--bg-dark)",
     }}>
       <Toolbar variant="dense"></Toolbar>
       
       <QuizDisplay quizzes={QuizList}></QuizDisplay>
-      <Typography>hello</Typography>
     </Box>
   )
 }

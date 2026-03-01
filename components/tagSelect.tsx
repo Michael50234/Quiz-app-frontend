@@ -26,14 +26,18 @@ export default function TagSelect({tags, tagIds, changeTagIds} : { tags: Tag[], 
             .map((tag) => tag.id)
         )}
         renderInput={(params) => (
-            <TextField sx={{
-                width: "100%"
-            }} {...params} variant="filled" placeholder={tags.length === 0 ? "Select tags" : ""} />
+            <TextField 
+                multiline
+                sx={{
+                    width: "100%",
+                }} 
+                {...params} 
+                variant="filled" placeholder={tags.length === 0 ? "Select tags" : ""} />
         )}
         slotProps={{
             chip: {
                 sx: {
-                        backgroundColor: "var(--secondary-light)",
+                        backgroundColor: "var(--secondary)",
                         borderRadius: "2px",
                     },
                 },

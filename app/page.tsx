@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState } from "react";
-
 import { signInWithCustomToken } from "firebase/auth";
 import { auth } from "@/config/firebase.config";
 
@@ -10,6 +9,7 @@ import styles from "./page.module.css";
 import { Box, Button, ButtonGroup, Container, Stack, TextField, Typography } from "@mui/material";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+
 
 export default function Login() {
   const [page, setPage] = useState<string>("Sign-up");
@@ -40,7 +40,7 @@ export default function Login() {
 
   const handleLogin = async (username: string, password: string): Promise<void> => {
     try {
-      const response = await fetch("http://127.0.0.1:8000/accounts/login", {
+      let response = await fetch("http://127.0.0.1:8000/accounts/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -50,7 +50,7 @@ export default function Login() {
           password: password
         })
       });
-      const data = await response.json();
+      let data = await response.json();
 
       //alert user of error
       if (!response.ok) {
@@ -61,6 +61,24 @@ export default function Login() {
       localStorage.setItem("access_token", data.access);
       localStorage.setItem("refresh_token", data.refresh);
 
+      const token = localStorage.getItem("access_token")
+
+      response = await fetch("http://127.0.0.1:8000/accounts/user", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        }
+      });
+
+      data = await response.json();
+
+      if(!response.ok){
+        throw new Error(data.detail);
+      }
+
+      localStorage.setItem("user", data);
+
       redirectToHome();
     }
     catch(error) {
@@ -70,7 +88,7 @@ export default function Login() {
 
   const handleSignup = async (username: string, password: string): Promise<void> => {
     try {
-      const response  = await fetch("http://127.0.0.1:8000/accounts/register", {
+      let response  = await fetch("http://127.0.0.1:8000/accounts/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -81,21 +99,38 @@ export default function Login() {
         })
       });
 
-      const data = await response.json();
+      let data = await response.json();
 
       //alert user of error
       if(!response.ok){
-        alert(data.detail);
-        return;
+        throw new Error(data.detail);
       }
       //Store jwt tokens in local storage
       localStorage.setItem("access_token", data.access);
       localStorage.setItem("refresh_token", data.refresh);
-      
+
+      const token = localStorage.getItem("access_token")
+
+      response = await fetch("http://127.0.0.1:8000/accounts/user", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        }
+      });
+
+      data = await response.json();
+
+      if(!response.ok){
+        throw new Error(data.detail);
+      }
+
+      localStorage.setItem("user", data);
+
       redirectToHome();
     }
     catch(error) {
-      console.error(error);
+      alert(error);
     }
   };
 
@@ -103,7 +138,7 @@ export default function Login() {
   return (
     <>
       <Box sx={{
-        backgroundColor: "var(--background)",
+        backgroundColor: "var(--bg-dark)",
         minHeight: "100vh",
         minWidth: "100vw",
         margin: 0,
@@ -114,11 +149,9 @@ export default function Login() {
       }}>
         <Container sx={{
           borderRadius: "10px",
-          backgroundColor: "white",
+          backgroundColor: "var(--bg)",
           color: "black",
-          width: "40%",
-          display: "flex",
-          justifyContent: "center",
+          width: "30%",
           alignItems: "center",
           padding: "20px",
         }}>
@@ -129,38 +162,88 @@ export default function Login() {
             <ButtonGroup sx={{
               width: "100%"
             }}>
-              <Button size="large" fullWidth onClick={() => setPage("Login")} variant={page === "Login" ? "contained" : "outlined"}>Login</Button>
-              <Button size="large" fullWidth onClick={() => setPage("Sign-up")} variant={page === "Login" ? "outlined" : "contained"} >Sign-up</Button>
+              <Button 
+                size="large" 
+                fullWidth 
+                onClick={() => setPage("Login")} 
+                variant={page === "Login" ? "contained" : "outlined"}
+                sx={{
+                  fontSize: "1.3rem",
+                  "&.MuiButton-contained": {
+                    backgroundColor: "var(--secondary)",
+                    "&:hover": {
+                        backgroundColor: "var(--secondary-hover)",
+                    },
+                    color: "hsl(0, 0%, 5%)",
+                  },
+                  "&.MuiButton-outlined": {
+                    border: "1px solid HSLA(39, 59%, 73%, 0.5)",
+                    color: "hsl(0, 0%, 35%)"
+                  }
+                }}>Login</Button>
+              <Button 
+                size="large" 
+                fullWidth 
+                onClick={() => setPage("Sign-up")} 
+                variant={page === "Login" ? "outlined" : "contained"}
+                sx={{
+                  fontSize: "1.3rem",
+                  "&.MuiButton-contained": {
+                    backgroundColor: "var(--secondary)",
+                    "&:hover": {
+                        backgroundColor: "var(--secondary-hover)",
+                    },
+                    color: "hsl(0, 0%, 5%)",
+                  },
+                  "&.MuiButton-outlined": {
+                    border: "1px solid HSLA(39, 59%, 73%, 0.5)",
+                    color: "hsl(0, 0%, 35%)"
+                  }
+                }}>Sign-up</Button>
             </ButtonGroup>
             <Stack spacing={1} alignContent="center">
               <Typography textAlign="center" variant="h3" sx={{
-                fontWeight: 800
+                fontWeight: 600,
+                fontSize: "4rem",
               }}>{page === "Login" ? "Login" : "Signup"} </Typography>
-              <Typography variant="h6" color="var(--text-muted)">Welcome to my quiz app!</Typography>
+              <Typography variant="h6" color="var(--text-muted)" sx={{
+                fontSize: "1.3rem",
+                fontWeight: 500
+              }}>Welcome to my quiz app!</Typography>
             </Stack>
             <Stack spacing={2}>
-              <TextField variant="outlined" value={username} onChange={(e) => setUsername(e.target.value)} label="Username" sx={{
-                minWidth: "300px",
-                '& .MuiInputLabel-root': {
-                  color: 'text.secondary',
-                }
-              }}>Username</TextField>
-              <TextField type="password" variant="outlined" label="Password" value={password} onChange={(e) => setPassword(e.target.value)} sx={{
-                '& .MuiInputLabel-root': {
-                  color: 'text.secondary',
-                }
-              }}>Password</TextField>
+              <TextField 
+                variant="outlined" 
+                value={username} 
+                onChange={(e) => setUsername(e.target.value)} 
+                label="Username" />
+              <TextField 
+                type="password" 
+                variant="outlined" 
+                label="Password" 
+                value={password} 
+                onChange={(e) => setPassword(e.target.value)} />
             </Stack>
-            <Button variant="contained" size="large" onClick={() => {
+            <Button 
+              variant="contained" 
+              color="primary" 
+              size="large" 
+              onClick={() => {
                 if(page == "Login") {
                   handleLogin(username, password);
                 }
                 else {
                   handleSignup(username, password);
                 }
-
-              }
-            }>Submit</Button>
+              }}
+              sx={{
+                fontSize: "1.3rem",
+                backgroundColor: "var(--primary)",
+                "&:hover": {
+                  backgroundColor: "var(--primary-hover)"
+                }
+              }}
+            >Submit</Button>
           </Stack>
         </Container>
       </Box>

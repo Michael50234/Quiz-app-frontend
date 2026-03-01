@@ -1,6 +1,6 @@
 'use client';
 
-import { Box, Card, CardContent, Typography } from '@mui/material';
+import { Box, Button, Card, CardContent, Typography } from '@mui/material';
 import React from 'react';
 
 type Quiz = {
@@ -18,21 +18,38 @@ const QuizCard = ({quiz, uid}: { quiz: Quiz, uid: string | undefined}) => {
   return ( 
     <Box>
       <Card sx={{
-        height: "100%",
+        height: "500px",
         width: "100%",
-        backgroundColor: "var(--primary-light)" 
+        backgroundColor: "var(--bg)",
       }}>
-        <CardContent>
-          <Typography variant="subtitle1" sx={{
-            fontWeight: 600
+        <CardContent sx={{
+            display: "flex",
+            flexDirection: "column",
+            height: "100%"
+        }}>
+          <Box sx={{
+            minHeight: "64px"
           }}>
-            {quiz.title}
-          </Typography>
+            <Typography variant="h5" sx={{
+              fontWeight: 600,
+            }}>
+              {quiz.title}
+            </Typography>
+          </Box>
           <Box component="img" src='/Mambo.png' sx={{
+            aspectRatio: 9/12,
             width: "100%",
             borderRadius: "20px"
           }}></Box>
-
+        <Box sx={{
+          display: "flex",
+          mt: "10px",
+          gap: 0.6,
+          justifyContent: "center",
+        }}>
+          <Button color={'secondary'} variant="contained">Edit</Button>
+          <Button variant="contained">Play</Button>
+        </Box>
         </CardContent>
       </Card>
     </Box>

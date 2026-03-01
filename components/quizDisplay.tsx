@@ -29,10 +29,13 @@ const QuizDisplay = ({quizzes} : { quizzes: Quiz[]}) => {
     }, []);
 
     return (
-        <div>
+        <div style={{
+            marginLeft: "40px",
+            marginRight: "40px"
+        }}>
             <Grid container spacing={1}>
                 {quizList.map((quiz) => {
-                    return <Grid key={quiz.uid} size={3}><QuizCard quiz={quiz} uid={quiz.uid}></QuizCard></Grid>
+                    return <Grid key={quiz.uid} size={2}><QuizCard quiz={quiz} uid={quiz.uid}></QuizCard></Grid>
                 })}
             </Grid>
         </div>

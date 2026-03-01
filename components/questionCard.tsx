@@ -30,31 +30,38 @@ const QuestionCard = ({deleteQuestion, question, changeQuestionImageUrl, changeQ
     <div>
       <Container sx={{
         justifyItems: "center",
-        justifyContent: "center"
+        justifyContent: "center",
       }}>
         <Box sx={{
-          width: "75%",
+            width: "75%",
             borderRadius: "5px",
             justifyContent: "space-around",
-            backgroundColor: "var(--primary-light)",
+            backgroundColor: "var(--bg)",
             padding: "20px",
             display: "flex",
-            flexDirection: "column"
+            flexDirection: "column",
+            height: "450px"
         }}>
           <IconButton color="error" sx={{
-            ml: "auto"
+            ml: "auto",
+            "&:hover": {
+              backgroundColor: "var(--bg-light)"
+            }
           }} onClick={deleteQuestion}>
             <DeleteIcon />
           </IconButton>
           <Stack direction="row" justifyContent="center" sx={{
+            height: "100%",
             width: "100%",
+            flex: 1,
             justifyContent: "space-around",
           }}>
             <Stack sx={{
-              height: "340px"
+              width: "30%"
             }}>
               <img src={question.question_image_url} style={{
-                height: "90%",
+                width: "100%",
+                aspectRatio: "9 / 12",
                 objectFit: "cover"
               }}></img>
               <Button onClick={() => setOpen(true)}>Add Image</Button>
@@ -70,16 +77,18 @@ const QuestionCard = ({deleteQuestion, question, changeQuestionImageUrl, changeQ
               width: "60%",
               ml: "10px",
               mr: "10px",
+              height: "100%",
+              flexDirection: 1,
             }}>
-              <Stack spacing={1}>
+              <Stack spacing={1} >
                 <Typography color="var(--primary-base)" sx={{
                   fontWeight: 600
                 }}>Question</Typography>
                 <TextField
                   fullWidth
                   multiline
-                  minRows={2}
-                  maxRows={2}
+                  minRows={3}
+                  maxRows={3}
                   value={question.question} 
                   onChange={(e) => changeQuestion(e.target.value)}
                   sx={{
@@ -101,11 +110,24 @@ const QuestionCard = ({deleteQuestion, question, changeQuestionImageUrl, changeQ
                   return (
                   <Grid size={6} key={choice.uid}>
                     <Radio checked={choice.is_answer} onClick={() => changeCorrectChoice(choice.uid)}></Radio>
-                    <TextField sx={{ width: "80%" }} value={choice.choice} onChange={(e) => {changeChoice(choice.uid, e.target.value)}}></TextField>
+                    <TextField 
+                      minRows={2}
+                      maxRows={2}
+                      sx={{ 
+                        width: "80%",
+                        "& .MuiInputBase-input": {
+                          fontSize: "0.9rem"
+                        }
+                       }} 
+                      value={choice.choice} 
+                      onChange={(e) => {changeChoice(choice.uid, e.target.value)}}>
+                    </TextField>
                   </Grid>)
                 })}
               </Grid>
               <Typography sx={{
+                position: "relative",
+                top: "15px",
                 fontWeight: 500,
               }}>
                 <span style={{color: "var(--primary-base)"}}>{ `The Correct Answer Is: `}</span>

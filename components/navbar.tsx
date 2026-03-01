@@ -31,31 +31,42 @@ const Navbar = () => {
         <div>
             <AppBar sx={{
                     top: 0,
-                    backgroundColor: "var(--navbar)",
+                    backgroundColor: "var(--bg)",
+                    boxShadow: "0px 4px 15px rgba(0,0,0,0.2)",
                 }}>
                 <Toolbar variant="dense">
                     <Button onClick={() => setPage("All-Quizzes")} variant={page == "All-Quizzes" ? "contained" : "text"}sx={{
-                        color: "white",
-                        fontWeight: 600,
+                        fontWeight: 500,
                         mr: "10px",
                         p: "8px",
                         pt: "3px",
-                        pb: "3px"
+                        pb: "3px",
+                        "&.MuiButton-contained": {
+                            backgroundColor: "var(--bg-light)"
+                        },
+                        "&.MuiButton-text": {
+                            color: "var(--text)"
+                        }
                     }}><Link href="/quiz/view/all">All Quizzes</Link></Button>
-                    <Button variant={ page == "My-Quizzes" ? "contained" : "text" }onClick={() => setPage("My-Quizzes")} sx={{
-                        color: "white",
-                        fontWeight: 600,
+                    <Button variant={ page == "My-Quizzes" ? "contained" : "text" } onClick={() => setPage("My-Quizzes")} sx={{
+                        fontWeight: 500,
                         mr: "auto",
                         p: "8px",
                         pt: "3px",
-                        pb: "3px"
+                        pb: "3px",
+                        "&.MuiButton-contained": {
+                            backgroundColor: "var(--bg-light)"
+                        },
+                        "&.MuiButton-text": {
+                            color: "var(--text)"
+                        }
                     }}><Link href="/quiz/view/my-quizzes">My Quizzes</Link></Button>
                     <Button onClick={logoutHandler} sx={{
-                        color: "white",
-                        fontWeight: 600,
+                        color: "var(--text)",
+                        fontWeight: 500,
                         p: "8px",
                         pt: "3px",
-                        pb: "3px"
+                        pb: "3px",
                     }}>Logout</Button>
                 </Toolbar>
             </AppBar>

@@ -1,7 +1,9 @@
-import React from 'react'
+'use client'
+
+import React, { useState } from 'react'
 import QuestionCard from '@/components/questionCard';
 import { CreateQuestion } from '@/types/index'
-import { Button, Stack } from '@mui/material';
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Stack } from '@mui/material';
 
 type QuestionsPageProps = {
   questions: CreateQuestion[],
@@ -12,10 +14,11 @@ type QuestionsPageProps = {
   changeChoice: (questionUid: string, choiceUid: string, newChoice: string) => void, 
   changeQuestion: (uid: string, newQuestion: string) => void, 
   changeCorrectChoice: (questionUid: string, choiceUid: string) => void,
-  deleteQuestion: (uid: string) => void
+  deleteQuestion: (uid: string) => void,
 }
 
 const QuestionsPage = ({deleteQuestion, addNewQuestion, questions, changeQuestionImageUrl, changeQuestionImageBlob, changeChoice, changeQuestion, changeCorrectChoice}: QuestionsPageProps) => {
+  const [saveDialogOpen, setSaveDialogOpen] = useState<boolean>(false);
   return (
     <Stack spacing={2}>
       {questions.map((question) => {
@@ -42,10 +45,26 @@ const QuestionsPage = ({deleteQuestion, addNewQuestion, questions, changeQuestio
           </QuestionCard>
         )
       })}
-      <Button onClick={addNewQuestion}>Add New Question</Button>
-      <Button>Save</Button>
+      <Box sx={{
+        display: "flex",
+        justifyContent: "center",
+        gap: 2
+      }}>
+        <Button variant="contained" onClick={addNewQuestion}>Add New Question</Button>
+        <Button variant="contained" onClick={() => setSaveDialogOpen(true)}> Save</Button>
+        <Dialog open={saveDialogOpen} onClose={() => setSaveDialogOpen(false)}>
+          <DialogTitle>Confirm Save</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Are you sure you want to save your changes? This action cannot be undone.
+            </DialogContentText>
+            <DialogActions>
+              <Button>Save</Button>
+            </DialogActions>
+          </DialogContent>
+        </Dialog>
+      </Box>
     </Stack>
-    
   )
 }
 

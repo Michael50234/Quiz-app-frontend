@@ -33,19 +33,27 @@ const DescriptionPage = ({tagIds, tags, title, isPublic, coverImageUrl, descript
   }
 
   return (
-    <div>
+    <div style={{
+      width: "100%",
+      height: "100%",
+      display: "flex",
+      justifyContent: "center",
+      marginTop: "auto",
+      marginBottom: "auto"
+    }}>
         <Container sx={{
           width: "70%", 
+          height: "700px",
           display: "flex",
           justifyContent: "space-around",
-          backgroundColor: "var(--primary-light)",
+          backgroundColor: "var(--bg)",
           borderRadius: "32px",
           boxShadow: "0px 0px 20px 1px rgba(0,0,0, 0.1)",
           pt: "50px",
           pb: "50px"
           }}>
           <Stack spacing={1} sx={{width: "35%"}}>
-            <Box sx={{height: "360px", aspectRatio: {8:12}}}>
+            <Box sx={{ width: "100%", aspectRatio: "9 / 12", border: "1px solid var(--border)"}}>
               <img src={coverImageUrl} style={{height: '100%', width: "100%", objectFit: "cover"}}></img>
             </Box>
             <Button variant="contained" onClick={() => setOpen(true)} sx={{
@@ -53,7 +61,7 @@ const DescriptionPage = ({tagIds, tags, title, isPublic, coverImageUrl, descript
             }}>Select Image</Button>
             <Dialog open={open} onClose={handleDialogClose} fullWidth={true} maxWidth="sm">
               <DialogActions>
-                  <ImageCropper cropShape={"rect"} aspectRatio={8/12} handleDialogClose={handleDialogClose} changeImageBlob={changeCoverImageBlob} changeImageUrl={changeCoverImageUrl}></ImageCropper>
+                  <ImageCropper cropShape={"rect"} aspectRatio={9/12} handleDialogClose={handleDialogClose} changeImageBlob={changeCoverImageBlob} changeImageUrl={changeCoverImageUrl}></ImageCropper>
               </DialogActions>
               <DialogContent>
               </DialogContent>
@@ -61,24 +69,39 @@ const DescriptionPage = ({tagIds, tags, title, isPublic, coverImageUrl, descript
           </Stack>
           <Stack spacing={2} sx={{
             width: "50%",
-            height: "80%",
+            height: "100%",
           }}>
             <Box sx={{width: "100%"}}>
               <Typography fontWeight={550} sx={{
+                fontSize: "1.2rem",
                 margin: 0,
                 color: "var(--primary-dark)"
                 }}>Title</Typography>
-              <TextField placeholder="Untitled" value={title} onChange={(e) => changeTitle(e.target.value)}sx={{
-                mt: "5px",
-                width: "100%",
-                "& .MuiInputBase-root": {
-                  borderRadius: "2px",
-                  height: "30px",
-                }
-              }}></TextField>
+              <TextField 
+                slotProps={{
+                  input: {
+                    inputProps: {
+                      maxLength: 20
+                    }
+                  }
+                }}
+                placeholder="Untitled" 
+                value={title} 
+                onChange={(e) => changeTitle(e.target.value)}
+                sx={{
+                  mt: "5px",
+                  width: "100%",
+                  "& .MuiInputBase-root": {
+                    borderRadius: "2px",
+                    height: "30px",
+                    fontSize: "0.9rem"
+                  },
+                }}>
+              </TextField>
             </Box>
             <Box>
               <Typography fontWeight={550} sx={{
+                fontSize: "1.2rem",
                 margin: 0,
                 color: "var(--primary-dark)"
               }}>Public Status</Typography>
@@ -99,16 +122,17 @@ const DescriptionPage = ({tagIds, tags, title, isPublic, coverImageUrl, descript
               <TextField 
                 onChange={(e) => changeDescription(e.target.value)}
                 value={description}
-                minRows={5}
-                maxRows={5}
+                minRows={12}
+                maxRows={12}
                 multiline
                 sx={{
                   mt: "5px",
                   width: "100%",
                   height: "80%",
+                  flex: 1,
                   "& .MuiInputBase-root": {
                     borderRadius: "2px",
-                    fontSize: "0.8rem", 
+                    fontSize: "1rem", 
                     flex: 1,
                   }
               }}></TextField>

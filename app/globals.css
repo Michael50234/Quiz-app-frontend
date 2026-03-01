@@ -1,16 +1,27 @@
 :root {
-  --primary-light: #dcd7f3;
-  --primary-base: #5235c5;
-  --primary-dark: #39258a;
-  
-  --secondary-light: #f8c4cc;
-  --secondary-base: #e31e3f;
-  --secondary-dark: #9f1329;
+  --bg-dark: HSL(240, 16, 90);
+  --bg: HSL(240, 14, 96);
+  --bg-light: HSL(240, 12, 100);
 
-  --accent: #e31e3f;
+  --text: HSL(0, 0, 5);
+  --text-muted: HSL(0, 0, 50);
 
-  --navbar: #bcacff;
-  --background: #f6f4fd;
+  --highlight: HSL(240, 14, 100);
+  --border: HSL(240, 14, 70);
+  --border-muted: HSL(240, 14, 60);
+
+  --primary: HSL(219, 59, 73);
+  --primary-hover: HSL(219, 59, 85);
+
+  --secondary: HSL(39, 59, 73);
+  --secondary-hover: HSL(39, 59, 85);
+
+  --danger: HSL(0, 63, 81);
+  --warning: HSL(36, 85, 67);
+  --success: HSL(120, 66, 62);
+  --info: HSL(246, 83, 75);
+
+  --accent: HSL(246, 83, 75);
 }
 
 html, body {

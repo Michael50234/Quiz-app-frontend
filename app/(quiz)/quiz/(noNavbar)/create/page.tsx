@@ -1,7 +1,9 @@
 'use client';
 
-import { CreateQuiz, Tag } from '@/types/index';
 import React, { useEffect, useState } from 'react';
+import { getAuth } from "firebase/auth"
+
+import { CreateQuiz, Tag } from '@/types/index';
 import ProfileCrop from '@/components/crop/profileCrop';
 import { Box, Button, Container, Stack } from '@mui/material';
 import DescriptionPage from '@/components/descriptionPage';
@@ -65,7 +67,7 @@ const page = () => {
     }});
   }, []);
 
-  const SaveImagesInFirebase = async (croppedImageBlob: Blob, save_path: string): Promise<(string | void)> => {
+  const saveImageInFirebase = async (croppedImageBlob: Blob, save_path: string): Promise<(string)> => {
     try{    
           //Define where you want to store the image
           const imageRef = ref(storage, save_path);
@@ -78,7 +80,7 @@ const page = () => {
 
           return downloadURL
       } catch(error) {
-          return;
+          throw Error("Failed to save image to firebase");
       }
   }
 
@@ -243,23 +245,134 @@ const page = () => {
     }))
   }
 
+  const saveQuiz = async () => {
+    const token = localStorage.getItem("access_token");
+    let {
+      coverImageBlob,
+      ...saveRequestData
+    } = pageData;
+
+    saveRequestData = {
+      ...saveRequestData,
+      questions: saveRequestData.questions.map((question) => {
+        if(question.questionImageBlob) {
+          const {
+            questionImageBlob, ...cleanedQuestionData
+          } = question;
+
+          return cleanedQuestionData;
+        }
+        return question;
+      })
+    }
+
+    //Save quiz and get the ids for the quiz and questions
+    const response = await fetch("http://127.0.0.1:8000/quizzes/create-quiz", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+      },
+      body: JSON.stringify(pageData)
+    });
+
+    const data: {
+      quiz_id: number,
+      question_ids: Record<string, number>,
+      detail: string
+    } = await response.json();
+
+    //Add ids to the current data
+    //Work here
+    
+    //Get firebase uid
+    const auth = getAuth();
+    const uid = auth.currentUser?.uid;
+
+
+    if(!pageData.coverImageBlob) return;
+    //Add cover image to firebase and save link in page data
+    const coverImageUrl = await saveImageInFirebase(pageData.coverImageBlob, `/users/${uid}/quizzes/${data.quiz_id}/icon.jpg`)
+    setPageData((prev) => ({
+      ...prev,
+      coverImageUrl: coverImageUrl
+    }))
+
+    //Add question images to firebase and save link in page data
+    for(let questionObject of pageData.questions){
+      if(!questionObject.questionImageBlob) return;
+
+      const question_id = data.question_ids[questionObject.uid]
+      const questionImageUrl = await saveImageInFirebase(questionObject.questionImageBlob, `/users/${uid}/quizzes/${data.quiz_id}/questions/${question_id}.jpg`)
+      setPageData((prev) => ({
+        ...prev,
+        questions: prev.questions.map((question) => question.uid === questionObject.uid ? {
+          ...question,
+          question_image_url: questionImageUrl
+        } : question)
+      }))
+    }
+
+    //Now we need to save the new image urls in the database
+
+  }
+
+
   return (
     <Box sx={{
-      backgroundColor: "var(--background)",
+      backgroundColor: "var(--bg-dark)",
       minHeight: "100vh"
     }}>
       <Box sx={{
-        height: "100%",
-         pl: "20px", 
-         pr: "20px"}}>
+          minHeight: "100vh",
+          pl: "20px", 
+          pr: "20px",
+          display: "flex",
+          flexDirection: "column"}}>
         <Container>
-          <Stack direction="row" justifyContent={"center"} spacing={2} sx={{
-            p: "10px",
-          }}>
-            <Button sx={{ width: "120px"}} variant={page === "description" ? "contained" : "outlined"} onClick={() => setPage("description")}>
-              Description
+          <Stack 
+            direction="row" 
+            justifyContent={"center"} 
+            spacing={2} 
+            sx={{
+              p: "10px",
+            }}>
+            <Button 
+              sx={{ 
+                width: "120px",
+                "&.MuiButton-contained": {
+                  backgroundColor: "var(--secondary)",
+                  "&:hover": {
+                      backgroundColor: "var(--secondary-hover)",
+                  },
+                  color: "hsl(0, 0%, 5%)",
+                },
+                "&.MuiButton-outlined": {
+                  border: "1px solid HSLA(39, 59%, 73%, 0.5)",
+                  color: "hsl(0, 0%, 35%)"
+                }
+              }} 
+              variant={page === "description" ? "contained" : "outlined"} 
+              onClick={() => setPage("description")}>Description
             </Button>
-            <Button sx={{ width: "120px"}} variant={page === "questions" ? "contained" : "outlined"} onClick={() => setPage("questions")}>Questions</Button>
+            <Button 
+              sx={{ 
+                width: "120px",
+                "&.MuiButton-contained": {
+                  backgroundColor: "var(--secondary)",
+                  "&:hover": {
+                      backgroundColor: "var(--secondary-hover)",
+                  },
+                  color: "hsl(0, 0%, 5%)",
+                },
+                "&.MuiButton-outlined": {
+                  border: "1px solid HSLA(39, 59%, 73%, 0.5)",
+                  color: "hsl(0, 0%, 35%)"
+                }
+              }} 
+              variant={page === "questions" ? "contained" : "outlined"} 
+              onClick={() => setPage("questions")}>Questions
+            </Button>
           </Stack>
         </Container>
         { page === "description" ? 
