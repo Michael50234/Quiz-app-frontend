@@ -42,19 +42,21 @@ export type Submission = {
 
 //Editing Types
 
-export type EditChoice = Pick<Choice, 'id' | 'choice' | 'is_answer'> & {
-    uid?: string
+export type EditChoice = Pick<Choice, 'choice' | 'is_answer'> & {
+    id?: string,
+    uid: string
 }
 
 
 export type EditQuestion = Pick<Question, "question" | "question_image_url"> & {
-    uid?: string,
+    uid: string,
     id?: number,
     choices: EditChoice[],
     questionImageBlob?: Blob
 };
 
 export type EditQuiz = Pick<Quiz, "title" | "is_public" | "cover_image_url" | "description"> & {
+    id: number
     tag_ids: number[],
     questions: EditQuestion[],
     coverImageBlob?: Blob
@@ -91,13 +93,13 @@ export type CheckChoice = Pick<Choice, "id" | "choice">;
 
 //API Response Types
 
-export type createQuizResponse = {
-    quiz_ids: number,
+export type CreateQuizResponse = {
+    quiz_id: number,
     question_ids: Record<string, number>,
-    detail: string
 };
 
-export type updateQuizResponse = createQuizResponse;
+export type EditQuizResponse = CreateQuizResponse;
+
 
 //Display Types
 export type QuizDisplay = Pick<Quiz, "id" | "title" | "cover_image_url" | "description"> & {

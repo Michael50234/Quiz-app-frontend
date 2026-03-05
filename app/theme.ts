@@ -41,6 +41,7 @@ export const theme = createTheme({
             styleOverrides: {
                 root: {
                     borderRadius: 10,
+                    color: "black"
                 },
             },
         },

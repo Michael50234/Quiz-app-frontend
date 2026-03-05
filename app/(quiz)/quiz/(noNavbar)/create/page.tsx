@@ -3,13 +3,13 @@
 import React, { useEffect, useState } from 'react';
 import { getAuth } from "firebase/auth"
 
-import { CreateQuiz, createQuizResponse, Tag, updateQuizResponse } from '@/types/index';
+import { CreateQuiz, CreateQuizResponse, Tag, EditQuizResponse } from '@/types/index';
 import ProfileCrop from '@/components/crop/profileCrop';
 import { Box, Button, Container, Stack } from '@mui/material';
-import DescriptionPage from '@/components/descriptionPage';
+import DescriptionPage from '@/components/createQuizPage/descriptionPage';
 import { ref, getDownloadURL, uploadBytes } from "firebase/storage";
 import { storage } from '@/config/firebase.config';
-import QuestionsPage from '@/components/questionsPage';
+import QuestionsPage from '@/components/createQuizPage/questionsPage';
 import { useRouter } from 'next/navigation';
 
 const page = () => {
@@ -250,6 +250,11 @@ const page = () => {
   const saveQuiz = async () => {
     try{
       const token = localStorage.getItem("access_token");
+
+      let pageDataCopy: CreateQuiz = {
+        ...pageData
+      };
+
       let {
         coverImageBlob,
         ...saveRequestData
@@ -279,54 +284,49 @@ const page = () => {
         body: JSON.stringify(saveRequestData)
       });
 
-      const data: createQuizResponse = await response.json();
+      const data: CreateQuizResponse = await response.json();
 
       if(!response.ok){
-        throw new Error(data.detail);
+        throw new Error("Creating Quiz Failed");
       }
 
-      console.log("done creating")
-
       //Add ids to the questions and quiz
-      setPageData((prev) => ({
-        ...prev,
+      pageDataCopy = {
+        ...pageDataCopy,
         id: data.quiz_id,
-        questions: prev.questions.map((question) => ({
+        questions: pageDataCopy.questions.map((question) => ({
           id: data.question_ids[question.uid],
           ...question
         }))
-      }));
+      }
 
       //Get firebase uid
       const auth = getAuth();
       const uid = auth.currentUser?.uid;
 
-      if(!pageData.coverImageBlob) return;
-      //Add cover image to firebase and save link in page data
-      const coverImageUrl = await saveImageInFirebase(pageData.coverImageBlob, `/users/${uid}/quizzes/${data.quiz_id}/icon.jpg`);
-      setPageData((prev) => ({
-        ...prev,
-        coverImageUrl: coverImageUrl
-      }))
+      if(pageDataCopy.coverImageBlob){
+        const coverImageUrl = await saveImageInFirebase(pageDataCopy.coverImageBlob, `/users/${uid}/quizzes/${data.quiz_id}/icon.jpg`);
+        pageDataCopy = {
+          ...pageDataCopy,
+          cover_image_url: coverImageUrl
+        }
+      } 
 
       //Add question images to firebase and save link in pageData
       for(let questionObject of pageData.questions){
         if(!questionObject.questionImageBlob) continue;
         const questionImageUrl = await saveImageInFirebase(questionObject.questionImageBlob, `/users/${uid}/quizzes/${data.question_ids[questionObject.uid]}/questions/${questionObject.id}.jpg`);
-        setPageData((prev) => ({
-          ...prev,
-          questions: prev.questions.map((question) => question.uid === questionObject.uid ? {
+        pageDataCopy = {
+          ...pageDataCopy,
+          questions: pageDataCopy.questions.map((question) => question.uid === questionObject.uid ? {
             ...question,
             question_image_url: questionImageUrl
           } : question)
-        }));
+        };
       }
 
-      console.log("done saving in firebase")
-
       //Save new firebase image urls in db
-      let {coverImageBlob: _, id: quiz_id, ...updateRequestData} = pageData;
-
+      let {id: quiz_id, coverImageBlob: _, ...updateRequestData} = pageDataCopy;
 
       updateRequestData = {
         ...updateRequestData,
@@ -337,8 +337,8 @@ const page = () => {
         })
       };
 
-      const updateResponse = await fetch(`http://127.0.0.1:8000/quizzes/quiz/${quiz_id}`, {
-        method: "POST",
+      const updateResponse = await fetch(`http://127.0.0.1:8000/quizzes/quiz/${quiz_id}/update`, {
+        method: "PATCH",
         headers: {
           "Content-Type": "Application/Json",
           "Authorization": `Bearer ${token}`
@@ -346,12 +346,10 @@ const page = () => {
         body: JSON.stringify(updateRequestData),
       });
 
-      const updateData: updateQuizResponse = await updateResponse.json();
-
-      console.log("done updating")
+      const updateData: EditQuizResponse = await updateResponse.json();
 
       if(!updateResponse.ok){
-        throw new Error(updateData.detail)
+        throw new Error("Updating Quiz Failed")
       } else {
         console.log("Successfully saved quiz")
       }

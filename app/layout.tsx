@@ -39,7 +39,6 @@ export default function RootLayout({
         <AppRouterCacheProvider>
           <Providers>{children}</Providers>
         </AppRouterCacheProvider>
-        
       </body>
     </html>
   );

@@ -2,13 +2,13 @@
 
 import { Box, Button, Container, Dialog, DialogActions, DialogContent, Grid, IconButton, Radio, Stack, TextField, Typography} from '@mui/material';
 import React, { useState } from 'react'
-import { CreateChoice, CreateQuestion } from '@/types/index'
+import { EditChoice, EditQuestion } from '@/types/index'
 import ImageCropper from "@/components/crop/imageCropper"
 import DeleteIcon from '@mui/icons-material/Delete';
 
 
 type QuestionCardProps = {
-  question: CreateQuestion,
+  question: EditQuestion,
   
   changeQuestionImageUrl: (newUrl: string) => void,
   changeQuestionImageBlob: (blob: Blob) => void,
@@ -63,7 +63,12 @@ const QuestionCard = ({ deleteQuestion, question, changeQuestionImageUrl, change
                 aspectRatio: "9 / 12",
                 objectFit: "cover"
               }}></img>
-              <Button onClick={() => setOpen(true)}>Add Image</Button>
+              <Button variant="contained" sx={{
+                mt: "5px",
+                pt: "3px",
+                pb: "3px",
+                outline: "1px solid var(--border)"
+              }} onClick={() => setOpen(true)}>Add Image</Button>
               <Dialog fullWidth={true} maxWidth={'sm'} open={open} onClose={handleDialogClose}>
                 <DialogContent>
                   <DialogActions>

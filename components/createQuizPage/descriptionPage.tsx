@@ -2,10 +2,9 @@
 
 import { CreateQuiz, Tag } from '@/types/index';
 import React, { useState } from 'react';
-import ProfileCrop from '@/components/crop/profileCrop';
 import { Box, Button, Container, Dialog, DialogActions, DialogContent, FormControlLabel, Stack, Switch, TextField, Typography } from '@mui/material';
-import TagSelect from './tagSelect';
-import ImageCropper from './crop/imageCropper';
+import TagSelect from '@/components/tagSelect';
+import ImageCropper from '@/components/crop/imageCropper';
 
 type DescriptionPageProps = {
   tagIds: CreateQuiz["tag_ids"]

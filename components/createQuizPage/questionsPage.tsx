@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import QuestionCard from '@/components/questionCard';
+import QuestionCard from '@/components/createQuizPage/questionCard';
 import { CreateQuestion } from '@/types/index'
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Stack } from '@mui/material';
 
