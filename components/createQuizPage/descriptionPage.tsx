@@ -37,8 +37,7 @@ const DescriptionPage = ({tagIds, tags, title, isPublic, coverImageUrl, descript
       height: "100%",
       display: "flex",
       justifyContent: "center",
-      marginTop: "auto",
-      marginBottom: "auto"
+      marginTop: "20px",
     }}>
         <Container sx={{
           width: "70%", 

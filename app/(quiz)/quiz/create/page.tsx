@@ -5,7 +5,7 @@ import { getAuth } from "firebase/auth"
 
 import { CreateQuiz, CreateQuizResponse, Tag, EditQuizResponse } from '@/types/index';
 import ProfileCrop from '@/components/crop/profileCrop';
-import { Box, Button, Container, Stack } from '@mui/material';
+import { Box, Button, Container, Stack, Toolbar } from '@mui/material';
 import DescriptionPage from '@/components/createQuizPage/descriptionPage';
 import { ref, getDownloadURL, uploadBytes } from "firebase/storage";
 import { storage } from '@/config/firebase.config';
@@ -365,6 +365,7 @@ const page = () => {
       backgroundColor: "var(--bg-dark)",
       minHeight: "100vh"
     }}>
+      <Toolbar></Toolbar>
       <Box sx={{
           minHeight: "100vh",
           pl: "20px", 

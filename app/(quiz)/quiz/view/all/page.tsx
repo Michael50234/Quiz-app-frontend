@@ -3,7 +3,7 @@
 import { Box, Toolbar, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import QuizCard from '@/components/quizCard';
-import QuizDisplayGrid from '@/components/quizDisplay';
+import QuizDisplayGrid from '@/components/quizDisplayGrid';
 import { QuizDisplay, QueryParameters, Tag } from '@/types'
 
 type Quiz = {

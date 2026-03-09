@@ -1,12 +1,13 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { AppBar, Box, Button, Toolbar} from '@mui/material';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { usePathname } from "next/navigation";
 
 const Navbar = () => {
-    const [page, setPage] = useState("All-Quizzes");
+    const pathName = usePathname();
     const router = useRouter();
     //Implement this
     const logoutHandler = () => {
@@ -35,7 +36,7 @@ const Navbar = () => {
                     boxShadow: "0px 4px 15px rgba(0,0,0,0.2)",
                 }}>
                 <Toolbar variant="dense">
-                    <Button onClick={() => setPage("All-Quizzes")} variant={page == "All-Quizzes" ? "contained" : "text"}sx={{
+                    <Button variant={pathName == "/quiz/view/all" ? "contained" : "text"}sx={{
                         fontWeight: 500,
                         mr: "10px",
                         p: "8px",
@@ -48,7 +49,7 @@ const Navbar = () => {
                             color: "var(--text)"
                         }
                     }}><Link href="/quiz/view/all">All Quizzes</Link></Button>
-                    <Button variant={ page == "My-Quizzes" ? "contained" : "text" } onClick={() => setPage("My-Quizzes")} sx={{
+                    <Button variant={ pathName == "/profile" ? "contained" : "text" } sx={{
                         fontWeight: 500,
                         mr: "auto",
                         p: "8px",
@@ -60,7 +61,7 @@ const Navbar = () => {
                         "&.MuiButton-text": {
                             color: "var(--text)"
                         }
-                    }}><Link href="/quiz/view/my-quizzes">My Quizzes</Link></Button>
+                    }}><Link href="/profile">My Quizzes</Link></Button>
                     <Button onClick={logoutHandler} sx={{
                         color: "var(--text)",
                         fontWeight: 500,
