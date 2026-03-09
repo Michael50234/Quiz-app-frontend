@@ -293,76 +293,106 @@ const page = ({ params }: { params: { id: string} }) => {
 
     //Update the quiz in the database and store new images into firebase
     const saveQuiz = async () => {
-        const token = localStorage.getItem("access_token");
+        try {
+            const token = localStorage.getItem("access_token");
 
-        let pageDataCopy = {
-            ...pageData
-        };
-        
-        let { coverImageBlob, cover_image_url, ...updateData } = pageDataCopy;
+            let pageDataCopy = {
+                ...pageData
+            };
+            
+            let { coverImageBlob, cover_image_url, ...updateData } = pageDataCopy;
 
-        updateData = {
-            ...updateData,
-            questions: updateData.questions.map((question) => {
-                let { questionImageBlob, question_image_url, ...cleanedQuestion } = question;
+            updateData = {
+                ...updateData,
+                questions: updateData.questions.map((question) => {
+                    let { questionImageBlob, question_image_url, ...cleanedQuestion } = question;
 
-                return cleanedQuestion
-            })
-        };
+                    return cleanedQuestion
+                })
+            };
 
-        //Create the new questions added to the quiz and get their id
-        let response = await fetch(`http://127.0.0.1:8000/quizzes/${quizId}`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`
-            },
-            body: JSON.stringify(updateData)
-        });
+            //Create the new questions added to the quiz and get their id
+            let response = await fetch(`http://127.0.0.1:8000/quizzes/${quizId}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+                body: JSON.stringify(updateData)
+            });
 
-        let data: EditQuizResponse = await response.json();
+            let data: EditQuizResponse = await response.json();
 
-        if(!response.ok){
-            throw new Error("Updating Quiz Failed")
-        }
-
-        //Add returned question ids to pageDataCopy
-        pageDataCopy = {
-            ...pageDataCopy,
-            questions: pageDataCopy.questions.map((question) => {
-                return {
-                    ...question,
-                    id: data["question_ids"][question.uid]
-                }
-            })
-        }
-
-
-        const auth = getAuth();
-        const uid = auth.currentUser?.uid;
-
-        // Save images in firebase
-
-        // Save cover images
-        if(pageDataCopy.coverImageBlob) {
-            pageDataCopy.cover_image_url = await saveImageInFirebase(pageDataCopy.coverImageBlob, `users/${uid}/quizzes/${quizId}/icon.jpg`)
-        }
-        
-        // Save question images
-        pageDataCopy.questions = await Promise.all(pageDataCopy.questions.map(async (question) => {
-            if(question.questionImageBlob) {
-                const new_image_url = await saveImageInFirebase(question.questionImageBlob, `/users/${uid}/quizzes/${uid}/questions/${data["question_ids"][question.uid]}.jpg`)
-
-                return {
-                    ...question,
-                    question_image_url: new_image_url
-                }
+            if(!response.ok){
+                throw new Error("Updating Quiz Failed")
             }
 
-            return question
-        }))
+            //Add returned question ids to pageDataCopy
+            pageDataCopy = {
+                ...pageDataCopy,
+                questions: pageDataCopy.questions.map((question) => {
+                    return {
+                        ...question,
+                        id: data["question_ids"][question.uid]
+                    }
+                })
+            }
 
-        // Save new firebase image urls in firebase
+
+            const auth = getAuth();
+            const uid = auth.currentUser?.uid;
+
+            // Save images in firebase
+
+            // Save cover images
+            if(pageDataCopy.coverImageBlob) {
+                pageDataCopy.cover_image_url = await saveImageInFirebase(pageDataCopy.coverImageBlob, `users/${uid}/quizzes/${quizId}/icon.jpg`)
+            }
+            
+            // Save question images
+            pageDataCopy.questions = await Promise.all(pageDataCopy.questions.map(async (question) => {
+                if(question.questionImageBlob) {
+                    const new_image_url = await saveImageInFirebase(question.questionImageBlob, `/users/${uid}/quizzes/${quizId}/questions/${data["question_ids"][question.uid]}.jpg`)
+
+                    return {
+                        ...question,
+                        question_image_url: new_image_url
+                    }
+                }
+
+                return question
+            }));
+            
+            ({ coverImageBlob, ...updateData } =  pageDataCopy);
+            
+            updateData = {
+                ...updateData,
+                questions: updateData.questions.map((question) => {
+                    const { questionImageBlob, ...cleanedQuestion } = question
+                    return cleanedQuestion
+                })
+            }
+
+            // Save new firebase image urls in firebase
+            let updateResponse = await fetch(`http://127.0.0.1:8000/quizzes/${quizId}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+                body: JSON.stringify(updateData)
+            })
+
+            data = await updateResponse.json()
+
+            if(!response.ok) {
+                throw new Error("Failed to save quiz")
+            }
+
+            setPageData(pageDataCopy)
+        } catch(error) {
+            console.warn(error)
+        }
     }
         
     return (
