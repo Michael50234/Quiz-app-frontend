@@ -1,6 +1,6 @@
 'use client';
 
-import { Box, Button, Container, Stack } from '@mui/material'
+import { Box, Button, Container, Stack, Toolbar, Typography } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 
 import { EditQuiz, EditQuizResponse, Tag } from '@/types';
@@ -282,21 +282,13 @@ const page = ({ params }: { params: { id: string} }) => {
             questions: prev.questions.filter((question) => question.uid != uid)
         }
     })
-    
-
-    if(loading) {
-        return (
-            <h1>Loading ...</h1>
-        )
-    }
-    if(!pageData){
-        return <h1>Quiz not found</h1>
-    }
 
     //Update the quiz in the database and store new images into firebase
     const saveQuiz = async () => {
         try {
             const token = localStorage.getItem("access_token");
+            
+            if(!pageData) return;
 
             let pageDataCopy = {
                 ...pageData
@@ -397,13 +389,16 @@ const page = ({ params }: { params: { id: string} }) => {
             console.warn(error)
         }
     }
-        
+
     return (
         <Box sx={{
             backgroundColor: "var(--bg-dark)",
             minHeight: "100vh"
-            }}>
-            <Box sx={{
+        }}>
+            <Toolbar></Toolbar>
+            { loading ? (
+                <Typography>Loading ...</Typography>
+            ) : pageData ? (<Box sx={{
                 minHeight: "100vh",
                 pl: "20px", 
                 pr: "20px",
@@ -482,7 +477,9 @@ const page = ({ params }: { params: { id: string} }) => {
                     changeCorrectChoice={changeCorrectChoice}>
                 </QuestionsPage>
                 }
-            </Box>
+            </Box>) : (
+                <Typography>Quiz not found</Typography>
+            )}
         </Box>
     )
 }
