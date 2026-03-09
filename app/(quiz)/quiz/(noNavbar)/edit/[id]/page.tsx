@@ -9,12 +9,14 @@ import QuestionsPage from '@/components/editQuizPage/questionsPage';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { storage } from '@/config/firebase.config';
 import { getAuth } from 'firebase/auth';
+import { useRouter } from 'next/navigation'
 
 const page = ({ params }: { params: { id: string} }) => {
     const [page, setPage] = useState<string>("description")
     const [pageData, setPageData] = useState<EditQuiz | null>(null)
     const [loading, setLoading] = useState<boolean>(true)
     const [tags, setTags] = useState<Tag[]>([]);
+    const router = useRouter()
 
     //Get quizId from route parameters
     const quizId = Number(params.id)
@@ -374,7 +376,7 @@ const page = ({ params }: { params: { id: string} }) => {
             }
 
             // Save new firebase image urls in firebase
-            let updateResponse = await fetch(`http://127.0.0.1:8000/quizzes/${quizId}`, {
+            response = await fetch(`http://127.0.0.1:8000/quizzes/${quizId}`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -383,13 +385,14 @@ const page = ({ params }: { params: { id: string} }) => {
                 body: JSON.stringify(updateData)
             })
 
-            data = await updateResponse.json()
+            data = await response.json()
 
             if(!response.ok) {
                 throw new Error("Failed to save quiz")
             }
 
             setPageData(pageDataCopy)
+            router.push('/quiz/')
         } catch(error) {
             console.warn(error)
         }

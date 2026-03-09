@@ -15,7 +15,7 @@ type Quiz = {
     tags: { name: string }[]
 }
 
-const QuizDisplay = ({quizzes} : { quizzes: Quiz[]}) => {
+const QuizDisplayGrid = ({quizzes} : { quizzes: Quiz[]}) => {
     const [quizList, setQuizList] = useState<Quiz[]>([]);
 
     useEffect(() => {
@@ -42,4 +42,4 @@ const QuizDisplay = ({quizzes} : { quizzes: Quiz[]}) => {
     )
 }
 
-export default QuizDisplay;
+export default QuizDisplayGrid;

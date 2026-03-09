@@ -1,7 +1,10 @@
+'use client';
+
 import { Box, Toolbar, Typography } from '@mui/material';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import QuizCard from '@/components/quizCard';
-import QuizDisplay from '@/components/quizDisplay';
+import QuizDisplayGrid from '@/components/quizDisplay';
+import { QuizDisplay, QueryParameters, Tag } from '@/types'
 
 type Quiz = {
   id: number
@@ -90,6 +93,62 @@ const QuizList: Quiz[] = [
 ]
 
 const pages = () => {
+  const [loading, setLoading] = useState<boolean>(true);
+  const [quizzes, setQuizzes] = useState<QuizDisplay[]>([]);
+  const [queryParameters, setQueryParamerers] = useState<QueryParameters>({});
+  const [tags, setTags] = useState<Array<Tag>>()
+
+  useEffect(() => {
+    fetchQuizzes();
+    fetchTags();
+    setLoading(false);
+  }, [])
+
+  const fetchQuizzes = async () => {
+    try {
+      const access_token = localStorage.getItem("access_token");
+
+      const response = await fetch("http://127.0.0.1:8000/quizzes/public-quizzes", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${access_token}`
+        }
+      });
+      const data = await response.json();
+
+      if(!response.ok){
+        throw new Error("Failed to fetch quizzes");
+      }
+      setQuizzes(data);
+    } catch(error) {
+      console.warn(error);
+    }
+  };
+
+  const fetchTags = async () => {
+    try {
+      const access_token = localStorage.getItem("access_token");
+
+      const response = await fetch("http://127.0.0.1:8000/quizzes/tags", {
+        method: "GET", 
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${access_token}`
+        }
+      });
+      const data = await response.json();
+
+      if(!response.ok) {
+        throw new Error("Failed to fetch quizzes");
+      }
+
+      setTags(data);
+    } catch(error) {
+      console.warn(error);
+    } 
+  }
+
   return (
     <Box sx={{
       mt: "10px",
@@ -101,7 +160,7 @@ const pages = () => {
     }}>
       <Toolbar variant="dense"></Toolbar>
       
-      <QuizDisplay quizzes={QuizList}></QuizDisplay>
+      <QuizDisplayGrid quizzes={quizzes}></QuizDisplayGrid>
     </Box>
   )
 }
