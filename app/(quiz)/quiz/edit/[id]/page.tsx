@@ -9,9 +9,9 @@ import QuestionsPage from '@/components/editQuizPage/questionsPage';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { storage } from '@/config/firebase.config';
 import { getAuth } from 'firebase/auth';
-import { useRouter } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 
-const page = ({ params }: { params: { id: string} }) => {
+const page = () => {
     const [page, setPage] = useState<string>("description")
     const [pageData, setPageData] = useState<EditQuiz | null>(null)
     const [loading, setLoading] = useState<boolean>(true)
@@ -19,6 +19,7 @@ const page = ({ params }: { params: { id: string} }) => {
     const router = useRouter()
 
     //Get quizId from route parameters
+    const params = useParams()
     const quizId = Number(params.id)
 
     //Fetch quiz data
@@ -39,8 +40,17 @@ const page = ({ params }: { params: { id: string} }) => {
                 throw new Error("Fetching Quiz Data Failed");
             }
 
-            setPageData(data);
+            if(!data.questions) {
+                data.questions = [];
+            }
 
+            if(!data.tag_ids) {
+                data.tag_ids = [];
+            }
+            console.log(data)
+
+            setPageData(data);
+            
         } catch(error) {
             console.warn(error);
         } finally {
@@ -50,7 +60,7 @@ const page = ({ params }: { params: { id: string} }) => {
 
     useEffect(() => {
         fetchQuiz();
-    })
+    }, [])
     
     //Fetch all available tags from db
     useEffect(() => {

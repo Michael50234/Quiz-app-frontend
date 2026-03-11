@@ -1,3 +1,4 @@
+// Resource Types
 export type User = {
     id: number
     nickname: string,
@@ -40,8 +41,7 @@ export type Submission = {
     number_of_questions: number
 };
 
-// Editing Types
-
+// Edit Quiz Types
 export type EditChoice = Pick<Choice, 'choice' | 'is_answer'> & {
     id?: string,
     uid: string
@@ -62,8 +62,7 @@ export type EditQuiz = Pick<Quiz, "title" | "is_public" | "cover_image_url" | "d
     coverImageBlob?: Blob
 };
 
-// Creating Types
-
+// Create Quiz Types
 export type CreateChoice = Pick<Choice, "choice" | "is_answer"> & {
     uid: string
 };
@@ -88,18 +87,7 @@ export type CreateSubmission = Pick<Submission, "score" | "number_of_questions">
 };
 
 // Check Types
-
 export type CheckChoice = Pick<Choice, "id" | "choice">;
-
-// API Response Types
-
-export type CreateQuizResponse = {
-    quiz_id: number,
-    question_ids: Record<string, number>,
-};
-
-export type EditQuizResponse = CreateQuizResponse;
-
 
 // Display Types
 export type QuizDisplay = Pick<Quiz, "id" | "title" | "cover_image_url" | "description"> & {
@@ -120,12 +108,30 @@ export type QuizPlay = Pick<Quiz, "id" | "title"> & {
     tags: {name: string}[]
 };
 
-// Submission Return Format (return format for get all submissions route)
+// API Response Types
 
-export type SubmissionReturn = Pick<Submission, "submission_time" | "score" | "number_of_questions"> & {
+export type CreateQuizResponse = {
+    quiz_id: number,
+    question_ids: Record<string, number>,
+};
+
+export type EditQuizResponse = CreateQuizResponse;
+
+export type QuizDetailViewResponse = Pick<Quiz, "id" | "title" | "owner" | "tags" | "cover_image_url" | "description"> & {
+    tags: { name: string },
+    questions: QuestionDetailViewResponse[]
+}
+
+export type QuestionDetailViewResponse = Pick<Question, "id" | "question" | "question_image_url"> & {
+    choices: Pick<Choice, "choice" | "id">
+}
+
+// Get Submissions Response Format (return format for get all submissions route)
+export type SubmissionResponse = Pick<Submission, "submission_time" | "score" | "number_of_questions"> & {
     quiz_title: string,
     user: Pick<User, "id" | "nickname">
 }
+
 
 // Query parameters object for display pages filtering
 export type QueryParameters = {

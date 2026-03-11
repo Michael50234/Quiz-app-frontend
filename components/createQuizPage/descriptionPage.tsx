@@ -110,7 +110,7 @@ const DescriptionPage = ({tagIds, tags, title, isPublic, coverImageUrl, descript
                 margin: 0,
                 color: "var(--primary-dark)"
               }}>Tags</Typography>
-              <TagSelect tags={tags} tagIds={tagIds} changeTagIds={changeTagIds}/>
+              <TagSelect tags={tags ?? []} tagIds={tagIds ?? []} changeTagIds={changeTagIds}/>
             </Box>
             <Box sx={{flex: 1}}>
               <Typography fontWeight={550} sx={{
