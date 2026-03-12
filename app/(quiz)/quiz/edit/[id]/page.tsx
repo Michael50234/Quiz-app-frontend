@@ -3,7 +3,7 @@
 import { Box, Button, Container, Stack, Toolbar, Typography } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 
-import { EditQuiz, EditQuizResponse, Tag } from '@/types';
+import { EditQuiz, EditQuizResponse, Tag, ErrorResponse, QuizDetailViewResponse, SnackbarState } from '@/types';
 import DescriptionPage from '@/components/editQuizPage/descriptionPage';
 import QuestionsPage from '@/components/editQuizPage/questionsPage';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
@@ -17,6 +17,11 @@ const page = () => {
     const [loading, setLoading] = useState<boolean>(true)
     const [tags, setTags] = useState<Tag[]>([]);
     const router = useRouter()
+    const [errorSnackbar, setErrorSnackbar] = useState<SnackbarState>({
+        open: false,
+        message: "",
+        retry: null
+    })
 
     //Get quizId from route parameters
     const params = useParams()
@@ -27,17 +32,39 @@ const page = () => {
         try {
             const access_token = localStorage.getItem("access_token");
 
-            const response = await fetch(`http://127.0.0.1:8000/quizzes/quiz/${quizId}`, {
+            const response = await fetch(`http://127.0.0.1:8000/quizzes/quiz/${quizId}/play`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${access_token}`
                 },
             });
-            const data: EditQuiz = await response.json();
 
             if(!response.ok){
+                const error: ErrorResponse = await response.json();
                 throw new Error("Fetching Quiz Data Failed");
+            }
+
+            const data: QuizDetailViewResponse = await response.json();
+            
+            let newPageData: EditQuiz = {
+                id: data.id,
+                title: data.title,
+                cover_image_url: data.cover_image_url,
+                description: data.description,
+                questions: data.questions.map((question) => {
+                    return {
+                        uid: crypto.randomUUID(),
+                        id: question.id,
+                        question: question.question,
+                        question_image_url: question.question_image_url,
+                        choices: question.choices.map((choice) => {
+                            id: choice.id,
+                            uid: crypto.randomUUID(),
+                            
+                        })
+                    }
+                })
             }
 
             if(!data.questions) {
