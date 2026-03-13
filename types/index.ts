@@ -43,7 +43,7 @@ export type Submission = {
 
 // Edit Quiz Types
 export type EditChoice = Pick<Choice, 'choice' | 'is_answer'> & {
-    id?: string,
+    id?: number,
     uid: string
 }
 
@@ -108,7 +108,6 @@ export type PlayQuiz = Pick<Quiz, "id" | "title"> & {
 };
 
 // API Response Types
-
 export type ErrorResponse = {
     detail: string
 }
@@ -121,30 +120,30 @@ export type CreateQuizResponse = {
 export type EditQuizResponse = CreateQuizResponse;
 
 //Choices in this quiz have the answer
-export type QuizDetailViewResponse = Pick<Quiz, "id" | "title" | "owner" | "tags" | "cover_image_url" | "description"> & {
+export type QuizDetailViewResponse = Pick<Quiz, "id" | "title" | "owner" | "tags" | "cover_image_url" | "description" | "is_public"> & {
     tags: { name: string }[],
     questions: QuestionDetailViewResponse[]
 }
 
 export type QuestionDetailViewResponse = Pick<Question, "id" | "question" | "question_image_url"> & {
-    choices: Pick<Choice, "choice" | "id">[]
+    choices: Pick<Choice, "choice" | "id" | "is_answer" >[]
 }
 
 //Choices in this quiz don't have the answer
-export type QuizPlayViewResponse = Pick<Quiz, "id" | "title" | "owner" | "tags" | "cover_image_url" | "description"> & {
+export type QuizPlayViewResponse = Pick<Quiz, "id" | "title" | "owner" | "tags" | "cover_image_url" | "description" | "is_public"> & {
     tags: { name: string }[],
     questions: QuestionPlayViewResponse
 }
 
 export type QuestionPlayViewResponse = Pick<Quiz, "id" | "title" | "owner" | "tags" | "cover_image_url" | "description"> & {
-    choices: Pick<Choice, "choice" | "id" | "is_answer" >[]
+    choices: Pick<Choice, "choice" | "id">[]
 }
+
 // Get Submissions Response Format (return format for get all submissions route)
 export type SubmissionResponse = Pick<Submission, "submission_time" | "score" | "number_of_questions"> & {
     quiz_title: string,
     user: Pick<User, "id" | "nickname">
 }
-
 
 // Query parameters object for display pages filtering
 export type QueryParameters = {

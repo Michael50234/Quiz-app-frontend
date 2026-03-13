@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { getAuth } from "firebase/auth"
 
-import { CreateQuiz, CreateQuizResponse, Tag, EditQuizResponse } from '@/types/index';
+import { CreateQuiz, CreateQuizResponse, Tag, EditQuizResponse, ErrorResponse } from '@/types/index';
 import ProfileCrop from '@/components/crop/profileCrop';
 import { Box, Button, Container, Stack, Toolbar } from '@mui/material';
 import DescriptionPage from '@/components/createQuizPage/descriptionPage';
@@ -50,23 +50,41 @@ const page = () => {
 
   const [tags, setTags] = useState<Tag[]>([]);
 
-  //Fetch all available tags from db
   useEffect(() => {
-    const token = localStorage.getItem("access_token");
+    const loadData = async () => {
+      await fetchTags();
+    }
+    try {
+      loadData();
+    } catch(error) {
+      console.warn(error);
+    }
 
-    fetch("http://127.0.0.1:8000/quizzes/tags", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`,
-      },
-    })
-    .then((res) => res.json())
-    .then(data => {
-      if(data.tags){
-        setTags(data.tags)
-    }});
+    
   }, []);
+
+  //Fetch all available tags from db
+  const fetchTags = async () => {
+      const token = localStorage.getItem("access_token");
+
+      const response = await fetch("http://127.0.0.1:8000/quizzes/tags", {
+          method: "GET",
+          headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${token}`,
+          },
+      });
+
+      if(!response.ok) {
+          const error: ErrorResponse = await response.json();
+          throw new Error("Failed to fetch tags")
+      }
+
+      const data: { tags: Tag[] } = await response.json()
+      
+      setTags(data.tags);
+      return data.tags
+  }
 
   const saveImageInFirebase = async (croppedImageBlob: Blob, save_path: string): Promise<(string)> => {
     try{    

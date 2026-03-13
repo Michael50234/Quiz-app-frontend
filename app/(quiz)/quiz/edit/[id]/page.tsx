@@ -28,84 +28,100 @@ const page = () => {
     const quizId = Number(params.id)
 
     //Fetch quiz data
-    const fetchQuiz = async () => {
-        try {
-            const access_token = localStorage.getItem("access_token");
+    const fetchQuiz = async (tags: Tag[]) => {
+        const access_token = localStorage.getItem("access_token");
 
-            const response = await fetch(`http://127.0.0.1:8000/quizzes/quiz/${quizId}/play`, {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${access_token}`
-                },
-            });
+        const response = await fetch(`http://127.0.0.1:8000/quizzes/quiz/${quizId}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${access_token}`
+            },
+        });
 
-            if(!response.ok){
-                const error: ErrorResponse = await response.json();
-                throw new Error("Fetching Quiz Data Failed");
-            }
+        if(!response.ok){
+            const error: ErrorResponse = await response.json();
+            throw new Error("Fetching Quiz Data Failed");
+        }
 
-            const data: QuizDetailViewResponse = await response.json();
-            
-            let newPageData: EditQuiz = {
-                id: data.id,
-                title: data.title,
-                cover_image_url: data.cover_image_url,
-                description: data.description,
-                questions: data.questions.map((question) => {
-                    return {
-                        uid: crypto.randomUUID(),
-                        id: question.id,
-                        question: question.question,
-                        question_image_url: question.question_image_url,
-                        choices: question.choices.map((choice) => {
+        const data: QuizDetailViewResponse = await response.json();
+        
+        let newPageData: EditQuiz = {
+            id: data.id,
+            title: data.title,
+            cover_image_url: data.cover_image_url,
+            is_public: data.is_public,
+            description: data.description,
+            tag_ids: data.tags?.map((quizTag) => {
+                const selectedTag = tags.find((tag) => {
+                    return tag.name === quizTag.name;
+                })
+                
+                if(!selectedTag) {
+                    throw new Error("Tag id from quiz is not valid")
+                }
+
+                return selectedTag.id
+            }) ?? [],
+            questions: data.questions?.map((question) => {
+                return {
+                    uid: crypto.randomUUID(),
+                    id: question.id,
+                    question: question.question,
+                    question_image_url: question.question_image_url,
+                    choices: question.choices.map((choice) => {
+                        return {
                             id: choice.id,
                             uid: crypto.randomUUID(),
-                            
-                        })
-                    }
-                })
-            }
+                            choice: choice.choice,
+                            is_answer: choice.is_answer
+                        }
+                    })
+                }
+            }) ?? []
+        }
 
-            if(!data.questions) {
-                data.questions = [];
-            }
+        setPageData(newPageData);
+    }
 
-            if(!data.tag_ids) {
-                data.tag_ids = [];
-            }
-            console.log(data)
+    const fetchTags = async () => {
+        const token = localStorage.getItem("access_token");
 
-            setPageData(data);
-            
+        const response = await fetch("http://127.0.0.1:8000/quizzes/tags", {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
+            },
+        });
+
+        if(!response.ok) {
+            const error: ErrorResponse = await response.json();
+            throw new Error("Failed to fetch tags")
+        }
+
+        const data: { tags: Tag[] } = await response.json()
+        
+        setTags(data.tags);
+        return data.tags
+    }
+
+    useEffect(() => {
+        const loadData = async () => {
+            const tags = await fetchTags()
+            await fetchQuiz(tags)
+        }
+
+        try {
+            loadData();
         } catch(error) {
+            //TODO: create an error.tsx page and let this propogate
             console.warn(error);
         } finally {
             setLoading(false);
         }
-    }
-
-    useEffect(() => {
-        fetchQuiz();
     }, [])
     
-    //Fetch all available tags from db
-    useEffect(() => {
-        const token = localStorage.getItem("access_token");
-
-        fetch("http://127.0.0.1:8000/quizzes/tags", {
-            method: "GET",
-            headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`,
-            },
-        })
-        .then((res) => res.json())
-        .then(data => {
-            if(data.tags){
-            setTags(data.tags)
-        }});
-    }, []);
 
     const saveImageInFirebase = async (croppedImageBlob: Blob, save_path: string): Promise<(string)> => {
         try{    
