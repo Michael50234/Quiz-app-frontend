@@ -79,7 +79,7 @@ const DescriptionPage = ({tagIds, tags, title, isPublic, coverImageUrl, descript
                 slotProps={{
                   input: {
                     inputProps: {
-                      maxLength: 20
+                      maxLength: 30
                     }
                   }
                 }}

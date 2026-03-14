@@ -1,6 +1,6 @@
 'use client';
 
-import { Box, Button, Container, Stack, Toolbar, Typography } from '@mui/material'
+import { Box, Button, Container, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Stack, Toolbar, Typography } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 
 import { EditQuiz, EditQuizResponse, Tag, ErrorResponse, QuizDetailViewResponse, SnackbarState } from '@/types';
@@ -10,6 +10,7 @@ import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { storage } from '@/config/firebase.config';
 import { getAuth } from 'firebase/auth';
 import { useParams, useRouter } from 'next/navigation'
+import LoadingSpinner from '@/components/loadingSpinner';
 
 const page = () => {
     const [page, setPage] = useState<string>("description")
@@ -17,11 +18,7 @@ const page = () => {
     const [loading, setLoading] = useState<boolean>(true)
     const [tags, setTags] = useState<Tag[]>([]);
     const router = useRouter()
-    const [errorSnackbar, setErrorSnackbar] = useState<SnackbarState>({
-        open: false,
-        message: "",
-        retry: null
-    })
+    const [saveDialogOpen, setSaveDialogOpen] = useState<boolean>(false)
 
     //Get quizId from route parameters
     const params = useParams()
@@ -108,18 +105,17 @@ const page = () => {
 
     useEffect(() => {
         const loadData = async () => {
-            const tags = await fetchTags()
-            await fetchQuiz(tags)
+            try {
+                const tags = await fetchTags()
+                await fetchQuiz(tags)
+            } catch(error) {
+                //TODO: create an error.tsx page and let this propogate
+                console.warn(error);
+            } finally {
+                setLoading(false);
+            }
         }
-
-        try {
-            loadData();
-        } catch(error) {
-            //TODO: create an error.tsx page and let this propogate
-            console.warn(error);
-        } finally {
-            setLoading(false);
-        }
+        loadData();
     }, [])
     
 
@@ -450,7 +446,7 @@ const page = () => {
         }}>
             <Toolbar></Toolbar>
             { loading ? (
-                <Typography>Loading ...</Typography>
+                <LoadingSpinner />
             ) : pageData ? (<Box sx={{
                 minHeight: "100vh",
                 pl: "20px", 
@@ -533,6 +529,32 @@ const page = () => {
             </Box>) : (
                 <Typography>Quiz not found</Typography>
             )}
+            <Box sx={{
+                    position: "fixed",
+                    bottom: "0px",
+                    left: "0px",
+                    right: "0px",
+                    height: "60px",
+                    backgroundColor: "var(--bg)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: "10px"
+                  }}>
+                <Button variant="contained" disabled={page !== "questions"}onClick={addNewQuestion}>Add New Question</Button>
+                <Button variant="contained" onClick={() => setSaveDialogOpen(true)}>Save</Button>
+                <Dialog open={saveDialogOpen} onClose={() => setSaveDialogOpen(false)}>
+                    <DialogTitle>Confirm Save</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText>
+                            Are you sure you want to save your changes? This action cannot be undone.
+                        </DialogContentText>
+                        <DialogActions>
+                            <Button onClick={saveQuiz}>Save</Button>
+                        </DialogActions>
+                    </DialogContent>
+                </Dialog>
+            </Box>
         </Box>
     )
 }

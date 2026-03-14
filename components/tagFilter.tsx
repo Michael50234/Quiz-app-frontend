@@ -1,9 +1,15 @@
 import React, { useState } from 'react'
 import QuizCard from '@/components/quizCard';
+import { Dispatch, SetStateAction } from "react"
+import { Tag } from '@/types'
 
-const TagFilter = () => {
-    const [tagList, settagList] = useState([]);
-    const [allTags, setAllTags] = useState([])
+type TagFilterProps = {
+    tags: Tag[],
+    selectedTags: {name: string}[],
+    setSelectedTags: Dispatch<SetStateAction<{ name: string }[]>>
+}
+
+const TagFilter = ({ tags, selectedTags, setSelectedTags }: TagFilterProps) => {
 
     return (
         <div>

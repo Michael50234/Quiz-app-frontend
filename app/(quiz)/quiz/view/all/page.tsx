@@ -7,6 +7,7 @@ import QuizDisplayGrid from '@/components/quizDisplayGrid';
 import { DisplayQuiz, ErrorResponse, QueryParameters, Tag } from '@/types'
 import TagFilter from '@/components/tagFilter';
 import SearchBar from '@/components/searchBar';
+import LoadingSpinner from '@/components/loadingSpinner';
 
 type Quiz = {
   id: number
@@ -21,22 +22,23 @@ type Quiz = {
 const pages = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [quizzes, setQuizzes] = useState<DisplayQuiz[]>([]);
-  const [queryParameters, setQueryParamerers] = useState<QueryParameters>({});
-  const [tags, setTags] = useState<Array<Tag>>()
+  const [tags, setTags] = useState<Array<Tag>>([]);
+  const [searchBarText, setSearchBarText] = useState<string>("");
+  const [selectedTags, setSelectedTags] = useState<{name: string}>([])
 
   useEffect(() => {
     const loadData = async () => {
-      await fetchQuizzes();
-      await fetchTags();
+      try {
+        await fetchQuizzes();
+        await fetchTags();
+      } catch(error) {
+        throw new Error(error instanceof Error ? error.message : "An error has occurred");
+      } finally {
+        setLoading(false);
+      }
     }
 
-    try {
-      loadData();
-    } catch(error) {
-      throw new Error(error instanceof Error ? error.message : "An error has occured");
-    } finally {
-      setLoading(false);
-    }
+    loadData();
   }, []);
 
   const fetchQuizzes = async () => {
@@ -115,14 +117,13 @@ const pages = () => {
       minHeight: "100vh",
       width: "100vw",
       backgroundColor: "var(--bg-dark)",
-    }}>{loading ? (<h1 style={{margin: "50px"}}>
-        ...Loading
-      </h1>) 
+    }}>{loading ? (
+        <LoadingSpinner />) 
     : (<>
         <Toolbar variant="dense"></Toolbar>
         <Stack direction="row">
-          <SearchBar></SearchBar>
-          <TagFilter></TagFilter>
+          <SearchBar searchBarText={searchBarText} setSearchBarText={setSearchBarText}></SearchBar>
+          <TagFilter tags={tags} selectedTags={selectedTags} setSelectedTags={setSelectedTags}></TagFilter>
         </Stack>
         <QuizDisplayGrid deleteQuizHandler={deleteQuizHandler} quizzes={quizzes}></QuizDisplayGrid>
       </>)} 

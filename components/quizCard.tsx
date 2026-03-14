@@ -1,7 +1,7 @@
 'use client';
 
-import { Box, Button, Card, CardContent, IconButton, Typography } from '@mui/material';
-import React from 'react';
+import { Box, Button, Card, CardContent, CircularProgress, IconButton, Typography } from '@mui/material';
+import React, { useState } from 'react';
 import { DisplayQuiz } from '@/types'
 import { useRouter } from 'next/navigation';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -15,6 +15,11 @@ type QuizCard = {
 const QuizCard = ({quiz, id, deleteQuizHandler}: QuizCard) => {
   const router = useRouter();
   const userId = JSON.parse(localStorage.getItem("user") as string).id
+  const [deleteLoading, setSaveLoading] = useState<boolean>(false)
+
+  const editQuizHandler = () => {
+    router.push(`/quiz/edit/${id}`)
+  }
 
   return ( 
     <Box>
@@ -29,14 +34,15 @@ const QuizCard = ({quiz, id, deleteQuizHandler}: QuizCard) => {
             height: "100%"
         }}>
           <Box sx={{ minHeight: "100px", display: "flex", flexDirection: "column"}}>
-            <IconButton onClick={() => deleteQuizHandler(id)} sx={{ml: "auto"}} color="error"><DeleteIcon /></IconButton>
+            <IconButton onClick={() => deleteQuizHandler(id)} sx={{ml: "auto", mt: "5px", mb: "5px", height: "10px"}} color="error">{ deleteLoading ? <CircularProgress /> : <DeleteIcon />}</IconButton>
             <Typography variant="h5" sx={{
+              mb: "5px",
               fontWeight: 600,
             }}>
               {quiz.title}
             </Typography>
           </Box>
-          <Box component="img" src='/Mambo.png' sx={{
+          <Box component="img" src={quiz.cover_image_url} sx={{
             display: "block",
             aspectRatio: 9/12,
             width: "100%",
@@ -48,7 +54,10 @@ const QuizCard = ({quiz, id, deleteQuizHandler}: QuizCard) => {
             gap: 0.6,
             justifyContent: "center",
           }}>
-            <Button color='secondary' variant="contained">Edit</Button>
+            <Button color='secondary' variant="contained" onClick={(e) => {
+              editQuizHandler();
+            }
+            }>Edit</Button>
             <Button variant="contained">Play</Button>
           </Box>
         </CardContent>

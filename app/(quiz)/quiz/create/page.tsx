@@ -481,12 +481,12 @@ const page = () => {
         <Dialog open={saveDialogOpen} onClose={() => setSaveDialogOpen(false)}>
           <DialogTitle>Confirm Save</DialogTitle>
           <DialogContent>
-            <DialogContentText>
-              Are you sure you want to save your changes? This action cannot be undone.
-            </DialogContentText>
-            <DialogActions>
-              <Button onClick={saveQuiz}>Save</Button>
-            </DialogActions>
+              <DialogContentText>
+                Are you sure you want to save your changes? This action cannot be undone.
+              </DialogContentText>
+              <DialogActions>
+                <Button onClick={saveQuiz}>Save</Button>
+              </DialogActions>
           </DialogContent>
         </Dialog>
       </Box>
