@@ -9,7 +9,6 @@ import { usePathname } from "next/navigation";
 const Navbar = () => {
     const pathName = usePathname();
     const router = useRouter();
-    //Implement this
     const logoutHandler = () => {
         fetch("http://127.0.0.1:8000/accounts/logout", {
             method: "POST",
@@ -24,6 +23,7 @@ const Navbar = () => {
         
         localStorage.removeItem("refresh_token");
         localStorage.removeItem("access_token");
+        localStorage.removeItem("user")
 
         router.push("/");
     }
@@ -61,7 +61,7 @@ const Navbar = () => {
                         "&.MuiButton-text": {
                             color: "var(--text)"
                         }
-                    }}><Link href="/quiz/create">My Quizzes</Link></Button>
+                    }}><Link href="/quiz/create">Create a quiz</Link></Button>
                     <Button onClick={logoutHandler} sx={{
                         color: "var(--text)",
                         fontWeight: 500,

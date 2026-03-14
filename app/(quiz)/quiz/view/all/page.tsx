@@ -124,7 +124,7 @@ const pages = () => {
           <SearchBar></SearchBar>
           <TagFilter></TagFilter>
         </Stack>
-        <QuizDisplayGrid deleteQuizHandler={deleteQuizHandler}quizzes={quizzes}></QuizDisplayGrid>
+        <QuizDisplayGrid deleteQuizHandler={deleteQuizHandler} quizzes={quizzes}></QuizDisplayGrid>
       </>)} 
     </Box>
 }

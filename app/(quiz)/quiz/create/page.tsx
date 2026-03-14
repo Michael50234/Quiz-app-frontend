@@ -5,7 +5,7 @@ import { getAuth } from "firebase/auth"
 
 import { CreateQuiz, CreateQuizResponse, Tag, EditQuizResponse, ErrorResponse } from '@/types/index';
 import ProfileCrop from '@/components/crop/profileCrop';
-import { Box, Button, Container, Stack, Toolbar } from '@mui/material';
+import { Box, Button, Container, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Stack, Toolbar } from '@mui/material';
 import DescriptionPage from '@/components/createQuizPage/descriptionPage';
 import { ref, getDownloadURL, uploadBytes } from "firebase/storage";
 import { storage } from '@/config/firebase.config';
@@ -14,6 +14,7 @@ import { useRouter } from 'next/navigation';
 
 const page = () => {
   const router = useRouter();
+  const [saveDialogOpen, setSaveDialogOpen] = useState<boolean>(false);
   const [page, setPage] = useState<string>("description");
   const [pageData, setPageData] = useState<CreateQuiz>({
     title: "",
@@ -452,7 +453,6 @@ const page = () => {
             changeDescription={changeDescription}>
           </DescriptionPage> : 
           <QuestionsPage
-            saveQuiz={saveQuiz}
             deleteQuestion={deleteQuestion}
             addNewQuestion={addNewQuestion}
             questions={pageData.questions} 
@@ -463,6 +463,32 @@ const page = () => {
             changeCorrectChoice={changeCorrectChoice}>
           </QuestionsPage>
         }
+      </Box>
+      <Box sx={{
+        position: "fixed",
+        bottom: "0px",
+        left: "0px",
+        right: "0px",
+        height: "60px",
+        backgroundColor: "var(--bg)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: "10px"
+      }}>
+        <Button variant="contained" disabled={page !== "questions"}onClick={addNewQuestion}>Add New Question</Button>
+        <Button variant="contained" onClick={() => setSaveDialogOpen(true)}>Save</Button>
+        <Dialog open={saveDialogOpen} onClose={() => setSaveDialogOpen(false)}>
+          <DialogTitle>Confirm Save</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Are you sure you want to save your changes? This action cannot be undone.
+            </DialogContentText>
+            <DialogActions>
+              <Button onClick={saveQuiz}>Save</Button>
+            </DialogActions>
+          </DialogContent>
+        </Dialog>
       </Box>
     </Box>
   )
