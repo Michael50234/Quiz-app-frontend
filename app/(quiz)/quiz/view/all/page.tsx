@@ -4,7 +4,7 @@ import { Box, Toolbar, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import QuizCard from '@/components/quizCard';
 import QuizDisplayGrid from '@/components/quizDisplayGrid';
-import { QuizDisplay, QueryParameters, Tag } from '@/types'
+import { DisplayQuiz, QueryParameters, Tag } from '@/types'
 
 type Quiz = {
   id: number
@@ -94,7 +94,7 @@ const QuizList: Quiz[] = [
 
 const pages = () => {
   const [loading, setLoading] = useState<boolean>(true);
-  const [quizzes, setQuizzes] = useState<QuizDisplay[]>([]);
+  const [quizzes, setQuizzes] = useState<DisplayQuiz[]>([]);
   const [queryParameters, setQueryParamerers] = useState<QueryParameters>({});
   const [tags, setTags] = useState<Array<Tag>>()
 
@@ -105,49 +105,57 @@ const pages = () => {
   }, [])
 
   const fetchQuizzes = async () => {
-    try {
-      const access_token = localStorage.getItem("access_token");
+    const access_token = localStorage.getItem("access_token");
 
-      const response = await fetch("http://127.0.0.1:8000/quizzes/public-quizzes", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${access_token}`
-        }
-      });
-      const data = await response.json();
-
-      if(!response.ok){
-        throw new Error("Failed to fetch quizzes");
+    const response = await fetch("http://127.0.0.1:8000/quizzes/public-quizzess", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${access_token}`
       }
-      setQuizzes(data);
-    } catch(error) {
-      console.warn(error);
+    });
+
+    const data = await response.json();
+
+    if(!response.ok){
+      throw new Error("Failed to fetch quizzes");
     }
+    setQuizzes(data);
   };
 
   const fetchTags = async () => {
-    try {
-      const access_token = localStorage.getItem("access_token");
+    const access_token = localStorage.getItem("access_token");
 
-      const response = await fetch("http://127.0.0.1:8000/quizzes/tags", {
-        method: "GET", 
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${access_token}`
-        }
-      });
-      const data = await response.json();
-
-      if(!response.ok) {
-        throw new Error("Failed to fetch quizzes");
+    const response = await fetch("http://127.0.0.1:8000/quizzes/tags", {
+      method: "GET", 
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${access_token}`
       }
+    });
+    const data = await response.json();
 
-      setTags(data);
-    } catch(error) {
-      console.warn(error);
-    } 
+    if(!response.ok) {
+      throw new Error("Failed to fetch quizzes");
+    }
+
+    setTags(data);
   }
+
+  useEffect(() => {
+    const loadData = async () => {
+      await fetchQuizzes();
+      await fetchTags();
+    }
+
+    try {
+      loadData();
+    } catch(error) {
+      throw new Error(error instanceof Error ? error.message : "An error has occured");
+    } finally {
+      setLoading(false);
+    }
+  });
 
   return (
     <Box sx={{

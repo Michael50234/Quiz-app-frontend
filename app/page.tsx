@@ -9,6 +9,7 @@ import styles from "./page.module.css";
 import { Box, Button, ButtonGroup, Container, Stack, TextField, Typography } from "@mui/material";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { ErrorResponse } from "@/types";
 
 
 export default function Login() {
@@ -34,8 +35,7 @@ export default function Login() {
     
     const { firebase_token } = await response.json()
 
-    await signInWithCustomToken(auth, firebase_token)
-
+    const userCredential = await signInWithCustomToken(auth, firebase_token)
   }
 
   const handleLogin = async (username: string, password: string): Promise<void> => {
@@ -50,13 +50,15 @@ export default function Login() {
           password: password
         })
       });
-      let data = await response.json();
 
       //alert user of error
       if (!response.ok) {
-        alert(data.detail);
-        return;
+        const error: ErrorResponse = await response.json()
+        throw new Error(error.detail)
       }
+
+      let data = await response.json();
+    
       //store jwt tokens in local storage
       localStorage.setItem("access_token", data.access);
       localStorage.setItem("refresh_token", data.refresh);
@@ -71,17 +73,25 @@ export default function Login() {
         }
       });
 
-      data = await response.json();
-
       if(!response.ok){
-        throw new Error(data.detail);
+        const error: ErrorResponse = await response.json();
+        throw new Error(error.detail);
       }
 
+      data = await response.json();
+
+      // Store user db record in localStorage
       localStorage.setItem("user", data);
+
+      // Log into firebase
+      await firebaseLogin()
+
+      // TODO: Add a successful snackbar message here
 
       redirectToHome();
     }
     catch(error) {
+      // TODO: Make this set the snackbar state instead
       console.error(error);
     }
   };
@@ -99,12 +109,14 @@ export default function Login() {
         })
       });
 
-      let data = await response.json();
-
       //alert user of error
       if(!response.ok){
-        throw new Error(data.detail);
+        const error: ErrorResponse = await response.json();
+        throw new Error(error.detail);
       }
+
+      let data = await response.json();
+
       //Store jwt tokens in local storage
       localStorage.setItem("access_token", data.access);
       localStorage.setItem("refresh_token", data.refresh);
@@ -119,17 +131,25 @@ export default function Login() {
         }
       });
 
-      data = await response.json();
-
       if(!response.ok){
-        throw new Error(data.detail);
+        const error: ErrorResponse = await response.json();
+        throw new Error(error.detail);
       }
 
+      data = response.json();
+
+      // Store user db record in localStorage
       localStorage.setItem("user", data);
 
+      // Log the user into firebase
+      await firebaseLogin()
+
       redirectToHome();
+
+      // TODO: Add a successful snackbar message here
     }
     catch(error) {
+      // TODO: Make this set the snack bar state instead
       alert(error);
     }
   };

@@ -359,8 +359,8 @@ const page = () => {
             };
 
             //Create the new questions added to the quiz and get their id
-            let response = await fetch(`http://127.0.0.1:8000/quizzes/${quizId}`, {
-                method: "POST",
+            let response = await fetch(`http://127.0.0.1:8000/quizzes/quiz/${quizId}/update`, {
+                method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${token}`
@@ -395,11 +395,11 @@ const page = () => {
             if(pageDataCopy.coverImageBlob) {
                 pageDataCopy.cover_image_url = await saveImageInFirebase(pageDataCopy.coverImageBlob, `users/${uid}/quizzes/${quizId}/icon.jpg`)
             }
-            
+
             // Save question images
             pageDataCopy.questions = await Promise.all(pageDataCopy.questions.map(async (question) => {
                 if(question.questionImageBlob) {
-                    const new_image_url = await saveImageInFirebase(question.questionImageBlob, `/users/${uid}/quizzes/${quizId}/questions/${data["question_ids"][question.uid]}.jpg`)
+                    const new_image_url = await saveImageInFirebase(question.questionImageBlob, `users/${uid}/quizzes/${quizId}/questions/${data["question_ids"][question.uid]}.jpg`)
 
                     return {
                         ...question,
@@ -421,8 +421,8 @@ const page = () => {
             }
 
             // Save new firebase image urls in firebase
-            response = await fetch(`http://127.0.0.1:8000/quizzes/${quizId}`, {
-                method: "POST",
+            response = await fetch(`http://127.0.0.1:8000/quizzes/quiz/${quizId}/update`, {
+                method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${token}`
@@ -437,7 +437,7 @@ const page = () => {
             }
 
             setPageData(pageDataCopy)
-            router.push('/quiz/')
+            router.push('/quiz/view/all')
         } catch(error) {
             console.warn(error)
         }
