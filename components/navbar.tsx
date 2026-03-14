@@ -49,7 +49,7 @@ const Navbar = () => {
                             color: "var(--text)"
                         }
                     }}><Link href="/quiz/view/all">All Quizzes</Link></Button>
-                    <Button variant={ pathName == "/profile" ? "contained" : "text" } sx={{
+                    <Button variant={ pathName === "/quiz/create" ? "contained" : "text" } sx={{
                         fontWeight: 500,
                         mr: "auto",
                         p: "8px",
@@ -61,7 +61,7 @@ const Navbar = () => {
                         "&.MuiButton-text": {
                             color: "var(--text)"
                         }
-                    }}><Link href="/profile">My Quizzes</Link></Button>
+                    }}><Link href="/quiz/create">My Quizzes</Link></Button>
                     <Button onClick={logoutHandler} sx={{
                         color: "var(--text)",
                         fontWeight: 500,

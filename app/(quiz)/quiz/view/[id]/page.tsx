@@ -1,11 +1,13 @@
-import { Button } from '@mui/material'
+import LoadingSpinner from '@/components/loadingSpinner'
+import { Box, Button, Toolbar } from '@mui/material'
 import React from 'react'
 
 const pages = () => {
   return (
-    <div>
-      
-    </div>
+    <Box>
+      <Toolbar></Toolbar>
+      <LoadingSpinner></LoadingSpinner>
+    </Box>
   )
 }
 

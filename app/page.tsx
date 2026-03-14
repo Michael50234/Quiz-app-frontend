@@ -81,7 +81,7 @@ export default function Login() {
       data = await response.json();
 
       // Store user db record in localStorage
-      localStorage.setItem("user", data);
+      localStorage.setItem("user", JSON.stringify(data));
 
       // Log into firebase
       await firebaseLogin()
