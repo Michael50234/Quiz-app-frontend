@@ -102,7 +102,6 @@ const ImageCropper = ({handleDialogClose, changeImageUrl, cropShape, aspectRatio
                     mr: "auto",
                     textTransform: "none",
                     justifyContent: "flex-start"
-                
                 }}>
                     <span>Choose An Image</span>
                     <input

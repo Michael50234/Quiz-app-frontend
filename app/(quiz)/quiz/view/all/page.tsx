@@ -24,7 +24,7 @@ const pages = () => {
   const [quizzes, setQuizzes] = useState<DisplayQuiz[]>([]);
   const [tags, setTags] = useState<Array<Tag>>([]);
   const [searchBarText, setSearchBarText] = useState<string>("");
-  const [selectedTags, setSelectedTags] = useState<{name: string}>([])
+  const [selectedTagIds, setSelectedTagIds] = useState<number[]>([]);
 
   useEffect(() => {
     const loadData = async () => {
@@ -123,7 +123,7 @@ const pages = () => {
         <Toolbar variant="dense"></Toolbar>
         <Stack direction="row">
           <SearchBar searchBarText={searchBarText} setSearchBarText={setSearchBarText}></SearchBar>
-          <TagFilter tags={tags} selectedTags={selectedTags} setSelectedTags={setSelectedTags}></TagFilter>
+          <TagFilter tags={tags} selectedTagIds={selectedTagIds} setSelectedTagIds={setSelectedTagIds}></TagFilter>
         </Stack>
         <QuizDisplayGrid deleteQuizHandler={deleteQuizHandler} quizzes={quizzes}></QuizDisplayGrid>
       </>)} 

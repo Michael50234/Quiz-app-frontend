@@ -240,7 +240,7 @@ export default function Login() {
               <TextField 
                 type="password" 
                 variant="outlined" 
-                label="Password" 
+                label="Password"
                 value={password} 
                 onChange={(e) => setPassword(e.target.value)} />
             </Stack>
