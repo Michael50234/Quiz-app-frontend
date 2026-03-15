@@ -70,7 +70,6 @@ const page = () => {
       const response = await fetch("http://127.0.0.1:8000/quizzes/tags", {
           method: "GET",
           headers: {
-              "Content-Type": "application/json",
               "Authorization": `Bearer ${token}`,
           },
       });
@@ -484,6 +483,7 @@ const page = () => {
                 Are you sure you want to save your changes? This action cannot be undone.
               </DialogContentText>
               <DialogActions>
+                <Button onClick={() => setSaveDialogOpen(false)}>Cancel Action</Button>
                 <Button onClick={saveQuiz}>Save</Button>
               </DialogActions>
           </DialogContent>

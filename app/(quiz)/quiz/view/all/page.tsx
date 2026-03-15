@@ -1,12 +1,12 @@
 'use client';
 
-import { Box, Stack, Toolbar, Typography } from '@mui/material';
+import { Box, Button, FormControlLabel, Stack, Switch, Toolbar, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import QuizCard from '@/components/quizCard';
 import QuizDisplayGrid from '@/components/quizDisplayGrid';
 import { DisplayQuiz, ErrorResponse, QueryParameters, Tag } from '@/types'
 import TagFilter from '@/components/tagFilter';
-import SearchBar from '@/components/searchBar';
+import SearchField from '@/components/searchBar';
 import LoadingSpinner from '@/components/loadingSpinner';
 
 type Quiz = {
@@ -25,6 +25,8 @@ const pages = () => {
   const [tags, setTags] = useState<Array<Tag>>([]);
   const [searchBarText, setSearchBarText] = useState<string>("");
   const [selectedTagIds, setSelectedTagIds] = useState<number[]>([]);
+  // True means show all quizzes. False means show only users quizzes.
+  const [quizViewMode, setQuizViewMode] = useState<boolean>(true);
 
   useEffect(() => {
     const loadData = async () => {
@@ -47,7 +49,6 @@ const pages = () => {
     const response = await fetch("http://127.0.0.1:8000/quizzes/public-quizzes", {
       method: "GET",
       headers: {
-        "Content-Type": "application/json",
         "Authorization": `Bearer ${access_token}`
       }
     });
@@ -57,7 +58,7 @@ const pages = () => {
       throw new Error("Failed to fetch quizzes");
     }
     
-    const data: { quizzes: DisplayQuiz[] } = await response.json();
+    const data: {quizzes: DisplayQuiz[]} = await response.json();
 
     setQuizzes(data.quizzes);
     console.log(quizzes)
@@ -69,7 +70,6 @@ const pages = () => {
     const response = await fetch("http://127.0.0.1:8000/quizzes/tags", {
       method: "GET", 
       headers: {
-        "Content-Type": "application/json",
         "Authorization": `Bearer ${access_token}`
       }
     });
@@ -79,7 +79,7 @@ const pages = () => {
       throw new Error("Failed to fetch quizzes");
     }
 
-    const data: { tags: Tag[]} = await response.json();
+    const data: {tags: Tag[]} = await response.json();
 
     setTags(data.tags);
   }
@@ -110,6 +110,49 @@ const pages = () => {
     });
   }
 
+  const onSearch = async () => {
+    try {
+      setLoading(true);
+      const access_token = localStorage.getItem("access_token");
+
+      // Create query parameters using URLSearchParams
+      const searchParameters = new URLSearchParams();
+
+      // Add all selectedTagIds to query parameters
+      for(const tagId of selectedTagIds) {
+        searchParameters.append("tagId", `${tagId}`);
+      }
+
+      // Add search bar text to query parameters
+      // Only add it if it is a non-empty string
+      if(searchBarText.trim()) {
+        searchParameters.append("searchText", searchBarText);
+      }
+      
+      // Change the endpoint the request is sent to based on view mode
+      const address = quizViewMode ? "public-quizzes" : "user-quizzes";
+
+      const response = await fetch(`http://127.0.0.1:8000/quizzes/${address}?${queryParameters.toString()}`, {
+        method: "GET",
+        headers: {
+          "Authorization": `Bearer ${access_token}`
+        }
+      });
+
+      if(!response.ok) {
+        const error: ErrorResponse = await response.json();
+        throw new Error("Failed to search for quizzes");
+      }
+
+      const data: {quizzes: DisplayQuiz[]} = await response.json();
+      setQuizzes(data.quizzes);
+    } catch(error) {
+      // TODO: Show error message on snackbar here
+      console.warn(error)
+    } finally {
+      setLoading(false);
+    }
+  }
 
 
   return <Box sx={{
@@ -119,14 +162,8 @@ const pages = () => {
       minHeight: "100vh",
       width: "100vw",
       backgroundColor: "var(--bg-dark)",
-    }}>{loading ? (
-        <LoadingSpinner />) 
-    : (<>
-        <Toolbar variant="dense"></Toolbar>
-        <Box sx={{
-          height: "70px"
-        }}></Box>
-        <Stack direction="row" gap={3} sx={{
+    }}>
+      <Stack direction="row" gap={3} sx={{
           background: "rgba(255,255,255,0.15)",
           backdropFilter: "blur(8px)",
           border: "1px solid rgba(255,255,255,0.2)",
@@ -142,9 +179,26 @@ const pages = () => {
           alignItems: "center",
           padding: "10px"
         }}>
-          <SearchBar searchBarText={searchBarText} setSearchBarText={setSearchBarText}></SearchBar>
+          <FormControlLabel onChange={(e) => setQuizViewMode((prev) => !prev)} checked={Boolean(quizViewMode)} control={<Switch />} label={quizViewMode ? "All Quizzes" : "My Quizzes"} sx={{
+            width: "145px",
+            ml: "3px"
+          }}/>
+          <SearchField searchBarText={searchBarText} setSearchBarText={setSearchBarText}></SearchField>
           <TagFilter tags={tags} selectedTagIds={selectedTagIds} setSelectedTagIds={setSelectedTagIds}></TagFilter>
-        </Stack>
+          <Button onClick={onSearch}disabled={loading} variant="contained" color="primary" sx={{
+            borderRadius: "30px",
+            "&:hover": {
+              backgroundColor: "var(--primary-hover)"
+            }
+          }}>Search</Button>
+      </Stack>
+      {loading ? (
+        <LoadingSpinner />
+      ) : (<>
+        <Toolbar variant="dense"></Toolbar>
+        <Box sx={{
+          height: "70px"
+        }}></Box>
         <QuizDisplayGrid deleteQuizHandler={deleteQuizHandler} quizzes={quizzes}></QuizDisplayGrid>
       </>)} 
     </Box>

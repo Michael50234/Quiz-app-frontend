@@ -15,7 +15,7 @@ const ImageCropper = ({handleDialogClose, changeImageUrl, cropShape, aspectRatio
     const [zoom, setZoom] = useState(1);
     const [croppedAreaPixels, setCroppedAreaPixels] = useState<Record<string, number> | null>(null);
 
-    //Creates cropped image from crop detials and original image
+    // Creates cropped image from crop detials and original image
     const getCroppedImage = (imageSrc: string, cropArea: Record<string, number>): Promise<Blob> => {
         return new Promise((resolve, reject) => {
             const image = new Image();
@@ -23,19 +23,19 @@ const ImageCropper = ({handleDialogClose, changeImageUrl, cropShape, aspectRatio
 
 
             image.onload = () => {
-                //Creates a canvas
+                // Creates a canvas
                 const canvas = document.createElement("canvas");
                 canvas.width = cropArea['width'];
                 canvas.height = cropArea['height'];
                 
-                //Ctx is used to draw on the canvas
+                // Ctx is used to draw on the canvas
                 const ctx = canvas.getContext("2d");
 
                 if(!ctx){
                     return;
                 }
                 
-                //Draws the cropped image onto the canvas
+                // Draws the cropped image onto the canvas
                 ctx.drawImage(
                     image, 
                     cropArea.x,
@@ -48,7 +48,7 @@ const ImageCropper = ({handleDialogClose, changeImageUrl, cropShape, aspectRatio
                     cropArea.height
                 )
                 
-                //Takes whatever is on the canvas and turns it into an image format then a blob
+                // Takes whatever is on the canvas and turns it into an image format then a blob
                 canvas.toBlob((blob) => {
                     if(!blob) {
                         reject(new Error("Canvas is empty"))
@@ -77,7 +77,7 @@ const ImageCropper = ({handleDialogClose, changeImageUrl, cropShape, aspectRatio
         setImage(image_url);
     }
 
-    //Changes pass in the cropAreaPixels as a state from outside, also pass in the image link state as a prop
+    // Changes pass in the cropAreaPixels as a state from outside, also pass in the image link state as a prop
     const onSave = async () => {
         try{
             if(!image || !croppedAreaPixels) return;

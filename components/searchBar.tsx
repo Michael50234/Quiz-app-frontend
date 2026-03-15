@@ -9,7 +9,7 @@ type SearchBarProps = {
     setSearchBarText: Dispatch<SetStateAction<string>>
 }
 
-const SearchBar = ({ searchBarText, setSearchBarText }: SearchBarProps) => {
+const SearchField = ({ searchBarText, setSearchBarText }: SearchBarProps) => {
   return (
     <TextField placeholder="Search..." value={searchBarText} onChange={(e) => setSearchBarText(e.target.value)} variant="outlined" sx={{
         width: "300px",
@@ -31,4 +31,4 @@ const SearchBar = ({ searchBarText, setSearchBarText }: SearchBarProps) => {
   )
 }
 
-export default SearchBar;
+export default SearchField;

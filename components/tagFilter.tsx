@@ -45,7 +45,7 @@ const TagFilter = ({ tags, selectedTagIds, setSelectedTagIds }: TagFilterProps) 
         <Box>
             <Button startIcon={<ArrowDropUpIcon />} onClick={(e) => setAnchorEl(e.currentTarget)} sx={{
                 borderRadius: "30px",
-                backgroundColor: anchorEl ? "var(--bg)" : null,
+                backgroundColor: anchorEl ? "var(--secondary-hover)" : null,
                 transition: "background 0.1s linear",
                 "& .MuiButton-icon": {
                     transition: "transform 0.1s linear, background 0.1s linear",

@@ -24,6 +24,22 @@ const page = () => {
     const params = useParams()
     const quizId = Number(params.id)
 
+    useEffect(() => {
+        const loadData = async () => {
+            try {
+                const tags = await fetchTags()
+                await fetchQuiz(tags)
+            } catch(error) {
+                //TODO: create an error.tsx page and let this propogate
+                console.warn(error);
+            } finally {
+                setLoading(false);
+            }
+        }
+        loadData();
+    }, [])
+    
+
     //Fetch quiz data
     const fetchQuiz = async (tags: Tag[]) => {
         const access_token = localStorage.getItem("access_token");
@@ -31,7 +47,6 @@ const page = () => {
         const response = await fetch(`http://127.0.0.1:8000/quizzes/quiz/${quizId}`, {
             method: "GET",
             headers: {
-                "Content-Type": "application/json",
                 "Authorization": `Bearer ${access_token}`
             },
         });
@@ -87,7 +102,6 @@ const page = () => {
         const response = await fetch("http://127.0.0.1:8000/quizzes/tags", {
             method: "GET",
             headers: {
-                "Content-Type": "application/json",
                 "Authorization": `Bearer ${token}`,
             },
         });
@@ -102,22 +116,6 @@ const page = () => {
         setTags(data.tags);
         return data.tags
     }
-
-    useEffect(() => {
-        const loadData = async () => {
-            try {
-                const tags = await fetchTags()
-                await fetchQuiz(tags)
-            } catch(error) {
-                //TODO: create an error.tsx page and let this propogate
-                console.warn(error);
-            } finally {
-                setLoading(false);
-            }
-        }
-        loadData();
-    }, [])
-    
 
     const saveImageInFirebase = async (croppedImageBlob: Blob, save_path: string): Promise<(string)> => {
         try{    
