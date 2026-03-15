@@ -110,6 +110,8 @@ const pages = () => {
     });
   }
 
+
+
   return <Box sx={{
       mt: "10px",
       pl: "10px",
@@ -121,7 +123,25 @@ const pages = () => {
         <LoadingSpinner />) 
     : (<>
         <Toolbar variant="dense"></Toolbar>
-        <Stack direction="row">
+        <Box sx={{
+          height: "70px"
+        }}></Box>
+        <Stack direction="row" gap={3} sx={{
+          background: "rgba(255,255,255,0.15)",
+          backdropFilter: "blur(8px)",
+          border: "1px solid rgba(255,255,255,0.2)",
+          boxShadow: "0 8px 32px rgba(0,0,0,0.2)",
+          width: "fit-content",
+          borderRadius: "100px",
+          position: "fixed",
+          top: "60px",
+          left: "50vw",
+          transform: "translateX(-50%)",
+          zIndex: 10,
+          mt: "10px",
+          alignItems: "center",
+          padding: "10px"
+        }}>
           <SearchBar searchBarText={searchBarText} setSearchBarText={setSearchBarText}></SearchBar>
           <TagFilter tags={tags} selectedTagIds={selectedTagIds} setSelectedTagIds={setSelectedTagIds}></TagFilter>
         </Stack>

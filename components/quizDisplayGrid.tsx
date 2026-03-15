@@ -17,7 +17,7 @@ const QuizDisplayGrid = ({quizzes, deleteQuizHandler} : QuizDisplayGrid) => {
             marginLeft: "40px",
             marginRight: "40px"
         }}>
-            <Grid container spacing={1}>
+            <Grid container spacing={2}>
                 {quizzes.map((quiz) => {
                     return <Grid key={quiz.id} size={2}><QuizCard deleteQuizHandler={deleteQuizHandler} quiz={quiz} id={quiz.id}></QuizCard></Grid>
                 })}

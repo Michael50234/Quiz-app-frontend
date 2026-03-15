@@ -550,6 +550,7 @@ const page = () => {
                             Are you sure you want to save your changes? This action cannot be undone.
                         </DialogContentText>
                         <DialogActions>
+                            <Button onClick={() => setSaveDialogOpen(false)}>Cancel Action</Button>
                             <Button onClick={saveQuiz}>Save</Button>
                         </DialogActions>
                     </DialogContent>

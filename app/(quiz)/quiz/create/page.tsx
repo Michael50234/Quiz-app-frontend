@@ -4,7 +4,6 @@ import React, { useEffect, useState } from 'react';
 import { getAuth } from "firebase/auth"
 
 import { CreateQuiz, CreateQuizResponse, Tag, EditQuizResponse, ErrorResponse } from '@/types/index';
-import ProfileCrop from '@/components/crop/profileCrop';
 import { Box, Button, Container, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Stack, Toolbar } from '@mui/material';
 import DescriptionPage from '@/components/createQuizPage/descriptionPage';
 import { ref, getDownloadURL, uploadBytes } from "firebase/storage";

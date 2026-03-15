@@ -9,7 +9,7 @@ import styles from "./page.module.css";
 import { Box, Button, ButtonGroup, Container, Stack, TextField, Typography } from "@mui/material";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ErrorResponse } from "@/types";
+import { ErrorResponse, User } from "@/types";
 
 
 export default function Login() {
@@ -57,11 +57,11 @@ export default function Login() {
         throw new Error(error.detail)
       }
 
-      let data = await response.json();
+      let data1 = await response.json();
     
       //store jwt tokens in local storage
-      localStorage.setItem("access_token", data.access);
-      localStorage.setItem("refresh_token", data.refresh);
+      localStorage.setItem("access_token", data1.access);
+      localStorage.setItem("refresh_token", data1.refresh);
 
       const token = localStorage.getItem("access_token")
 
@@ -78,10 +78,10 @@ export default function Login() {
         throw new Error(error.detail);
       }
 
-      data = await response.json();
+      const data2: User = await response.json();
 
       // Store user db record in localStorage
-      localStorage.setItem("user", JSON.stringify(data));
+      localStorage.setItem("user", JSON.stringify(data2));
 
       // Log into firebase
       await firebaseLogin()
@@ -115,11 +115,11 @@ export default function Login() {
         throw new Error(error.detail);
       }
 
-      let data = await response.json();
+      let data1: { access: string, refresh: string } = await response.json();
 
       //Store jwt tokens in local storage
-      localStorage.setItem("access_token", data.access);
-      localStorage.setItem("refresh_token", data.refresh);
+      localStorage.setItem("access_token", data1.access);
+      localStorage.setItem("refresh_token", data1.refresh);
 
       const token = localStorage.getItem("access_token")
 
@@ -136,10 +136,10 @@ export default function Login() {
         throw new Error(error.detail);
       }
 
-      data = response.json();
+      const data2: User = await response.json();
 
       // Store user db record in localStorage
-      localStorage.setItem("user", data);
+      localStorage.setItem("user", JSON.stringify(data2));
 
       // Log the user into firebase
       await firebaseLogin()

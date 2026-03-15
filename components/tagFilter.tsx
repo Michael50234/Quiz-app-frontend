@@ -5,6 +5,7 @@ import QuizCard from '@/components/quizCard';
 import { Dispatch, SetStateAction } from "react"
 import { Tag } from '@/types'
 import { Autocomplete, Box, Button, Chip, Menu, MenuItem, TextField } from '@mui/material';
+import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 
 type TagFilterProps = {
     tags: Tag[],
@@ -42,7 +43,15 @@ const TagFilter = ({ tags, selectedTagIds, setSelectedTagIds }: TagFilterProps) 
 
     return (
         <Box>
-            <Button onClick={(e) => setAnchorEl(e.currentTarget)}>Select Filter Tags</Button>
+            <Button startIcon={<ArrowDropUpIcon />} onClick={(e) => setAnchorEl(e.currentTarget)} sx={{
+                borderRadius: "30px",
+                backgroundColor: anchorEl ? "var(--bg)" : null,
+                transition: "background 0.1s linear",
+                "& .MuiButton-icon": {
+                    transition: "transform 0.1s linear, background 0.1s linear",
+                    transform: anchorEl ? "rotate(180deg)" : "rotate(0deg)",
+                },
+            }}>Select Filter Tags</Button>
             <Menu
                 open={open}
                 anchorEl={anchorEl}
@@ -55,11 +64,15 @@ const TagFilter = ({ tags, selectedTagIds, setSelectedTagIds }: TagFilterProps) 
                             return tag.name;
                         })}
                         renderInput={(params) => {
-                            return <TextField {...params} label="Filter Tags" placeholder="Select Filter Tags"></TextField>
+                            return <TextField {...params} label="Filter Tags" placeholder={ selectedTagIds ? "" : "Select Filter Tags"}></TextField>
                         }}
-                        renderValue={(value, params) => {
-                            return value.map((tagName) => {
-                                return <Chip variant="filled" label={tagName}></Chip>
+                        renderValue={(value, getItemProps) => {
+                            return value.map((tagName, index) => {
+                                return <Chip {...getItemProps({index})} variant="filled" label={tagName} sx={{
+                                    backgroundColor: "var(--secondary)",
+                                    borderRadius: "3px",
+                                    mx: "3px"
+                                }}></Chip>
                             })
                         }}
                         value={selectedTagIds.map((tagId) => {
