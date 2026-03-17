@@ -68,7 +68,8 @@ const TagFilter = ({ tags, selectedTagIds, setSelectedTagIds }: TagFilterProps) 
                         }}
                         renderValue={(value, getItemProps) => {
                             return value.map((tagName, index) => {
-                                return <Chip {...getItemProps({index})} variant="filled" label={tagName} sx={{
+                                const { key, ...chipProps } = getItemProps({ index });
+                                return <Chip key={key} {...chipProps} variant="filled" label={tagName} sx={{
                                     backgroundColor: "var(--secondary)",
                                     borderRadius: "3px",
                                     mx: "3px"

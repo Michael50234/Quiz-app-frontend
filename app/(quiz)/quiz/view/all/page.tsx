@@ -20,33 +20,85 @@ type Quiz = {
 }
 
 const pages = () => {
-  const [loading, setLoading] = useState<boolean>(true);
+  // Loading states
+  const [isQuizListLoading, setIsQuizListLoading] = useState<boolean>(true);
+  const [isTagsLoading, setIsTagsLoading] = useState<boolean>(true);
+
+  // Resource states
   const [quizzes, setQuizzes] = useState<DisplayQuiz[]>([]);
   const [tags, setTags] = useState<Array<Tag>>([]);
-  const [searchBarText, setSearchBarText] = useState<string>("");
+
+  // Search params states
+  const [search, setSearch] = useState<string>("");
+  const [debouncedSearch, setDebouncedSearch] = useState<string>("")
   const [selectedTagIds, setSelectedTagIds] = useState<number[]>([]);
   // True means show all quizzes. False means show only users quizzes.
   const [quizViewMode, setQuizViewMode] = useState<boolean>(true);
-
+  
+  // Fetch tags from server
   useEffect(() => {
-    const loadData = async () => {
+    const loadTags = async () => {
       try {
-        await fetchQuizzes();
+        setIsTagsLoading(true);
         await fetchTags();
       } catch(error) {
-        throw new Error(error instanceof Error ? error.message : "An error has occurred");
+        // TODO: Show toast to users for errors after implementation
+        // Also add a redirect here as the page cannot work without quizzes
       } finally {
-        setLoading(false);
+        setIsTagsLoading(false);
       }
     }
 
-    loadData();
+    loadTags();
   }, []);
+
+  // Fetch quizzes from server
+  useEffect(() => {
+    const loadQuizzes = async () => {
+      try {
+        setIsQuizListLoading(true);
+        await fetchQuizzes()
+      } catch(error) {
+        // TODO: Show toast to users for errors after implementation
+        // Also add a redirect here as the page cannot work without quizzes
+      } finally {
+        setIsQuizListLoading(false);
+      }
+    }
+
+    loadQuizzes();
+  }, [debouncedSearch, selectedTagIds])
+
+  // Set debounced search
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setDebouncedSearch(search)
+    }, 500)
+
+    return () => clearTimeout(timeout)
+  }, [search])
 
   const fetchQuizzes = async () => {
     const access_token = localStorage.getItem("access_token");
 
-    const response = await fetch("http://127.0.0.1:8000/quizzes/public-quizzes", {
+    // Create query parameters using URLSearchParams
+    const searchParameters = new URLSearchParams();
+
+    // Add all selectedTagIds to query parameters
+    for(const tagId of selectedTagIds) {
+      searchParameters.append("tagId", `${tagId}`);
+    }
+
+    // Add search bar text to query parameters
+    // Only add it if it is a non-empty string
+    if(debouncedSearch.trim()) {
+      searchParameters.append("searchText", debouncedSearch);
+    }
+    
+    // Change the endpoint the request is sent to based on view mode
+    const address = quizViewMode ? "public-quizzes" : "user-quizzes";
+
+    const response = await fetch(`http://127.0.0.1:8000/quizzes/${address}?${searchParameters.toString()}`, {
       method: "GET",
       headers: {
         "Authorization": `Bearer ${access_token}`
@@ -59,9 +111,7 @@ const pages = () => {
     }
     
     const data: {quizzes: DisplayQuiz[]} = await response.json();
-
     setQuizzes(data.quizzes);
-    console.log(quizzes)
   };
 
   const fetchTags = async () => {
@@ -110,51 +160,6 @@ const pages = () => {
     });
   }
 
-  const onSearch = async () => {
-    try {
-      setLoading(true);
-      const access_token = localStorage.getItem("access_token");
-
-      // Create query parameters using URLSearchParams
-      const searchParameters = new URLSearchParams();
-
-      // Add all selectedTagIds to query parameters
-      for(const tagId of selectedTagIds) {
-        searchParameters.append("tagId", `${tagId}`);
-      }
-
-      // Add search bar text to query parameters
-      // Only add it if it is a non-empty string
-      if(searchBarText.trim()) {
-        searchParameters.append("searchText", searchBarText);
-      }
-      
-      // Change the endpoint the request is sent to based on view mode
-      const address = quizViewMode ? "public-quizzes" : "user-quizzes";
-
-      const response = await fetch(`http://127.0.0.1:8000/quizzes/${address}?${queryParameters.toString()}`, {
-        method: "GET",
-        headers: {
-          "Authorization": `Bearer ${access_token}`
-        }
-      });
-
-      if(!response.ok) {
-        const error: ErrorResponse = await response.json();
-        throw new Error("Failed to search for quizzes");
-      }
-
-      const data: {quizzes: DisplayQuiz[]} = await response.json();
-      setQuizzes(data.quizzes);
-    } catch(error) {
-      // TODO: Show error message on snackbar here
-      console.warn(error)
-    } finally {
-      setLoading(false);
-    }
-  }
-
-
   return <Box sx={{
       mt: "10px",
       pl: "10px",
@@ -183,16 +188,10 @@ const pages = () => {
             width: "145px",
             ml: "3px"
           }}/>
-          <SearchField searchBarText={searchBarText} setSearchBarText={setSearchBarText}></SearchField>
+          <SearchField search={search} setSearch={setSearch}></SearchField>
           <TagFilter tags={tags} selectedTagIds={selectedTagIds} setSelectedTagIds={setSelectedTagIds}></TagFilter>
-          <Button onClick={onSearch}disabled={loading} variant="contained" color="primary" sx={{
-            borderRadius: "30px",
-            "&:hover": {
-              backgroundColor: "var(--primary-hover)"
-            }
-          }}>Search</Button>
       </Stack>
-      {loading ? (
+      { isQuizListLoading || isTagsLoading ? (
         <LoadingSpinner />
       ) : (<>
         <Toolbar variant="dense"></Toolbar>

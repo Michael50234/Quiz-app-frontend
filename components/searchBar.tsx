@@ -5,13 +5,13 @@ import React, { Dispatch, SetStateAction } from 'react'
 import SearchIcon from '@mui/icons-material/Search';
 
 type SearchBarProps = { 
-    searchBarText: string,
-    setSearchBarText: Dispatch<SetStateAction<string>>
+    search: string,
+    setSearch: Dispatch<SetStateAction<string>>
 }
 
-const SearchField = ({ searchBarText, setSearchBarText }: SearchBarProps) => {
+const SearchField = ({ search, setSearch }: SearchBarProps) => {
   return (
-    <TextField placeholder="Search..." value={searchBarText} onChange={(e) => setSearchBarText(e.target.value)} variant="outlined" sx={{
+    <TextField placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} variant="outlined" sx={{
         width: "300px",
         "& .MuiInputBase-root": {
             borderRadius: "200px",
