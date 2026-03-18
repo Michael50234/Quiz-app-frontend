@@ -14,7 +14,6 @@ const editQuizPagePattern = /^\/quiz\/edit\/\d+$/
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const pathName = usePathname();
-  useEffect(() => console.log(pathName), [pathName]);
 
   return (
     <ThemeProvider theme={theme}>

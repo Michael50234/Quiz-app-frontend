@@ -452,50 +452,50 @@ const page = () => {
                 display: "flex",
                 flexDirection: "column"}}>
                 <Container>
-                <Stack 
-                    direction="row" 
-                    justifyContent={"center"} 
-                    spacing={2} 
-                    sx={{
-                    p: "10px",
-                    }}>
-                    <Button 
-                    sx={{ 
-                        width: "120px",
-                        "&.MuiButton-contained": {
-                        backgroundColor: "var(--secondary)",
-                        "&:hover": {
-                            backgroundColor: "var(--secondary-hover)",
-                        },
-                        color: "hsl(0, 0%, 5%)",
-                        },
-                        "&.MuiButton-outlined": {
-                        border: "1px solid HSLA(39, 59%, 73%, 0.5)",
-                        color: "hsl(0, 0%, 35%)"
-                        }
-                    }} 
-                    variant={page === "description" ? "contained" : "outlined"} 
-                    onClick={() => setPage("description")}>Description
-                    </Button>
-                    <Button 
-                    sx={{ 
-                        width: "120px",
-                        "&.MuiButton-contained": {
-                        backgroundColor: "var(--secondary)",
-                        "&:hover": {
-                            backgroundColor: "var(--secondary-hover)",
-                        },
-                        color: "hsl(0, 0%, 5%)",
-                        },
-                        "&.MuiButton-outlined": {
-                        border: "1px solid HSLA(39, 59%, 73%, 0.5)",
-                        color: "hsl(0, 0%, 35%)"
-                        }
-                    }} 
-                    variant={page === "questions" ? "contained" : "outlined"} 
-                    onClick={() => setPage("questions")}>Questions
-                    </Button>
-                </Stack>
+                    <Stack 
+                        direction="row" 
+                        justifyContent={"center"} 
+                        spacing={2} 
+                        sx={{
+                        p: "10px",
+                        }}>
+                        <Button 
+                            sx={{ 
+                                width: "120px",
+                                "&.MuiButton-contained": {
+                                backgroundColor: "var(--secondary)",
+                                "&:hover": {
+                                    backgroundColor: "var(--secondary-hover)",
+                                },
+                                color: "hsl(0, 0%, 5%)",
+                                },
+                                "&.MuiButton-outlined": {
+                                border: "1px solid HSLA(39, 59%, 73%, 0.5)",
+                                color: "hsl(0, 0%, 35%)"
+                                }
+                            }} 
+                            variant={page === "description" ? "contained" : "outlined"} 
+                            onClick={() => setPage("description")}>Description
+                        </Button>
+                        <Button 
+                        sx={{ 
+                            width: "120px",
+                            "&.MuiButton-contained": {
+                            backgroundColor: "var(--secondary)",
+                            "&:hover": {
+                                backgroundColor: "var(--secondary-hover)",
+                            },
+                            color: "hsl(0, 0%, 5%)",
+                            },
+                            "&.MuiButton-outlined": {
+                            border: "1px solid HSLA(39, 59%, 73%, 0.5)",
+                            color: "hsl(0, 0%, 35%)"
+                            }
+                        }} 
+                        variant={page === "questions" ? "contained" : "outlined"} 
+                        onClick={() => setPage("questions")}>Questions
+                        </Button>
+                    </Stack>
                 </Container>
                 { page === "description" ? 
                 <DescriptionPage 

@@ -94,6 +94,10 @@ export type DisplayQuiz = Pick<Quiz, "id" | "title" | "cover_image_url" | "descr
     tags: {name: string}[]
 };
 
+export type DisplayUser = Pick<User, "id" | "nickname" | "profile_picture_url" | "about_me" > & {
+    profilePictureUrlBlob?: Blob
+}
+
 // Quiz Play Types
 export type PlayChoice = Pick<Choice, "id" | "choice">;
 

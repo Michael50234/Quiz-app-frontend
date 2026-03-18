@@ -2,7 +2,6 @@
 
 import { EditQuiz, Tag } from '@/types/index';
 import React, { useState } from 'react';
-import ProfileCrop from '@/components/crop/profileCrop';
 import { Box, Button, Container, Dialog, DialogActions, DialogContent, FormControlLabel, Stack, Switch, TextField, Typography } from '@mui/material';
 import TagSelect from '@/components/tagSelect';
 import ImageCropper from '@/components/crop/imageCropper';
