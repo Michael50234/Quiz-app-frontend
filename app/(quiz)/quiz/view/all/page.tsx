@@ -67,7 +67,7 @@ const pages = () => {
     }
 
     loadQuizzes();
-  }, [debouncedSearch, selectedTagIds])
+  }, [debouncedSearch, selectedTagIds, quizViewMode])
 
   // Set debounced search
   useEffect(() => {

@@ -8,7 +8,7 @@ import { usePathname } from 'next/navigation';
 import { useEffect } from "react";
 
 //Only show navbar for these addresses
-const navbarAddresses = new Set<string>(['/profile', '/quiz/create', '/quiz/view/all'])
+const navbarAddresses = new Set<string>(['/profile', '/quiz/create', '/quiz/view/all', '/profile'])
 const viewQuizPagePattern = /^\/quiz\/view\/\d+$/
 const editQuizPagePattern = /^\/quiz\/edit\/\d+$/
 

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { AppBar, Box, Button, Toolbar} from '@mui/material';
+import { AppBar, Avatar, Box, Button, ButtonBase, IconButton, Menu, MenuItem, Toolbar} from '@mui/material';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { usePathname } from "next/navigation";
@@ -9,6 +9,7 @@ import { usePathname } from "next/navigation";
 const Navbar = () => {
     const pathName = usePathname();
     const router = useRouter();
+    const [profileElAnchor, setProfileElAnchor] = useState<null | HTMLElement>(null);
     const logoutHandler = () => {
         fetch("http://127.0.0.1:8000/accounts/logout", {
             method: "POST",
@@ -28,6 +29,10 @@ const Navbar = () => {
         router.push("/");
     }
 
+    const handleProfileMenuClose = () => {
+        setProfileElAnchor(null);
+    }
+
     return (
         <div>
             <AppBar sx={{
@@ -36,7 +41,16 @@ const Navbar = () => {
                     boxShadow: "0px 4px 15px rgba(0,0,0,0.2)",
                 }}>
                 <Toolbar variant="dense">
-                    <Button variant={pathName == "/quiz/view/all" ? "contained" : "text"}sx={{
+                    <ButtonBase onClick={(e) => setProfileElAnchor(e.currentTarget)}>
+                        <Avatar src="/DefaultProfileImage.png" sx={{
+                            mr: "20px",
+                            ml: "0px"
+                        }} />
+                    </ButtonBase>
+                    <Menu anchorEl={profileElAnchor} open={Boolean(profileElAnchor)} onClose={handleProfileMenuClose}>
+                        <MenuItem onClick={() => setProfileElAnchor(null)}><Link href="/profile">Go To Profile Page</Link></MenuItem>
+                    </Menu>
+                    <Button variant={pathName == "/quiz/view/all" ? "contained" : "text"} sx={{
                         fontWeight: 500,
                         mr: "10px",
                         p: "8px",

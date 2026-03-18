@@ -4,10 +4,8 @@ import React, { useState } from "react";
 import { signInWithCustomToken } from "firebase/auth";
 import { auth } from "@/config/firebase.config";
 
-import Image from "next/image";
 import styles from "./page.module.css";
 import { Box, Button, ButtonGroup, Container, Stack, TextField, Typography } from "@mui/material";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ErrorResponse, User } from "@/types";
 
