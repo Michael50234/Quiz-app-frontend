@@ -41,7 +41,6 @@ const DescriptionPage = ({tagIds, tags, title, isPublic, coverImageUrl, descript
     }}>
         <Container sx={{
           width: "70%", 
-          height: "700px",
           display: "flex",
           justifyContent: "space-around",
           backgroundColor: "var(--bg)",
@@ -67,11 +66,10 @@ const DescriptionPage = ({tagIds, tags, title, isPublic, coverImageUrl, descript
           </Stack>
           <Stack spacing={2} sx={{
             width: "50%",
-            height: "100%",
           }}>
             <Box sx={{width: "100%"}}>
               <Typography fontWeight={550} sx={{
-                fontSize: "1.2rem",
+                fontSize: "1rem",
                 margin: 0,
                 color: "var(--primary-dark)"
                 }}>Title</Typography>
@@ -99,22 +97,21 @@ const DescriptionPage = ({tagIds, tags, title, isPublic, coverImageUrl, descript
             </Box>
             <Box>
               <Typography fontWeight={550} sx={{
-                fontSize: "1.2rem",
-                margin: 0,
+                fontSize: "1rem",
                 color: "var(--primary-dark)"
               }}>Public Status</Typography>
               <FormControlLabel control={<Switch onChange={(e) => changeIsPublic(e.target.checked)} checked={isPublic}></Switch>} label={isPublic === true ? "Public" : "Private"} />
             </Box>
             <Box sx={{width: "100%"}}>
               <Typography fontWeight={550} sx={{
-                margin: 0,
+                margin: "4px",
                 color: "var(--primary-dark)"
               }}>Tags</Typography>
               <TagSelect tags={tags ?? []} tagIds={tagIds ?? []} changeTagIds={changeTagIds}/>
             </Box>
             <Box sx={{flex: 1}}>
               <Typography fontWeight={550} sx={{
-                margin: 0,
+                mb: 0,
                 color: "var(--primary-dark)"
               }}>Description</Typography>
               <TextField 

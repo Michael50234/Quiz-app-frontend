@@ -6,7 +6,6 @@ import React, { useCallback, useState } from 'react';
 import CloseIcon from '@mui/icons-material/Close';
 import Cropper from 'react-easy-crop';
 
-
 const ImageCropper = ({handleDialogClose, changeImageUrl, cropShape, aspectRatio, changeImageBlob}: 
     {handleDialogClose: () => void, changeImageUrl: (url: string) => void, changeImageBlob: (blob: Blob) => void, cropShape: "rect" | "round" | undefined, aspectRatio: number}) => {
     
@@ -132,8 +131,6 @@ const ImageCropper = ({handleDialogClose, changeImageUrl, cropShape, aspectRatio
                         onZoomChange={setZoom}
                         onCropComplete={onCropComplete}
                     >
-
-                    
                     </Cropper>
                 ) : 
                 <img src="/placeholder.jpg" style={{objectFit: "cover", height: "100%", width: "100%"}}></img>}

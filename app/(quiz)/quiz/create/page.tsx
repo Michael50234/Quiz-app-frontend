@@ -384,11 +384,12 @@ const page = () => {
     }}>
       <Toolbar></Toolbar>
       <Box sx={{
-          minHeight: "100vh",
+          minHeight: "90vh",
           pl: "20px", 
           pr: "20px",
           display: "flex",
-          flexDirection: "column"}}>
+          flexDirection: "column",
+          }}>
         <Container>
           <Stack 
             direction="row" 
@@ -467,7 +468,7 @@ const page = () => {
         bottom: "0px",
         left: "0px",
         right: "0px",
-        height: "60px",
+        height: "50px",
         backgroundColor: "var(--bg)",
         display: "flex",
         alignItems: "center",

@@ -12,8 +12,10 @@ export default function TagSelect({tags, tagIds, changeTagIds} : { tags: Tag[], 
         sx={{
             "& .MuiAutocomplete-inputRoot": {
                 pt: "10px",
-                pb: "10px"
+                pb: "10px",
+                fontSize: "1rem"
             }
+            
         }}
         multiple
         options={tags.map((tag) => tag.name)}
