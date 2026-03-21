@@ -6,10 +6,9 @@ import { getAuth } from "firebase/auth"
 import { CreateQuiz, CreateQuizResponse, Tag, EditQuizResponse, ErrorResponse } from '@/types/index';
 import { Box, Button, Container, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Stack, Toolbar } from '@mui/material';
 import DescriptionPage from '@/components/createQuizPage/descriptionPage';
-import { ref, getDownloadURL, uploadBytes } from "firebase/storage";
-import { storage } from '@/config/firebase.config';
 import QuestionsPage from '@/components/createQuizPage/questionsPage';
 import { useRouter } from 'next/navigation';
+import { saveImageInFirebase } from '@/utils';
 
 const page = () => {
   const router = useRouter();
@@ -83,23 +82,6 @@ const page = () => {
       
       setTags(data.tags);
       return data.tags
-  }
-
-  const saveImageInFirebase = async (croppedImageBlob: Blob, save_path: string): Promise<(string)> => {
-    try{    
-          //Define where you want to store the image
-          const imageRef = ref(storage, save_path);
-            
-          //Store the image
-          await uploadBytes(imageRef, croppedImageBlob);
-
-          //Get link to the storage location
-          const downloadURL = await getDownloadURL(imageRef);
-
-          return downloadURL
-      } catch(error) {
-          throw Error("Failed to save image to firebase");
-      }
   }
 
   const changeTagIds = (newValue: number[]) => 
@@ -371,8 +353,10 @@ const page = () => {
         console.log("Successfully saved quiz")
       }
 
+
       router.push("/quiz/view/all");
     } catch(error) {
+      // TODO: Change this to a snackbar error
       console.warn(error)
     }
   }

@@ -6,13 +6,12 @@ import { useEffect, useState } from 'react';
 import LoadingSpinner from '@/components/loadingSpinner' 
 import ImageCropper from '@/components/crop/imageCropper';
 import { Input } from '@mui/icons-material';
+import { saveImageInFirebase } from '@/utils';
 
 const page = () => {
   const [userData, setUserData] = useState<null | DisplayUser>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
-  const [nickname, setNickname] = useState<string>("");
-  const [aboutMe, setAboutMe] = useState<string>("");
 
   useEffect(() => {
     const loadData = async () => {
@@ -27,6 +26,30 @@ const page = () => {
 
     loadData();
   }, []);
+
+
+  const setNickname = (nickname: string) => {
+    setUserData((prev) => {
+      if(!prev) return null;
+
+      return {
+        ...prev,
+        nickname: nickname
+      }
+    })
+  }
+
+  
+  const setAboutMe = (about_me: string) => {
+    setUserData((prev) => {
+      if(!prev) return null;
+
+      return {
+        ...prev,
+        about_me: about_me
+      }
+    })
+  }
 
   const loadUserData = async () => {
     const access_token = localStorage.getItem("access_token");
@@ -57,7 +80,7 @@ const page = () => {
 
       return {
         ...prev,
-        setProfilePictureBlob: blob,
+        profilePictureBlob: blob,
       }
     })
   }
@@ -73,6 +96,53 @@ const page = () => {
     })
 
   }
+
+  const saveUserData = async () => {
+    try {
+      const access_token = localStorage.getItem("access_token");
+
+      const userDataCopy = {
+        ...userData
+      };
+
+      if(userDataCopy.profilePictureUrlBlob) {
+          const imageUrl = await saveImageInFirebase(userDataCopy.profilePictureUrlBlob, `/users/${userDataCopy.id}/profile`);
+          userDataCopy.profile_picture_url = imageUrl;
+      }
+
+      const response = await fetch("http://127.0.0.1:8000/accounts/user", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${access_token}`
+        },
+        body: JSON.stringify({
+          nickname: userDataCopy.nickname,
+          profile_picture_url: userDataCopy.profile_picture_url,
+          about_me: userDataCopy.about_me
+        })
+      });
+
+      if(!response.ok) {
+        const error: ErrorResponse = await response.json();
+        console.warn(error.detail)
+      }
+
+      // TODO: Create snackbar for surfacing success
+
+      if(userDataCopy.profile_picture_url) {
+        setProfilePictureUrl(userDataCopy.profile_picture_url);
+      }
+
+      console.log("success")
+
+    } catch(error) {
+      // TODO: Create snackbar for surfacing error
+      console.error(error)
+    }
+
+  }
+
 
   return (
     <Box sx={{
@@ -101,7 +171,6 @@ const page = () => {
               width: "50%",
               height: "fit-content",
               borderRadius: "50px",
-              // backgroundColor: "var(--bg)"
             }}
           >
             <Stack spacing={4} alignItems="center" sx={{
@@ -141,7 +210,7 @@ const page = () => {
                   <Dialog open={dialogOpen} onClose={handleDialogClose}>
                     <DialogContent>
                       <DialogActions>
-                        <ImageCropper aspectRatio={1} changeImageBlob={setProfilePictureBlob} changeImageUrl={setProfilePictureUrl} handleDialogClose={handleDialogClose} cropShape="round" ></ImageCropper>
+                        <ImageCropper aspectRatio={1} changeImageBlob={setProfilePictureBlob} changeImageUrl={setProfilePictureUrl} handleDialogClose={handleDialogClose} cropShape="round"></ImageCropper>
                       </DialogActions>
                     </DialogContent>
                   </Dialog>
@@ -203,6 +272,7 @@ const page = () => {
                   width: "50%"
                 }}
                 variant="contained"
+                onClick={saveUserData}
               >
                   Save
               </Button>
