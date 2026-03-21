@@ -42,7 +42,7 @@ const Navbar = () => {
                 }}>
                 <Toolbar variant="dense">
                     <ButtonBase onClick={(e) => setProfileElAnchor(e.currentTarget)}>
-                        <Avatar src="/DefaultProfileImage.png" sx={{
+                        <Avatar src={"/DefaultProfileImage.png"} sx={{
                             mr: "20px",
                             ml: "0px"
                         }} />
