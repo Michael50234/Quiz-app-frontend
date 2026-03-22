@@ -5,6 +5,7 @@ import React, { useState } from 'react';
 import { DisplayQuiz } from '@/types'
 import { useRouter } from 'next/navigation';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { useUser } from './userProvider';
 
 type QuizCard = {
   quiz: DisplayQuiz,
@@ -14,7 +15,8 @@ type QuizCard = {
 
 const QuizCard = ({quiz, id, deleteQuizHandler}: QuizCard) => {
   const router = useRouter();
-  const userId = JSON.parse(localStorage.getItem("user") as string).id;
+  const { user } = useUser();
+  const userId = user?.id
   const [deleteLoading, setDeleteLoading] = useState<boolean>(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState<boolean>(false);
 

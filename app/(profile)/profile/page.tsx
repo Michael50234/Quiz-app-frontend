@@ -2,16 +2,18 @@
 
 import { Box, Button, Container, Dialog, DialogActions, DialogContent, InputBase, Stack, TextField, Toolbar, Typography } from '@mui/material'
 import { DisplayUser, ErrorResponse, User } from '@/types'
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import LoadingSpinner from '@/components/loadingSpinner' 
 import ImageCropper from '@/components/crop/imageCropper';
 import { Input } from '@mui/icons-material';
 import { saveImageInFirebase } from '@/utils';
+import { UserContext, useUser } from '@/components/userProvider';
 
 const page = () => {
   const [userData, setUserData] = useState<null | DisplayUser>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
+  const { loadUser } = useUser();
 
   useEffect(() => {
     const loadData = async () => {
@@ -105,8 +107,8 @@ const page = () => {
         ...userData
       };
 
-      if(userDataCopy.profilePictureUrlBlob) {
-          const imageUrl = await saveImageInFirebase(userDataCopy.profilePictureUrlBlob, `/users/${userDataCopy.id}/profile`);
+      if(userDataCopy.profilePictureBlob) {
+          const imageUrl = await saveImageInFirebase(userDataCopy.profilePictureBlob, `/users/${userDataCopy.id}/profile`);
           userDataCopy.profile_picture_url = imageUrl;
       }
 
@@ -134,6 +136,10 @@ const page = () => {
         setProfilePictureUrl(userDataCopy.profile_picture_url);
       }
 
+      // Update the user data context being used for the app
+      loadUser();
+
+      // TODO: change this with something else 
       console.log("success")
 
     } catch(error) {

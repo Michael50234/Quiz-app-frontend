@@ -2,7 +2,7 @@
 export type User = {
     id: number
     nickname: string,
-    profile_picture_url: string,
+    profile_picture_url?: string,
     about_me: string
 };
 
@@ -20,12 +20,14 @@ export type Quiz = {
     is_public: boolean,
     cover_image_url?: string,
     description: string,
+    questions: Question[],
 };
 
 export type Question = {
     id: number,
     question: string,
     question_image_url?: string
+    choices: Choice[],
 };
 
 export type Choice = {
@@ -54,8 +56,7 @@ export type EditQuestion = Pick<Question, "question" | "question_image_url"> & {
     questionImageBlob?: Blob
 };
 
-export type EditQuiz = Pick<Quiz, "title" | "is_public" | "cover_image_url" | "description"> & {
-    id: number
+export type EditQuiz = Pick<Quiz, "id" | "title" | "is_public" | "cover_image_url" | "description"> & {
     tag_ids: number[],
     questions: EditQuestion[],
     coverImageBlob?: Blob
@@ -95,7 +96,7 @@ export type DisplayQuiz = Pick<Quiz, "id" | "title" | "cover_image_url" | "descr
 };
 
 export type DisplayUser = Pick<User, "id" | "nickname" | "profile_picture_url" | "about_me" > & {
-    profilePictureUrlBlob?: Blob
+    profilePictureBlob?: Blob
 }
 
 // Quiz Play Types

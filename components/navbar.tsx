@@ -1,15 +1,18 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { AppBar, Avatar, Box, Button, ButtonBase, IconButton, Menu, MenuItem, Toolbar} from '@mui/material';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { usePathname } from "next/navigation";
+import { UserContext, useUser } from './userProvider';
 
 const Navbar = () => {
     const pathName = usePathname();
     const router = useRouter();
     const [profileElAnchor, setProfileElAnchor] = useState<null | HTMLElement>(null);
+    const { user } = useUser();
+
     const logoutHandler = () => {
         fetch("http://127.0.0.1:8000/accounts/logout", {
             method: "POST",
@@ -24,7 +27,6 @@ const Navbar = () => {
         
         localStorage.removeItem("refresh_token");
         localStorage.removeItem("access_token");
-        localStorage.removeItem("user")
 
         router.push("/");
     }
@@ -42,9 +44,11 @@ const Navbar = () => {
                 }}>
                 <Toolbar variant="dense">
                     <ButtonBase onClick={(e) => setProfileElAnchor(e.currentTarget)}>
-                        <Avatar src={"/DefaultProfileImage.png"} sx={{
+                        <Avatar src={ user?.profile_picture_url || undefined } sx={{
                             mr: "20px",
-                            ml: "0px"
+                            ml: "0px",
+                            height: "30px",
+                            width: "30px"
                         }} />
                     </ButtonBase>
                     <Menu anchorEl={profileElAnchor} open={Boolean(profileElAnchor)} onClose={handleProfileMenuClose}>

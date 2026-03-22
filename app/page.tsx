@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { signInWithCustomToken } from "firebase/auth";
 import { auth } from "@/config/firebase.config";
 
@@ -8,6 +8,7 @@ import styles from "./page.module.css";
 import { Box, Button, ButtonGroup, Container, Stack, TextField, Typography } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { ErrorResponse, User } from "@/types";
+import { useUser } from "@/components/userProvider";
 
 
 export default function Login() {
@@ -15,6 +16,7 @@ export default function Login() {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const router = useRouter();
+  const { loadUser } = useUser();
 
 
   function redirectToHome() {
@@ -56,6 +58,7 @@ export default function Login() {
       }
 
       let data1 = await response.json();
+      
     
       //store jwt tokens in local storage
       localStorage.setItem("access_token", data1.access);
@@ -63,23 +66,8 @@ export default function Login() {
 
       const token = localStorage.getItem("access_token")
 
-      response = await fetch("http://127.0.0.1:8000/accounts/user", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
-        }
-      });
-
-      if(!response.ok){
-        const error: ErrorResponse = await response.json();
-        throw new Error(error.detail);
-      }
-
-      const data2: User = await response.json();
-
-      // Store user db record in localStorage
-      localStorage.setItem("user", JSON.stringify(data2));
+      // Change the user in the global user state
+      loadUser();
 
       // Log into firebase
       await firebaseLogin()
@@ -121,23 +109,8 @@ export default function Login() {
 
       const token = localStorage.getItem("access_token")
 
-      response = await fetch("http://127.0.0.1:8000/accounts/user", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
-        }
-      });
-
-      if(!response.ok){
-        const error: ErrorResponse = await response.json();
-        throw new Error(error.detail);
-      }
-
-      const data2: User = await response.json();
-
-      // Store user db record in localStorage
-      localStorage.setItem("user", JSON.stringify(data2));
+      // Change the user in the global user state
+      loadUser();
 
       // Log the user into firebase
       await firebaseLogin()
