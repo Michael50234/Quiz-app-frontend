@@ -1,8 +1,9 @@
 'use client';
 
 import LoadingSpinner from '@/components/loadingSpinner'
+import { useUser } from '@/components/userProvider';
 import { ErrorResponse, QuizDetailViewResponse } from '@/types'
-import { Avatar, Box, Button, Container, Stack, Toolbar, Typography } from '@mui/material'
+import { Avatar, Box, Button, Chip, Container, Stack, Toolbar, Typography } from '@mui/material'
 import React, { use, useEffect, useState } from 'react'
 
 // Allow user to pick the number of questions
@@ -12,6 +13,7 @@ const QuizView = ({params}: { params: Promise<{ id: string }>}) => {
   const [quizData, setQuizData] = useState<QuizDetailViewResponse | null>(null);
   const [numSelectedQuestions, setNumSelectedQuestions] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(true);
+  const { user } = useUser();
 
   useEffect(() => {
     const loadData = async () => {
@@ -62,31 +64,86 @@ const QuizView = ({params}: { params: Promise<{ id: string }>}) => {
           <LoadingSpinner />
         ) : (
           <Container sx={{
-            width: "100vh",
-            height: "90vh",
+            width: "50vw",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            height: "80vh"
           }}>
-            <Stack spacing={2} sx={{
-              height: "100%",
-              backgroundColor: "white",
+            <Stack alignItems="center" justifyContent="center" spacing={2} sx={{ 
+              width: "100%",
             }}>
+              <Typography sx={{
+                  fontWeight: "600",
+                  fontSize: "2rem"
+              }}>
+                {quizData?.title}
+              </Typography>
               <Box sx={{
                 display: "flex",
+                gap: 2,
+                height: "60%",
+                width: "100%",
+                justifyContent: "center"
               }}>
                 <Box component="img" src={ quizData?.cover_image_url || "/placeholder.jpg"} sx={{
                   height: "450px",
                   aspectRatio: "9 / 12",
                 }} />
                 
-                <Stack>
-                  <Typography>Description</Typography>
-                  <Box></Box>
-                  <Typography>Tags</Typography>
-                  <Box></Box>
+                <Stack spacing={1.5} sx={{
+                  height: "450px",
+                  flex: 1,
+                }}>
+                  <Stack>
+                    <Typography sx={{
+                      fontWeight: "600",
+                      fontSize: "1.3rem"
+                    }}>
+                      Description
+                    </Typography>
+                    <Typography sx={{
+                      backgroundColor: "var(--muted-surface)",
+                      borderRadius: "5px",
+                      padding: "3px"
+                    }}>{quizData?.description}</Typography>
+                  </Stack>
+                  <Stack spacing={0.5} sx={{
+                    flex: 1
+                  }}>
+                    <Typography sx={{
+                      fontWeight: "600",
+                      fontSize: "1.3rem"
+                    }}>
+                      Tags
+                    </Typography>
+                    <Box sx={{
+                      backgroundColor: "var(--muted-surface)",
+                      padding: "5px",
+                      borderRadius: "5px",
+                      minHeight: "150px",
+                      flex: "1"
+                    }}>
+                      {quizData?.tags.map((tag) => {
+                        return <Chip key={tag.id} label={tag.name}/>
+                      })}
+                    </Box>
+                  </Stack>
+                  <Button variant="contained">Play</Button>
                 </Stack>
               </Box>
               {/* Owner avatar and nickname */}            
-              <Box>
-                <Avatar></Avatar>
+              <Box sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 1,
+                height: "object-fit"
+              }}>
+                <Avatar src={ user?.profile_picture_url }></Avatar>
+                <Typography sx={{
+                  fontSize: "0.9rem",
+                  color: "var(--text-muted)"
+                }}>Created by {quizData?.owner.nickname}</Typography>
               </Box>
             </Stack>
           </Container>

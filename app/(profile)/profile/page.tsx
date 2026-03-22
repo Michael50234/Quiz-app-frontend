@@ -225,7 +225,7 @@ const page = () => {
                   spacing={2} 
                   sx={{
                     width: "100%", 
-                    backgroundColor: "rgba(0,0,0,0.03)", 
+                    backgroundColor: "var(--muted-surface)", 
                     p: "10px", 
                     borderRadius: "20px",
                   }}>

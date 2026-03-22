@@ -86,9 +86,6 @@ export type CreateSubmission = Pick<Submission, "score" | "number_of_questions">
     quiz_id: number
 };
 
-// Check Types
-export type CheckChoice = Pick<Choice, "id" | "choice">;
-
 // Display Types
 export type DisplayQuiz = Pick<Quiz, "id" | "title" | "cover_image_url" | "description"> & {
     owner: Pick<User, "id" | "nickname">
@@ -123,6 +120,11 @@ export type CreateQuizResponse = {
 };
 
 export type EditQuizResponse = CreateQuizResponse;
+
+export type CheckChoiceResponse = {
+    correct_choice: PlayChoice,
+    is_answer: true,
+}
 
 //Choices in this quiz have the answer
 export type QuizDetailViewResponse = Pick<Quiz, "id" | "title" | "owner" | "tags" | "cover_image_url" | "description" | "is_public"> & {

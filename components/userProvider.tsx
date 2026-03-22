@@ -24,7 +24,22 @@ export const UserProvider = ({children}: {children: React.ReactNode}) => {
     const [user, setUser] = useState<null | User>(null);
 
     useEffect(() => {
-        loadUser();
+        const loadData = async () => {
+            try {
+                const access_token = localStorage.getItem("access_token");
+
+                if(!access_token) return;
+
+                await loadUser(); 
+            } catch(error) {
+                // If it crashes the access token is expired, so remove it
+                localStorage.removeItem("access_token");
+                localStorage.removeItem("refresh_token");
+                return;
+            }
+        }
+        loadData();
+        
     }, [])
 
     const loadUser = async () => {
@@ -38,14 +53,14 @@ export const UserProvider = ({children}: {children: React.ReactNode}) => {
             }
         });
 
-      if(!response.ok){
-        const error: ErrorResponse = await response.json();
-        throw new Error(error.detail);
-      }
+        if(!response.ok){
+            const error: ErrorResponse = await response.json();
+            throw new Error(error.detail);
+        }
 
-      const data: User = await response.json();
+        const data: User = await response.json();
 
-      setUser(data);
+        setUser(data);
     }
 
     return (

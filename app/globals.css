@@ -6,7 +6,9 @@
   --text: HSL(0, 0, 5);
   --text-muted: HSL(0, 0, 50);
 
+  /* Highlight should generally be very light even you invert the color scheme */
   --highlight: HSL(240, 14, 100);
+
   --border: HSL(240, 14, 70);
   --border-muted: HSL(240, 14, 60);
 
@@ -20,6 +22,9 @@
   --warning: HSL(36, 85, 67);
   --success: HSL(120, 66, 62);
   --info: HSL(246, 83, 75);
+
+  /* used for soft-sectioning, low-emphasis containers */
+  --muted-surface: rgba(0,0,0,0.03);
 
   --accent: HSL(246, 83, 75);
 }

@@ -70,7 +70,7 @@ const page = () => {
                 })
                 
                 if(!selectedTag) {
-                    throw new Error("Tag id from quiz is not valid")
+                    throw new Error("Tag name from quiz is not valid")
                 }
 
                 return selectedTag.id

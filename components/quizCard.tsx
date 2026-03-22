@@ -88,7 +88,7 @@ const QuizCard = ({quiz, id, deleteQuizHandler}: QuizCard) => {
               editQuizHandler();
             }
             }>Edit</Button>
-            <Button variant="contained">Play</Button>
+            <Button variant="contained" onClick={() => router.push(`/quiz/view/${id}`)}>Play</Button>
           </Box>
         </CardContent>
       </Card>
