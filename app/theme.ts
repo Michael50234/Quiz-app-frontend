@@ -40,8 +40,32 @@ export const theme = createTheme({
             styleOverrides: {
                 root: {
                     borderRadius: 10,
-                    color: "black"
+                    color: "var(--text)"
                 },
+                containedPrimary: {
+                    backgroundColor: "var(--primary)",
+                    "&:hover": {
+                        backgroundColor: "var(--primary-hover)"
+                    },
+                },
+                containedSecondary: {
+                    backgroundColor: "var(--secondary)",
+                    "&:hover": {
+                        backgroundColor: "var(--secondary-hover)"
+                    },
+                },
+                outlinedPrimary: {
+                    border: "1px solid var(--primary)",
+                    "&:hover": {
+                        border: "1px solid var(--primary-hover)"
+                    }
+                },
+                outlinedSecondary: {
+                    border: "1px solid var(--secondary)",
+                    "&:hover": {
+                        border: "1px solid var(--secondary-hover)"
+                    }
+                }
             },
         },
         MuiTextField: {
@@ -49,11 +73,10 @@ export const theme = createTheme({
                 root: {
                     "& .MuiFormLabel-root": {
                         color: "var(--text-muted)",
-                        fontSize: "0.8rem",
-                        top: "5px"
+                        fontSize: "1rem",
                     },
                     "& .MuiInputBase-root": {
-                        fontSize: "1.3rem",
+                        fontSize: "1rem",
                     }
                 },
             },

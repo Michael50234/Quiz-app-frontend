@@ -158,39 +158,22 @@ export default function Login() {
                 fullWidth 
                 onClick={() => setPage("Login")} 
                 variant={page === "Login" ? "contained" : "outlined"}
+                color="secondary"
                 sx={{
                   fontSize: "1.3rem",
-                  "&.MuiButton-contained": {
-                    backgroundColor: "var(--secondary)",
-                    "&:hover": {
-                        backgroundColor: "var(--secondary-hover)",
-                    },
-                    color: "hsl(0, 0%, 5%)",
-                  },
-                  "&.MuiButton-outlined": {
-                    border: "1px solid HSLA(39, 59%, 73%, 0.5)",
-                    color: "hsl(0, 0%, 35%)"
-                  }
                 }}>Login</Button>
               <Button 
                 size="large" 
                 fullWidth 
                 onClick={() => setPage("Sign-up")} 
                 variant={page === "Login" ? "outlined" : "contained"}
+                color="secondary"
                 sx={{
-                  fontSize: "1.3rem",
-                  "&.MuiButton-contained": {
-                    backgroundColor: "var(--secondary)",
-                    "&:hover": {
-                        backgroundColor: "var(--secondary-hover)",
-                    },
-                    color: "hsl(0, 0%, 5%)",
-                  },
-                  "&.MuiButton-outlined": {
-                    border: "1px solid HSLA(39, 59%, 73%, 0.5)",
-                    color: "hsl(0, 0%, 35%)"
-                  }
-                }}>Sign-up</Button>
+                  fontSize: "1.3rem"
+                }}
+              >
+                Sign-up
+              </Button>
             </ButtonGroup>
             <Stack spacing={1} alignContent="center">
               <Typography textAlign="center" variant="h3" sx={{
@@ -229,10 +212,6 @@ export default function Login() {
               }}
               sx={{
                 fontSize: "1.3rem",
-                backgroundColor: "var(--primary)",
-                "&:hover": {
-                  backgroundColor: "var(--primary-hover)"
-                }
               }}
             >Submit</Button>
           </Stack>

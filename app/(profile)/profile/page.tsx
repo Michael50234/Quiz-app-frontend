@@ -190,7 +190,7 @@ const page = () => {
                 }}>Profile Settings
               </Typography>
               <Stack 
-                spacing={3}
+                spacing={2}
                 sx={{
                   width: "100%",
                 }}
@@ -207,8 +207,9 @@ const page = () => {
                     borderRadius: "50%"
                   }} />
                   <Button variant="contained" onClick={() => setDialogOpen(true)} 
+                    color="secondary"
                     sx={{
-                      width: "50%"
+                      width: "50%",
                     }}
                     >
                       Select An Image

@@ -13,10 +13,10 @@
   --border-muted: HSL(240, 14, 60);
 
   --primary: HSL(219, 59, 73);
-  --primary-hover: HSL(219, 59, 85);
+  --primary-hover: HSL(219, 59, 60);
 
   --secondary: HSL(39, 59, 73);
-  --secondary-hover: HSL(39, 59, 85);
+  --secondary-hover: HSL(39, 59, 60);
 
   --danger: HSL(0, 63, 81);
   --warning: HSL(36, 85, 67);

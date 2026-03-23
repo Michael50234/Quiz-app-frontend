@@ -1,7 +1,11 @@
+import { PlayQuestion } from '@/types'
 import { Box, Grid, Stack, Typography } from '@mui/material'
-import React from 'react'
 
-const QuestionPage = () => {
+type QuestionPageProps = {
+  questionData: PlayQuestion | undefined
+}
+
+const QuestionPage = ({ questionData }: QuestionPageProps) => {
   return (
     <Stack alignItems="center" justifyContent="center" sx={{
         width: "60%",
