@@ -4,12 +4,11 @@ import LoadingSpinner from '@/components/loadingSpinner'
 import { useUser } from '@/components/userProvider';
 import { ErrorResponse, QuizDetailViewResponse } from '@/types'
 import { Avatar, Box, Button, Chip, Container, Stack, Toolbar, Typography } from '@mui/material'
+import { useParams } from 'next/navigation';
 import React, { use, useEffect, useState } from 'react'
 
-// Allow user to pick the number of questions
-
-const QuizView = ({params}: { params: Promise<{ id: string }>}) => {
-  const quizId = use(params).id;
+const QuizView = () => {
+  const quizId = useParams().id
   const [quizData, setQuizData] = useState<QuizDetailViewResponse | null>(null);
   const [numSelectedQuestions, setNumSelectedQuestions] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(true);

@@ -99,14 +99,13 @@ export type DisplayUser = Pick<User, "id" | "nickname" | "profile_picture_url" |
 // Quiz Play Types
 export type PlayChoice = Pick<Choice, "id" | "choice">;
 
-export type PlayQuestion = Pick<Question, "question" | "question_image_url"> & {
+export type PlayQuestion = Pick<Question, "id" | "question" | "question_image_url"> & {
     choices: PlayChoice[]
 };
 
-export type PlayQuiz = Pick<Quiz, "id" | "title"> & {
+export type PlayQuiz = Pick<Quiz, "id" | "title" | "cover_image_url"> & {
     owner: Pick<User, "id" | "nickname">,
     questions: PlayQuestion[],
-    tags: {name: string}[]
 };
 
 // API Response Types
