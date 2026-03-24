@@ -4,9 +4,9 @@ import LoadingSpinner from "@/components/loadingSpinner";
 import QuestionPage from "@/components/quizPlayPage/questionPage";
 import QuizResultPage from "@/components/quizPlayPage/quizResultPage";
 import { ErrorResponse, PlayQuiz } from "@/types";
-import { Box, Grid, Stack, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { useParams } from "next/navigation";
-import { useEffect, useState, use, useRef, useMemo } from "react";
+import { useEffect, useState, useRef, useMemo } from "react";
 
 const page = () => {
     const [loading, setLoading] = useState<boolean>(true);
@@ -16,7 +16,7 @@ const page = () => {
 
     const [quizData, setQuizData] = useState<null | PlayQuiz>(null);
     const [questionIndex, setQuestionIndex] = useState<number>(0);
-    const [numCorrectAnswers, setNumCorrectAnswers] = useState<number>(0)
+    const [score, setScore] = useState<number>(0)
     const numQuestions = useMemo(() => {
         return (quizData?.questions ?? []).length;
     }, [quizData])
@@ -49,13 +49,13 @@ const page = () => {
         });
     }
 
-    const checkQuestion = async (choiceId: number) => {
+    const checkQuestion = async (selectedChoiceId: number) => {
         try {
             setCheckAnswerLoading(true);
 
             const access_token = localStorage.getItem("access_token");
 
-            const response = await fetch(`http://127.0.0.1:8000/quizzes/check-question/${choiceId}`, {
+            const response = await fetch(`http://127.0.0.1:8000/quizzes/check-question/${selectedChoiceId}`, {
                 method: "GET",
                 headers: {
                     "Authorization": `Bearer ${access_token}`
@@ -68,9 +68,13 @@ const page = () => {
             }
 
             const data: { correct_choice_id: number}= await response.json();
+            const correctChoiceId = data.correct_choice_id
 
-            setCorrectChoiceId(data.correct_choice_id);
-            console.log(data)
+            setCorrectChoiceId(correctChoiceId);
+
+            if(correctChoiceId === selectedChoiceId) {
+                setScore((prev) => prev + 1)
+            }
         } catch(error) {
             console.warn(error)
         } finally {
@@ -112,7 +116,7 @@ const page = () => {
                     padding: "10px"
                 }}
             >
-                <Typography>Score: {`${numCorrectAnswers} / ${numQuestions}`}</Typography>
+                <Typography>Score: {`${score} / ${numQuestions}`}</Typography>
                 <Typography sx={{
                     position: "absolute",
                     left: "50%",
