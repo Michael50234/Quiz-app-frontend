@@ -40,7 +40,7 @@ export const theme = createTheme({
             styleOverrides: {
                 root: {
                     borderRadius: 10,
-                    color: "var(--text)"
+                    color: "var(--text)",
                 },
                 containedPrimary: {
                     backgroundColor: "var(--primary)",

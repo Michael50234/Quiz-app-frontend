@@ -182,7 +182,8 @@ export default function Login() {
               }}>{page === "Login" ? "Login" : "Signup"} </Typography>
               <Typography variant="h6" color="var(--text-muted)" sx={{
                 fontSize: "1.3rem",
-                fontWeight: 500
+                fontWeight: 500,
+                textAlign: "center"
               }}>Welcome to my quiz app!</Typography>
             </Stack>
             <Stack spacing={2}>
