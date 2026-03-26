@@ -171,7 +171,7 @@ const page = () => {
                             questionData={quizData?.questions[questionIndex]} 
                             animation={animation}
                             showNextQuestion={showNextQuestion}
-                        />) : (<QuizResultPage />)
+                        />) : (<QuizResultPage quizName={quizData?.title ?? ""} score={score} numQuestions={numQuestions} coverImageUrl={quizData?.cover_image_url ?? "/placeholder.jpg"}/>)
                 )}
             </Box>
         </Box>
