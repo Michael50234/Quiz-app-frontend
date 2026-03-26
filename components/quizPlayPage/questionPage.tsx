@@ -1,9 +1,32 @@
 'use client';
 
 import { ErrorResponse, PlayQuestion } from '@/types'
-import { Box, Button, Grid, Stack, Typography } from '@mui/material'
+import { Box, Button, Grid, keyframes, Stack, Typography } from '@mui/material'
 import React, { useEffect, useState } from 'react'
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+
+type Animation = "in" | "out"
+
+const animationOut = keyframes`
+    0% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-50%);
+    }
+`;
+const animationIn = keyframes`
+  0% {
+    opacity: 0;
+    transform: translateY(50%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+`;
+
 
 type QuestionPageProps = {
   questionData: PlayQuestion | undefined,
@@ -11,22 +34,24 @@ type QuestionPageProps = {
   selectedChoiceId: number | null,
   setSelectedChoiceId: React.Dispatch<React.SetStateAction<number | null>>,
   correctChoiceId: number | null,
-  setCorrectChoiceId: React.Dispatch<React.SetStateAction<number | null>>,
-  checkQuestion: (choiceId: number) => void
+  checkQuestion: (choiceId: number) => void,
+  animation: Animation,
+  showNextQuestion: () => void,
 
   checkAnswerLoading: boolean,
 }
 
-const QuestionPage = ({ checkQuestion, checkAnswerLoading, questionData, selectedChoiceId, setSelectedChoiceId, setCorrectChoiceId, correctChoiceId }: QuestionPageProps) => {
+const QuestionPage = ({ checkQuestion, showNextQuestion, animation, checkAnswerLoading, questionData, selectedChoiceId, setSelectedChoiceId, correctChoiceId }: QuestionPageProps) => {
 
   useEffect(() => {
     console.log("selected choice", selectedChoiceId);
   }, [selectedChoiceId])
 
   return (
-    <Stack alignItems="center" spacing={3} justifyContent="center" sx={{
+    <Stack key={questionData?.id} alignItems="center" spacing={3} justifyContent="center" sx={{
         width: "60%",
-        height: "800px"
+        height: "800px",
+        animation: `${animation === "in" ? animationIn : animationOut} 0.6s ease-out`,
     }}>
         <Typography sx={{
           fontSize: "2rem",
@@ -72,7 +97,6 @@ const QuestionPage = ({ checkQuestion, checkAnswerLoading, questionData, selecte
                       opacity: 1,
                       color: "inherit",
                       backgroundColor: "inherit",
-                      pointerEvents: "auto", // optional: allows hover/click styles
                     },
                     "&:hover": {
                       backgroundColor: "var(--primary)"
@@ -91,7 +115,7 @@ const QuestionPage = ({ checkQuestion, checkAnswerLoading, questionData, selecte
             )
           })}
         </Grid>
-        <Button variant="contained" sx={{
+        <Button variant="contained" onClick={showNextQuestion}sx={{
           py: "10px",
           visibility: !correctChoiceId && !selectedChoiceId ? "hidden" : undefined
         }}>

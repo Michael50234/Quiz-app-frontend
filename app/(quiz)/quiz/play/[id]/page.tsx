@@ -4,9 +4,11 @@ import LoadingSpinner from "@/components/loadingSpinner";
 import QuestionPage from "@/components/quizPlayPage/questionPage";
 import QuizResultPage from "@/components/quizPlayPage/quizResultPage";
 import { ErrorResponse, PlayQuiz } from "@/types";
-import { Box, Typography } from "@mui/material";
+import { Box, keyframes, Typography } from "@mui/material";
 import { useParams } from "next/navigation";
 import { useEffect, useState, useRef, useMemo } from "react";
+
+type Animation = "in" | "out"
 
 const page = () => {
     const [loading, setLoading] = useState<boolean>(true);
@@ -23,6 +25,8 @@ const page = () => {
 
     const [selectedChoiceId, setSelectedChoiceId] = useState<null | number>(null);
     const [correctChoiceId, setCorrectChoiceId] = useState<number | null>(null);
+
+    const [animation, setAnimation] = useState<Animation>("in")
 
     // There are 2 types of pages. question and quizResult.
     const [page, setPage] = useState<string>("question");
@@ -44,9 +48,27 @@ const page = () => {
     }, []);
 
     const showNextQuestion = () => {
-        setQuestionIndex((prev) => {
-            return prev + 1
-        });
+        // If the current question is the last question, move to the result page
+        if(questionIndex === numQuestions - 1) {
+            setPage("quizResult");
+            return;
+        }
+
+        // Reset question states
+        setCorrectChoiceId(null);
+        setSelectedChoiceId(null);
+
+        // Change to next question index
+        // Use timeout to control animations
+        setAnimation("out");
+        setTimeout(() => {
+            setAnimation("in")
+            setQuestionIndex((prev) => {
+                return prev + 1
+            });
+        }, 600)
+
+        
     }
 
     const checkQuestion = async (selectedChoiceId: number) => {
@@ -67,8 +89,8 @@ const page = () => {
                 throw new Error("Failed to check Answer");
             }
 
-            const data: { correct_choice_id: number}= await response.json();
-            const correctChoiceId = data.correct_choice_id
+            const data: { correct_choice_id: number} = await response.json();
+            const correctChoiceId = data.correct_choice_id;
 
             setCorrectChoiceId(correctChoiceId);
 
@@ -143,9 +165,10 @@ const page = () => {
                             selectedChoiceId={selectedChoiceId} 
                             setSelectedChoiceId={setSelectedChoiceId} 
                             correctChoiceId={correctChoiceId}
-                            setCorrectChoiceId={setCorrectChoiceId}
                             checkAnswerLoading={checkAnswerLoading}
                             questionData={quizData?.questions[questionIndex]} 
+                            animation={animation}
+                            showNextQuestion={showNextQuestion}
                         />) : (<QuizResultPage />)
                 )}
             </Box>
