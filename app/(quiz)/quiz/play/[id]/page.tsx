@@ -126,7 +126,9 @@ const page = () => {
     }
 
     return ( 
-        <>
+        <Box sx={{
+            overflow: "hidden"
+        }}>
             <Box 
                 sx={{
                     display: "flex",
@@ -172,7 +174,7 @@ const page = () => {
                         />) : (<QuizResultPage />)
                 )}
             </Box>
-        </>
+        </Box>
     )
 }
 
