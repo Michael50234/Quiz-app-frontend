@@ -34,11 +34,12 @@ const QuizCard = ({quiz, id, deleteQuizHandler}: QuizCard) => {
         height: "560px",
         width: "100%",
         backgroundColor: "var(--bg)",
+        boxShadow: "0px 2px 10px 1px rgba(0,0,0, 0.1), 0px 10px 50px 5px rgba(0,0,0, 0.08)"
       }}>
         <CardContent sx={{
             display: "flex",
             flexDirection: "column",
-            height: "100%"
+            height: "560px"
         }}>
           <Box sx={{ minHeight: "100px", display: "flex", flexDirection: "column"}}>
             <IconButton disabled={userId !== quiz.owner.id} onClick={() => setDeleteDialogOpen(true)} sx={{ml: "auto", mt: "5px", mb: "5px", height: "10px"}} color="error"><DeleteIcon /></IconButton>

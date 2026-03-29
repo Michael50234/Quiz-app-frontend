@@ -1,6 +1,7 @@
 'use client';
 
 import LoadingSpinner from '@/components/loadingSpinner';
+import ProtectedPage from '@/components/ProtectedPage';
 import { ErrorResponse, SubmissionResponse } from '@/types';
 import { Box, Stack, Toolbar, Typography } from '@mui/material'
 import { useEffect, useState } from 'react';
@@ -47,59 +48,65 @@ const page = () => {
         <Box 
             sx={{
                 backgroundColor: "var(--bg-dark)",
-                width: "100vw",
+                width: "100%",
                 minHeight: " 100vh",
+                overflowX: "hidden"
             }}
         >
             <Toolbar />
-            { loading ? (
-                <LoadingSpinner />
-            ) : (
-                <Stack 
-                    sx={{
-                        width: "100%"
-                    }}
-                    alignItems="center"
-                    justifyContent="center"
-                    spacing={4}
-                >
-                    <Typography sx={{
-                        pt: "20px",
-                        fontSize: "2rem",
-                        fontWeight: "600"
-                    }}>Submissions</Typography>
-                    <Stack spacing={2} 
-                        alignItems="center"
-                        justifyContent="center"
+            <ProtectedPage>
+                { loading ? (
+                    <LoadingSpinner />
+                ) : (
+                    <Stack 
                         sx={{
                             width: "100%"
                         }}
+                        alignItems="center"
+                        justifyContent="center"
+                        spacing={4}
                     >
-                        {submissions.map((submission) => {
-                            return (
-                                <Stack 
-                                    alignItems="center"
-                                    justifyContent="center"
-                                    sx={{
-                                        width: "40%",
-                                        backgroundColor: "var(--bg-light)",
-                                        borderRadius: "10px",
-                                        height: "100px"
-                                    }}
-                                    key={submission.id}
-                                >
-                                    <Typography sx={{ fontWeight: "600" }}>{submission.quiz_title}</Typography>
-                                    <Typography>Score: {`${submission.score} / ${submission.number_of_questions}`}</Typography>
-                                    <Typography sx={{
-                                        color: "var(--text-muted)",
-                                        fontSize: "0.9rem"
-                                    }}>Played On {submission.submission_time}</Typography>
-                                </Stack>
-                            )
-                        })}
+                        <Typography sx={{
+                            pt: "10px",
+                            fontSize: "2rem",
+                            fontWeight: "600",
+                        }}>
+                            Submissions
+                        </Typography>
+                        <Stack spacing={2} 
+                            alignItems="center"
+                            justifyContent="center"
+                            sx={{
+                                width: "100%"
+                            }}
+                        >
+                            {submissions.map((submission) => {
+                                return (
+                                    <Stack 
+                                        alignItems="center"
+                                        justifyContent="center"
+                                        sx={{
+                                            width: "40%",
+                                            backgroundColor: "var(--bg-light)",
+                                            borderRadius: "10px",
+                                            height: "100px",
+                                            boxShadow: "0px 2px 10px 1px rgba(0,0,0, 0.1), 0px 10px 50px 5px rgba(0,0,0, 0.08)",
+                                        }}
+                                        key={submission.id}
+                                    >
+                                        <Typography sx={{ fontWeight: "600" }}>{submission.quiz_title}</Typography>
+                                        <Typography>Score: {`${submission.score} / ${submission.number_of_questions}`}</Typography>
+                                        <Typography sx={{
+                                            color: "var(--text-muted)",
+                                            fontSize: "0.9rem"
+                                        }}>Played On {submission.submission_time}</Typography>
+                                    </Stack>
+                                )
+                            })}
+                        </Stack>
                     </Stack>
-                </Stack>
-            ) }
+                )}
+            </ProtectedPage>
         </Box>
     )
 }

@@ -1,6 +1,7 @@
 'use client';
 
 import LoadingSpinner from "@/components/loadingSpinner";
+import ProtectedPage from "@/components/ProtectedPage";
 import QuestionPage from "@/components/quizPlayPage/questionPage";
 import QuizResultPage from "@/components/quizPlayPage/quizResultPage";
 import { ErrorResponse, PlayQuiz } from "@/types";
@@ -148,38 +149,40 @@ const page = () => {
                     color: "variant"
                 }}>Current Question: {questionIndex + 1}</Typography>
             </Box>
-            <Box 
-                sx={{
-                    backgroundColor: "var(--bg-dark)",
-                    minHeight: "100vh",
-                    width: "100vw",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center"
-                }}
-            >
-                {loading ? (
-                    <LoadingSpinner />
-                ) : (
-                    page === "question" ? (
-                        <QuestionPage 
-                            checkQuestion={checkQuestion}
-                            selectedChoiceId={selectedChoiceId} 
-                            setSelectedChoiceId={setSelectedChoiceId} 
-                            correctChoiceId={correctChoiceId}
-                            checkAnswerLoading={checkAnswerLoading}
-                            questionData={quizData?.questions[questionIndex]} 
-                            animation={animation}
-                            showNextQuestion={showNextQuestion}
-                        />) : (
-                        <QuizResultPage 
-                            quiz_id={Number(quiz_id)} 
-                            quizName={quizData?.title ?? ""} 
-                            score={score} numQuestions={numQuestions} 
-                            coverImageUrl={quizData?.cover_image_url ?? "/placeholder.jpg"}
-                        />)
-                )}
-            </Box>
+            <ProtectedPage>
+                <Box 
+                    sx={{
+                        backgroundColor: "var(--bg-dark)",
+                        minHeight: "100vh",
+                        width: "100vw",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center"
+                    }}
+                >
+                    {loading ? (
+                        <LoadingSpinner />
+                    ) : (
+                        page === "question" ? (
+                            <QuestionPage 
+                                checkQuestion={checkQuestion}
+                                selectedChoiceId={selectedChoiceId} 
+                                setSelectedChoiceId={setSelectedChoiceId} 
+                                correctChoiceId={correctChoiceId}
+                                checkAnswerLoading={checkAnswerLoading}
+                                questionData={quizData?.questions[questionIndex]} 
+                                animation={animation}
+                                showNextQuestion={showNextQuestion}
+                            />) : (
+                            <QuizResultPage 
+                                quiz_id={Number(quiz_id)} 
+                                quizName={quizData?.title ?? ""} 
+                                score={score} numQuestions={numQuestions} 
+                                coverImageUrl={quizData?.cover_image_url ?? "/placeholder.jpg"}
+                            />)
+                    )}
+                </Box>
+            </ProtectedPage>
         </Box>
     )
 }

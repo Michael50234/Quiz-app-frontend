@@ -1,6 +1,7 @@
 'use client';
 
 import LoadingSpinner from '@/components/loadingSpinner'
+import ProtectedPage from '@/components/ProtectedPage';
 import { useUser } from '@/components/userProvider';
 import { ErrorResponse, QuizDetailViewResponse } from '@/types'
 import { Avatar, Box, Button, Chip, Container, Stack, Toolbar, Typography } from '@mui/material'
@@ -33,7 +34,7 @@ const QuizView = () => {
   const loadQuiz = async () => {
     const access_token = localStorage.getItem("access_token");
 
-    const response = await fetch(`http://127.0.0.1:8000/quizzes/quiz/${quizId}`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/quizzes/quiz/${quizId}`, {
       method: "GET",
       headers: {
         "Authorization": `Bearer ${access_token}`
@@ -59,96 +60,98 @@ const QuizView = () => {
       px: "10px",
     }}>
       <Toolbar></Toolbar>
-      {
-        loading ? (
-          <LoadingSpinner />
-        ) : (
-          <Container sx={{
-            width: "50vw",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            height: "80vh"
-          }}>
-            <Stack alignItems="center" justifyContent="center" spacing={2} sx={{ 
-              width: "100%",
+      <ProtectedPage>
+        {
+          loading ? (
+            <LoadingSpinner />
+          ) : (
+            <Container sx={{
+              width: "50vw",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              height: "80vh"
             }}>
-              <Typography sx={{
-                  fontWeight: "600",
-                  fontSize: "2rem"
-              }}>
-                {quizData?.title}
-              </Typography>
-              <Box sx={{
-                display: "flex",
-                gap: 2,
-                height: "60%",
+              <Stack alignItems="center" justifyContent="center" spacing={2} sx={{ 
                 width: "100%",
-                justifyContent: "center"
               }}>
-                <Box component="img" src={ quizData?.cover_image_url || "/placeholder.jpg"} sx={{
-                  height: "450px",
-                  aspectRatio: "9 / 12",
-                }} />
-                
-                <Stack spacing={1.5} sx={{
-                  height: "450px",
-                  flex: 1,
-                }}>
-                  <Stack>
-                    <Typography sx={{
-                      fontWeight: "600",
-                      fontSize: "1.3rem"
-                    }}>
-                      Description
-                    </Typography>
-                    <Typography sx={{
-                      backgroundColor: "var(--muted-surface)",
-                      borderRadius: "5px",
-                      padding: "3px"
-                    }}>{quizData?.description}</Typography>
-                  </Stack>
-                  <Stack spacing={0.5} sx={{
-                    flex: 1
-                  }}>
-                    <Typography sx={{
-                      fontWeight: "600",
-                      fontSize: "1.3rem"
-                    }}>
-                      Tags
-                    </Typography>
-                    <Box sx={{
-                      backgroundColor: "var(--muted-surface)",
-                      padding: "5px",
-                      borderRadius: "5px",
-                      minHeight: "150px",
-                      flex: "1"
-                    }}>
-                      {quizData?.tags.map((tag) => {
-                        return <Chip key={tag.id} label={tag.name}/>
-                      })}
-                    </Box>
-                  </Stack>
-                  <Button variant="contained" onClick={() => router.push(`/quiz/play/${quizId}`)}>Play</Button>
-                </Stack>
-              </Box>
-              {/* Owner avatar and nickname */}            
-              <Box sx={{
-                display: "flex",
-                alignItems: "center",
-                gap: 1,
-                height: "object-fit"
-              }}>
-                <Avatar src={ user?.profile_picture_url }></Avatar>
                 <Typography sx={{
-                  fontSize: "0.9rem",
-                  color: "var(--text-muted)"
-                }}>Created by {quizData?.owner.nickname}</Typography>
-              </Box>
-            </Stack>
-          </Container>
-        )
-      }
+                    fontWeight: "600",
+                    fontSize: "2rem"
+                }}>
+                  {quizData?.title}
+                </Typography>
+                <Box sx={{
+                  display: "flex",
+                  gap: 2,
+                  height: "60%",
+                  width: "100%",
+                  justifyContent: "center"
+                }}>
+                  <Box component="img" src={ quizData?.cover_image_url || "/placeholder.jpg"} sx={{
+                    height: "450px",
+                    aspectRatio: "9 / 12",
+                  }} />
+                  
+                  <Stack spacing={1.5} sx={{
+                    height: "450px",
+                    flex: 1,
+                  }}>
+                    <Stack>
+                      <Typography sx={{
+                        fontWeight: "600",
+                        fontSize: "1.3rem"
+                      }}>
+                        Description
+                      </Typography>
+                      <Typography sx={{
+                        backgroundColor: "var(--muted-surface)",
+                        borderRadius: "5px",
+                        padding: "3px"
+                      }}>{quizData?.description}</Typography>
+                    </Stack>
+                    <Stack spacing={0.5} sx={{
+                      flex: 1
+                    }}>
+                      <Typography sx={{
+                        fontWeight: "600",
+                        fontSize: "1.3rem"
+                      }}>
+                        Tags
+                      </Typography>
+                      <Box sx={{
+                        backgroundColor: "var(--muted-surface)",
+                        padding: "5px",
+                        borderRadius: "5px",
+                        minHeight: "150px",
+                        flex: "1"
+                      }}>
+                        {quizData?.tags.map((tag) => {
+                          return <Chip key={tag.id} label={tag.name}/>
+                        })}
+                      </Box>
+                    </Stack>
+                    <Button variant="contained" onClick={() => router.push(`/quiz/play/${quizId}`)}>Play</Button>
+                  </Stack>
+                </Box>
+                {/* Owner avatar and nickname */}            
+                <Box sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 1,
+                  height: "object-fit"
+                }}>
+                  <Avatar src={ user?.profile_picture_url }></Avatar>
+                  <Typography sx={{
+                    fontSize: "0.9rem",
+                    color: "var(--text-muted)"
+                  }}>Created by {quizData?.owner.nickname}</Typography>
+                </Box>
+              </Stack>
+            </Container>
+          )
+        }
+      </ProtectedPage>
     </Box>
   )
 }

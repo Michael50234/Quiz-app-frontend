@@ -39,7 +39,8 @@ const QuestionCard = ({ deleteQuestion, question, changeQuestionImageUrl, change
             padding: "20px",
             display: "flex",
             flexDirection: "column",
-            height: "450px"
+            height: "450px",
+            boxShadow: "0px 2px 10px 1px rgba(0,0,0, 0.1), 0px 10px 50px 5px rgba(0,0,0, 0.08)"
         }}>
           <IconButton color="error" sx={{
             ml: "auto",

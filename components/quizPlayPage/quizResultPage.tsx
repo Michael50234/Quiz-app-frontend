@@ -31,7 +31,7 @@ const QuizResultPage = ({quiz_id, numQuestions, quizName, coverImageUrl, score} 
     const createSubmission = async () => {
       const access_token = localStorage.getItem("access_token");
 
-      const response = await fetch("http://127.0.0.1:8000/quizzes/submission", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/quizzes/submission`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

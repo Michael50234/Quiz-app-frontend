@@ -31,7 +31,10 @@ export const UserProvider = ({children}: {children: React.ReactNode}) => {
             try {
                 const access_token = localStorage.getItem("access_token");
 
-                if(!access_token) return;
+                if(!access_token) {
+                    router.replace("/")
+                    return;
+                }
 
                 await loadUser(); 
             } catch(error) {

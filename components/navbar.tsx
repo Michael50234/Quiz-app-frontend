@@ -14,7 +14,7 @@ const Navbar = () => {
     const { user, setUser } = useUser();
 
     const logoutHandler = () => {
-        fetch("http://127.0.0.1:8000/accounts/logout", {
+        fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/accounts/logout`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

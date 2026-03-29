@@ -11,6 +11,8 @@ import { storage } from '@/config/firebase.config';
 import { getAuth } from 'firebase/auth';
 import { useParams, useRouter } from 'next/navigation'
 import LoadingSpinner from '@/components/loadingSpinner';
+import ErrorPage from '@/components/errorPage';
+import ProtectedPage from '@/components/ProtectedPage';
 
 const page = () => {
     const [page, setPage] = useState<string>("description")
@@ -443,102 +445,109 @@ const page = () => {
             minHeight: "100vh"
         }}>
             <Toolbar></Toolbar>
-            { loading ? (
-                <LoadingSpinner />
-            ) : pageData ? (<Box sx={{
-                minHeight: "100vh",
-                pl: "20px", 
-                pr: "20px",
-                display: "flex",
-                flexDirection: "column"}}>
-                <Container>
-                    <Stack 
-                        direction="row" 
-                        justifyContent={"center"} 
-                        spacing={2} 
-                        sx={{
-                        p: "10px",
-                        }}>
-                        <Button 
-                            sx={{ 
-                                width: "120px",
-                                "&.MuiButton-contained": {
-                                backgroundColor: "var(--secondary)",
-                                "&:hover": {
-                                    backgroundColor: "var(--secondary-hover)",
-                                },
-                                color: "hsl(0, 0%, 5%)",
-                                },
-                                "&.MuiButton-outlined": {
-                                border: "1px solid HSLA(39, 59%, 73%, 0.5)",
-                                color: "hsl(0, 0%, 35%)"
-                                }
-                            }} 
-                            variant={page === "description" ? "contained" : "outlined"} 
-                            onClick={() => setPage("description")}>Description
-                        </Button>
-                        <Button 
-                        sx={{ 
-                            width: "120px",
-                            "&.MuiButton-contained": {
-                            backgroundColor: "var(--secondary)",
-                            "&:hover": {
-                                backgroundColor: "var(--secondary-hover)",
-                            },
-                            color: "hsl(0, 0%, 5%)",
-                            },
-                            "&.MuiButton-outlined": {
-                            border: "1px solid HSLA(39, 59%, 73%, 0.5)",
-                            color: "hsl(0, 0%, 35%)"
-                            }
-                        }} 
-                        variant={page === "questions" ? "contained" : "outlined"} 
-                        onClick={() => setPage("questions")}>Questions
-                        </Button>
-                    </Stack>
-                </Container>
-                { page === "description" ? 
-                <DescriptionPage 
-                    changeCoverImageUrl={changeCoverImageUrl}
-                    changeCoverImageBlob={changeCoverImageBlob}
-                    tagIds={pageData.tag_ids} 
-                    tags={tags} 
-                    changeTagIds={changeTagIds} 
-                    title={pageData.title} 
-                    coverImageUrl={pageData.cover_image_url} 
-                    changeTitle={changeTitle} 
-                    isPublic={pageData.is_public} 
-                    changeIsPublic={changePublicStatus} 
-                    description={pageData.description} 
-                    changeDescription={changeDescription}>
-                </DescriptionPage> : 
-                <QuestionsPage
-                    saveQuiz={saveQuiz}
-                    deleteQuestion={deleteQuestion}
-                    addNewQuestion={addNewQuestion}
-                    questions={pageData.questions} 
-                    changeQuestionImageUrl={changeQuestionImageUrl}
-                    changeQuestionImageBlob={changeQuestionImageBlob}
-                    changeChoice={changeChoice} 
-                    changeQuestion={changeQuestion}
-                    changeCorrectChoice={changeCorrectChoice}>
-                </QuestionsPage>
-                }
-            </Box>) : (
-                <Typography>Quiz not found</Typography>
-            )}
+            <ProtectedPage>
+                { loading ? (
+                    <LoadingSpinner />
+                ) : pageData ? (
+                    <Box sx={{
+                        minHeight: "100vh",
+                        pl: "20px", 
+                        pr: "20px",
+                        display: "flex",
+                        flexDirection: "column"}}
+                    >
+                        <Container>
+                            <Stack 
+                                direction="row" 
+                                justifyContent={"center"} 
+                                spacing={2} 
+                                sx={{
+                                p: "10px",
+                                }}>
+                                <Button 
+                                    sx={{ 
+                                        width: "120px",
+                                        "&.MuiButton-contained": {
+                                        backgroundColor: "var(--secondary)",
+                                        "&:hover": {
+                                            backgroundColor: "var(--secondary-hover)",
+                                        },
+                                        color: "hsl(0, 0%, 5%)",
+                                        },
+                                        "&.MuiButton-outlined": {
+                                        border: "1px solid HSLA(39, 59%, 73%, 0.5)",
+                                        color: "hsl(0, 0%, 35%)"
+                                        }
+                                    }} 
+                                    variant={page === "description" ? "contained" : "outlined"} 
+                                    onClick={() => setPage("description")}>Description
+                                </Button>
+                                <Button 
+                                sx={{ 
+                                    width: "120px",
+                                    "&.MuiButton-contained": {
+                                    backgroundColor: "var(--secondary)",
+                                    "&:hover": {
+                                        backgroundColor: "var(--secondary-hover)",
+                                    },
+                                    color: "hsl(0, 0%, 5%)",
+                                    },
+                                    "&.MuiButton-outlined": {
+                                    border: "1px solid HSLA(39, 59%, 73%, 0.5)",
+                                    color: "hsl(0, 0%, 35%)"
+                                    }
+                                }} 
+                                variant={page === "questions" ? "contained" : "outlined"} 
+                                onClick={() => setPage("questions")}>Questions
+                                </Button>
+                            </Stack>
+                        </Container>
+                        { page === "description" ? 
+                            <DescriptionPage 
+                                changeCoverImageUrl={changeCoverImageUrl}
+                                changeCoverImageBlob={changeCoverImageBlob}
+                                tagIds={pageData.tag_ids} 
+                                tags={tags} 
+                                changeTagIds={changeTagIds} 
+                                title={pageData.title} 
+                                coverImageUrl={pageData.cover_image_url} 
+                                changeTitle={changeTitle} 
+                                isPublic={pageData.is_public} 
+                                changeIsPublic={changePublicStatus} 
+                                description={pageData.description} 
+                                changeDescription={changeDescription}
+                            >
+                            </DescriptionPage> : 
+                            <QuestionsPage
+                                saveQuiz={saveQuiz}
+                                deleteQuestion={deleteQuestion}
+                                addNewQuestion={addNewQuestion}
+                                questions={pageData.questions} 
+                                changeQuestionImageUrl={changeQuestionImageUrl}
+                                changeQuestionImageBlob={changeQuestionImageBlob}
+                                changeChoice={changeChoice} 
+                                changeQuestion={changeQuestion}
+                                changeCorrectChoice={changeCorrectChoice}
+                            >
+                            </QuestionsPage>
+                        }
+                    </Box>
+                ) : (
+                    <ErrorPage errorMessage={"Quiz Not Found"}/>
+                )}
+            </ProtectedPage>
             <Box sx={{
-                    position: "fixed",
-                    bottom: "0px",
-                    left: "0px",
-                    right: "0px",
-                    height: "60px",
-                    backgroundColor: "var(--bg)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: "10px"
-                  }}>
+                position: "fixed",
+                bottom: "0px",
+                left: "0px",
+                right: "0px",
+                height: "60px",
+                backgroundColor: "var(--bg)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "10px"
+            }}>
                 <Button variant="contained" disabled={page !== "questions"}onClick={addNewQuestion}>Add New Question</Button>
                 <Button variant="contained" onClick={() => setSaveDialogOpen(true)}>Save</Button>
                 <Dialog open={saveDialogOpen} onClose={() => setSaveDialogOpen(false)}>

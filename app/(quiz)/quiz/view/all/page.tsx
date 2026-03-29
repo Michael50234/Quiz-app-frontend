@@ -8,6 +8,7 @@ import { DisplayQuiz, ErrorResponse, QueryParameters, Tag } from '@/types'
 import TagFilter from '@/components/tagFilter';
 import SearchField from '@/components/searchBar';
 import LoadingSpinner from '@/components/loadingSpinner';
+import ProtectedPage from '@/components/ProtectedPage';
 
 type Quiz = {
   id: number
@@ -160,12 +161,13 @@ const pages = () => {
     });
   }
 
-  return <Box sx={{
+  return (
+    <Box sx={{
       mt: "10px",
       pl: "10px",
       pr: "10px",
       minHeight: "100vh",
-      width: "100vw",
+      width: "100%",
       backgroundColor: "var(--bg-dark)",
     }}>
       <Stack direction="row" gap={3} sx={{
@@ -191,16 +193,19 @@ const pages = () => {
           <SearchField search={search} setSearch={setSearch}></SearchField>
           <TagFilter tags={tags} selectedTagIds={selectedTagIds} setSelectedTagIds={setSelectedTagIds}></TagFilter>
       </Stack>
-      { isQuizListLoading || isTagsLoading ? (
-        <LoadingSpinner />
-      ) : (<>
-        <Toolbar variant="dense"></Toolbar>
-        <Box sx={{
-          height: "70px"
-        }}></Box>
-        <QuizDisplayGrid deleteQuizHandler={deleteQuizHandler} quizzes={quizzes}></QuizDisplayGrid>
-      </>)} 
+      <ProtectedPage>
+        { isQuizListLoading || isTagsLoading ? (
+          <LoadingSpinner />
+        ) : (<>
+          <Toolbar variant="dense"></Toolbar>
+          <Box sx={{
+            height: "70px"
+          }}></Box>
+          <QuizDisplayGrid deleteQuizHandler={deleteQuizHandler} quizzes={quizzes}></QuizDisplayGrid>
+        </>)}
+      </ProtectedPage>
     </Box>
+  )
 }
 
 export default pages
