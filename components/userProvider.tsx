@@ -1,11 +1,13 @@
 'use client';
 
 import { ErrorResponse, User } from "@/types";
-import { createContext, useContext, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { createContext, Dispatch, useContext, useEffect, useState } from "react";
 
 type userContextType = {
     user: User | null,
     loadUser: () => void,
+    setUser: React.Dispatch<React.SetStateAction<User | null>>
 }
 
 export const UserContext = createContext<null | userContextType>(null)
@@ -21,6 +23,7 @@ export const useUser = () => {
 }
 
 export const UserProvider = ({children}: {children: React.ReactNode}) => {
+    const router = useRouter();
     const [user, setUser] = useState<null | User>(null);
 
     useEffect(() => {
@@ -35,7 +38,9 @@ export const UserProvider = ({children}: {children: React.ReactNode}) => {
                 // If it crashes the access token is expired, so remove it
                 localStorage.removeItem("access_token");
                 localStorage.removeItem("refresh_token");
-                return;
+                setUser(null);
+                router.replace("/");
+                // TODO: Show a login credentials expired
             }
         }
         loadData();
@@ -45,7 +50,7 @@ export const UserProvider = ({children}: {children: React.ReactNode}) => {
     const loadUser = async () => {
         const token = localStorage.getItem("access_token")
 
-        const response = await fetch("http://127.0.0.1:8000/accounts/user", {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/accounts/user`, {
             method: "GET",
             headers: {
             "Content-Type": "application/json",
@@ -64,7 +69,7 @@ export const UserProvider = ({children}: {children: React.ReactNode}) => {
     }
 
     return (
-        <UserContext.Provider value={{ user, loadUser }}>
+        <UserContext.Provider value={{ user, loadUser, setUser }}>
             {children}
         </UserContext.Provider>
     )

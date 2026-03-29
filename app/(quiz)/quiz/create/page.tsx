@@ -66,7 +66,7 @@ const page = () => {
   const fetchTags = async () => {
       const token = localStorage.getItem("access_token");
 
-      const response = await fetch("http://127.0.0.1:8000/quizzes/tags", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/quizzes/tags`, {
           method: "GET",
           headers: {
               "Authorization": `Bearer ${token}`,
@@ -274,7 +274,7 @@ const page = () => {
       }
 
       //Save quiz and get the ids for the quiz and questions
-      const response = await fetch("http://127.0.0.1:8000/quizzes/create-quiz", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/quizzes/create-quiz`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -336,7 +336,7 @@ const page = () => {
         })
       };
 
-      const updateResponse = await fetch(`http://127.0.0.1:8000/quizzes/quiz/${quiz_id}/update`, {
+      const updateResponse = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/quizzes/quiz/${quiz_id}/update`, {
         method: "PATCH",
         headers: {
           "Content-Type": "Application/Json",

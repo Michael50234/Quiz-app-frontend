@@ -1,15 +1,13 @@
 'use client';
 
-import React, { useContext, useState } from "react";
+import { useContext, useState } from "react";
 import { signInWithCustomToken } from "firebase/auth";
 import { auth } from "@/config/firebase.config";
 
-import styles from "./page.module.css";
 import { Box, Button, ButtonGroup, Container, Stack, TextField, Typography } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { ErrorResponse, User } from "@/types";
 import { useUser } from "@/components/userProvider";
-
 
 export default function Login() {
   const [page, setPage] = useState<string>("Sign-up");
@@ -20,12 +18,12 @@ export default function Login() {
 
 
   function redirectToHome() {
-    router.push('/quiz/view/all')
+    router.replace('/quiz/view/all')
   }
 
 //Get a firebase token from the backend and send it to firebase auth to get a id_token, which is stored in your client (creates a session in firebase sdk)
   const firebaseLogin = async (): Promise<void> => {
-    const response = await fetch("http://127.0.0.1:8000/accounts/firebase-login", {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/accounts/firebase-login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -40,7 +38,7 @@ export default function Login() {
 
   const handleLogin = async (username: string, password: string): Promise<void> => {
     try {
-      let response = await fetch("http://127.0.0.1:8000/accounts/login", {
+      let response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/accounts/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -84,7 +82,7 @@ export default function Login() {
 
   const handleSignup = async (username: string, password: string): Promise<void> => {
     try {
-      let response  = await fetch("http://127.0.0.1:8000/accounts/register", {
+      let response  = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/accounts/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"

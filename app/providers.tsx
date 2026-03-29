@@ -8,7 +8,7 @@ import { usePathname } from 'next/navigation';
 import { UserProvider } from "@/components/userProvider";
 
 //Only show navbar for these addresses
-const navbarAddresses = new Set<string>(['/profile', '/quiz/create', '/quiz/view/all', '/profile'])
+const navbarAddresses = new Set<string>(['/profile', '/quiz/create', '/quiz/view/all', '/profile', '/quiz/submissions'])
 const viewQuizPagePattern = /^\/quiz\/view\/\d+$/
 const editQuizPagePattern = /^\/quiz\/edit\/\d+$/
 

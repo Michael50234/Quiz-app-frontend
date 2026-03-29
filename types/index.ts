@@ -147,6 +147,7 @@ export type QuestionPlayViewResponse = Pick<Quiz, "id" | "title" | "owner" | "ta
 
 // Get Submissions Response Format (return format for get all submissions route)
 export type SubmissionResponse = Pick<Submission, "submission_time" | "score" | "number_of_questions"> & {
+    id: number,
     quiz_title: string,
     user: Pick<User, "id" | "nickname">
 }

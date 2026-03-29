@@ -1,10 +1,16 @@
+'use client';
+
+import { ErrorResponse } from '@/types';
 import { Box, Button, keyframes, Stack, Typography } from '@mui/material';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
 type QuizResultPageProps = {
   quizName: string,
   numQuestions: number,
   score: number,
   coverImageUrl: string,
+  quiz_id: number,
 }
 
 const resultAnimation = keyframes`
@@ -18,7 +24,36 @@ const resultAnimation = keyframes`
   }
 `;
 
-const QuizResultPage = ({numQuestions, quizName, coverImageUrl, score} : QuizResultPageProps) => {
+const QuizResultPage = ({quiz_id, numQuestions, quizName, coverImageUrl, score} : QuizResultPageProps) => {
+  const router = useRouter();
+
+  useEffect(() => {
+    const createSubmission = async () => {
+      const access_token = localStorage.getItem("access_token");
+
+      const response = await fetch("http://127.0.0.1:8000/quizzes/submission", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${access_token}`
+        },
+        body: JSON.stringify({
+          quiz_id: quiz_id,
+          score: score,
+          number_of_questions: numQuestions,
+        })
+      });
+
+      if(!response.ok) {
+        throw new Error("Failed to create quiz submission");
+      }
+
+    };
+
+    createSubmission();
+  }, [])
+
+
   return (
     <Stack spacing={3.5} sx={{
       backgroundColor: "var(--bg)",
@@ -39,7 +74,7 @@ const QuizResultPage = ({numQuestions, quizName, coverImageUrl, score} : QuizRes
           <Typography textAlign="center" sx={{ fontSize: "1.5rem"}}>Score: {`${score} / ${numQuestions}`}</Typography>
         </Stack>
       </Stack>
-      <Button variant="contained" color="primary">Return To Quiz Dashboard</Button>
+      <Button variant="contained" color="primary" onClick={() => router.push("/quiz/view/all")}>Return To Quiz Dashboard</Button>
     </Stack>
   )
 }

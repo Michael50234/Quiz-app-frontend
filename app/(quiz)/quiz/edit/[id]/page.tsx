@@ -44,7 +44,7 @@ const page = () => {
     const fetchQuiz = async (tags: Tag[]) => {
         const access_token = localStorage.getItem("access_token");
 
-        const response = await fetch(`http://127.0.0.1:8000/quizzes/quiz/${quizId}`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/quizzes/quiz/${quizId}`, {
             method: "GET",
             headers: {
                 "Authorization": `Bearer ${access_token}`
@@ -99,7 +99,7 @@ const page = () => {
     const fetchTags = async () => {
         const token = localStorage.getItem("access_token");
 
-        const response = await fetch("http://127.0.0.1:8000/quizzes/tags", {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/quizzes/tags`, {
             method: "GET",
             headers: {
                 "Authorization": `Bearer ${token}`,
@@ -353,7 +353,7 @@ const page = () => {
             };
 
             //Create the new questions added to the quiz and get their id
-            let response = await fetch(`http://127.0.0.1:8000/quizzes/quiz/${quizId}/update`, {
+            let response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/quizzes/quiz/${quizId}/update`, {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",
@@ -415,7 +415,7 @@ const page = () => {
             }
 
             // Save new firebase image urls in firebase
-            response = await fetch(`http://127.0.0.1:8000/quizzes/quiz/${quizId}/update`, {
+            response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/quizzes/quiz/${quizId}/update`, {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",

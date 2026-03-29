@@ -98,7 +98,7 @@ const pages = () => {
     // Change the endpoint the request is sent to based on view mode
     const address = quizViewMode ? "public-quizzes" : "user-quizzes";
 
-    const response = await fetch(`http://127.0.0.1:8000/quizzes/${address}?${searchParameters.toString()}`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/quizzes/${address}?${searchParameters.toString()}`, {
       method: "GET",
       headers: {
         "Authorization": `Bearer ${access_token}`
@@ -116,8 +116,8 @@ const pages = () => {
 
   const fetchTags = async () => {
     const access_token = localStorage.getItem("access_token");
-
-    const response = await fetch("http://127.0.0.1:8000/quizzes/tags", {
+    console.log(process.env.NEXT_PUBLIC_BACKEND_URL)
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/quizzes/tags`, {
       method: "GET", 
       headers: {
         "Authorization": `Bearer ${access_token}`
@@ -137,7 +137,7 @@ const pages = () => {
   const deleteQuizHandler = async (id: number) => {
     const access_token = localStorage.getItem("access_token")
 
-    const response = await fetch(`http://127.0.0.1:8000/quizzes/quiz/${id}/delete`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/quizzes/quiz/${id}/delete`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",

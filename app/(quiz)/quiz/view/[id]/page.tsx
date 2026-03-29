@@ -4,11 +4,12 @@ import LoadingSpinner from '@/components/loadingSpinner'
 import { useUser } from '@/components/userProvider';
 import { ErrorResponse, QuizDetailViewResponse } from '@/types'
 import { Avatar, Box, Button, Chip, Container, Stack, Toolbar, Typography } from '@mui/material'
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import React, { use, useEffect, useState } from 'react'
 
 const QuizView = () => {
-  const quizId = useParams().id
+  const router = useRouter();
+  const quizId = useParams().id;
   const [quizData, setQuizData] = useState<QuizDetailViewResponse | null>(null);
   const [numSelectedQuestions, setNumSelectedQuestions] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(true);
@@ -128,7 +129,7 @@ const QuizView = () => {
                       })}
                     </Box>
                   </Stack>
-                  <Button variant="contained">Play</Button>
+                  <Button variant="contained" onClick={() => router.push(`/quiz/play/${quizId}`)}>Play</Button>
                 </Stack>
               </Box>
               {/* Owner avatar and nickname */}            
@@ -147,9 +148,7 @@ const QuizView = () => {
             </Stack>
           </Container>
         )
-
       }
-      
     </Box>
   )
 }

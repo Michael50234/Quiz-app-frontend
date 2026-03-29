@@ -56,7 +56,7 @@ const page = () => {
   const loadUserData = async () => {
     const access_token = localStorage.getItem("access_token");
 
-    const response = await fetch(`http://127.0.0.1:8000/accounts/user`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/accounts/user`, {
       method: "GET",
       headers: {
         "Authorization": `Bearer ${access_token}`
@@ -112,7 +112,7 @@ const page = () => {
           userDataCopy.profile_picture_url = imageUrl;
       }
 
-      const response = await fetch("http://127.0.0.1:8000/accounts/user", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/accounts/user`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

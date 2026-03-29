@@ -77,7 +77,7 @@ const page = () => {
 
             const access_token = localStorage.getItem("access_token");
 
-            const response = await fetch(`http://127.0.0.1:8000/quizzes/check-question/${selectedChoiceId}`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/quizzes/check-question/${selectedChoiceId}`, {
                 method: "GET",
                 headers: {
                     "Authorization": `Bearer ${access_token}`
@@ -106,7 +106,7 @@ const page = () => {
 
     const fetchQuiz = async () => {
         const access_token = localStorage.getItem("access_token");
-        const response = await fetch(`http://127.0.0.1:8000/quizzes/quiz/${quiz_id}/play`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/quizzes/quiz/${quiz_id}/play`, {
             method: "GET",
             headers: {
                 "Authorization": `Bearer ${access_token}` 
@@ -140,7 +140,7 @@ const page = () => {
                     padding: "10px"
                 }}
             >
-                <Typography>Score: {`${score} / ${numQuestions}`}</Typography>
+                <Typography sx={{ ml: "5px"}}>Score: {`${score} / ${numQuestions}`}</Typography>
                 <Typography sx={{
                     position: "absolute",
                     left: "50%",
@@ -171,7 +171,13 @@ const page = () => {
                             questionData={quizData?.questions[questionIndex]} 
                             animation={animation}
                             showNextQuestion={showNextQuestion}
-                        />) : (<QuizResultPage quizName={quizData?.title ?? ""} score={score} numQuestions={numQuestions} coverImageUrl={quizData?.cover_image_url ?? "/placeholder.jpg"}/>)
+                        />) : (
+                        <QuizResultPage 
+                            quiz_id={Number(quiz_id)} 
+                            quizName={quizData?.title ?? ""} 
+                            score={score} numQuestions={numQuestions} 
+                            coverImageUrl={quizData?.cover_image_url ?? "/placeholder.jpg"}
+                        />)
                 )}
             </Box>
         </Box>

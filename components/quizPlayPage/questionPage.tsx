@@ -43,10 +43,6 @@ type QuestionPageProps = {
 
 const QuestionPage = ({ checkQuestion, showNextQuestion, animation, checkAnswerLoading, questionData, selectedChoiceId, setSelectedChoiceId, correctChoiceId }: QuestionPageProps) => {
 
-  useEffect(() => {
-    console.log("selected choice", selectedChoiceId);
-  }, [selectedChoiceId])
-
   return (
     <Stack key={questionData?.id} alignItems="center" spacing={3} justifyContent="center" sx={{
         width: "60%",
