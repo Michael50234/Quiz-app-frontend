@@ -133,7 +133,7 @@ const DescriptionPage = ({tagIds, tags, title, isPublic, coverImageUrl, descript
                     fontSize: "1rem", 
                     flex: 1,
                   }
-              }}></TextField>
+              }} />
             </Box>
           </Stack>
         </Container>

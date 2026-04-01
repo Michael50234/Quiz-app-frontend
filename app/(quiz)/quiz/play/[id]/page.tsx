@@ -1,9 +1,11 @@
 'use client';
 
+import ErrorPage from "@/components/errorPage";
 import LoadingSpinner from "@/components/loadingSpinner";
 import ProtectedPage from "@/components/ProtectedPage";
 import QuestionPage from "@/components/quizPlayPage/questionPage";
 import QuizResultPage from "@/components/quizPlayPage/quizResultPage";
+import { useToast } from "@/components/toastProvider";
 import { ErrorResponse, PlayQuiz } from "@/types";
 import { Box, keyframes, Typography } from "@mui/material";
 import { useParams } from "next/navigation";
@@ -12,6 +14,8 @@ import { useEffect, useState, useRef, useMemo } from "react";
 type Animation = "in" | "out"
 
 const page = () => {
+    const { showSuccess, showError } = useToast();
+
     const [loading, setLoading] = useState<boolean>(true);
     const [checkAnswerLoading, setCheckAnswerLoading] = useState<boolean>(false)
 
@@ -38,8 +42,7 @@ const page = () => {
             try {
                 await fetchQuiz()
             } catch(error) {
-                console.warn(error)
-                // TODO: Use snackbar to show error here and redirect
+                showError("Failed to load quiz")
             } finally {
                 setLoading(false);
             }
@@ -68,7 +71,6 @@ const page = () => {
                 return prev + 1
             });
         }, 600)
-
         
     }
 
@@ -120,8 +122,6 @@ const page = () => {
         }
 
         const data: PlayQuiz = await response.json();
-        // TODO: Remove this
-        console.log(data);
 
         setQuizData(data);
     }
@@ -149,40 +149,43 @@ const page = () => {
                     color: "variant"
                 }}>Current Question: {questionIndex + 1}</Typography>
             </Box>
-            <ProtectedPage>
-                <Box 
-                    sx={{
-                        backgroundColor: "var(--bg-dark)",
-                        minHeight: "100vh",
-                        width: "100vw",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center"
-                    }}
-                >
+            <Box 
+                sx={{
+                    backgroundColor: "var(--bg-dark)",
+                    minHeight: "100vh",
+                    width: "100vw",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center"
+                }}
+            >   
+                <ProtectedPage>
                     {loading ? (
                         <LoadingSpinner />
-                    ) : (
-                        page === "question" ? (
-                            <QuestionPage 
-                                checkQuestion={checkQuestion}
-                                selectedChoiceId={selectedChoiceId} 
-                                setSelectedChoiceId={setSelectedChoiceId} 
-                                correctChoiceId={correctChoiceId}
-                                checkAnswerLoading={checkAnswerLoading}
-                                questionData={quizData?.questions[questionIndex]} 
-                                animation={animation}
-                                showNextQuestion={showNextQuestion}
-                            />) : (
-                            <QuizResultPage 
-                                quiz_id={Number(quiz_id)} 
-                                quizName={quizData?.title ?? ""} 
-                                score={score} numQuestions={numQuestions} 
-                                coverImageUrl={quizData?.cover_image_url ?? "/placeholder.jpg"}
-                            />)
+                    ) : ( quizData ? (
+                            page === "question" ? (
+                                <QuestionPage 
+                                    checkQuestion={checkQuestion}
+                                    selectedChoiceId={selectedChoiceId} 
+                                    setSelectedChoiceId={setSelectedChoiceId} 
+                                    correctChoiceId={correctChoiceId}
+                                    checkAnswerLoading={checkAnswerLoading}
+                                    questionData={quizData?.questions[questionIndex]} 
+                                    animation={animation}
+                                    showNextQuestion={showNextQuestion}
+                                />) : (
+                                <QuizResultPage 
+                                    quiz_id={Number(quiz_id)} 
+                                    quizName={quizData?.title ?? ""} 
+                                    score={score} numQuestions={numQuestions} 
+                                    coverImageUrl={quizData?.cover_image_url ?? "/placeholder.jpg"}
+                                />)
+                            ) : (
+                                <ErrorPage errorMessage="Quiz Not Found"/>
+                            )
                     )}
-                </Box>
-            </ProtectedPage>
+                </ProtectedPage>
+            </Box>
         </Box>
     )
 }

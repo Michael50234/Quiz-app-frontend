@@ -5,31 +5,33 @@ import { DisplayUser, ErrorResponse, User } from '@/types'
 import { useContext, useEffect, useState } from 'react';
 import LoadingSpinner from '@/components/loadingSpinner' 
 import ImageCropper from '@/components/crop/imageCropper';
-import { Input } from '@mui/icons-material';
 import { saveImageInFirebase } from '@/utils';
 import { UserContext, useUser } from '@/components/userProvider';
 import ProtectedPage from '@/components/ProtectedPage';
+import { useToast } from '@/components/toastProvider';
 
 const page = () => {
   const [userData, setUserData] = useState<null | DisplayUser>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
-  const { loadUser } = useUser();
 
+  const { loadUser, user, userLoading } = useUser();
+  
+  const { showError, showSuccess } = useToast();
+
+  
   useEffect(() => {
-    const loadData = async () => {
-      try {
-        await loadUserData()
-      } catch {
-        // TODO: Use toast to show errors
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadData();
+    loadUser();
   }, []);
 
+  useEffect(() => {
+    if(userLoading) return;
+
+    
+    setUserData(user);
+    setLoading(false);
+
+  }, [userLoading])
 
   const setNickname = (nickname: string) => {
     setUserData((prev) => {
@@ -41,7 +43,6 @@ const page = () => {
       }
     })
   }
-
   
   const setAboutMe = (about_me: string) => {
     setUserData((prev) => {
@@ -53,25 +54,6 @@ const page = () => {
       }
     })
   }
-
-  const loadUserData = async () => {
-    const access_token = localStorage.getItem("access_token");
-
-    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/accounts/user`, {
-      method: "GET",
-      headers: {
-        "Authorization": `Bearer ${access_token}`
-      }
-    });
-
-    if(!response.ok) {
-      const error: ErrorResponse = await response.json();
-    }
-
-    const data: User = await response.json();
-
-    setUserData(data);
-  };
 
   const handleDialogClose = () => {
     setDialogOpen(false);
@@ -128,26 +110,21 @@ const page = () => {
 
       if(!response.ok) {
         const error: ErrorResponse = await response.json();
-        console.warn(error.detail)
+        throw new Error("Failed to save changes")
       }
-
-      // TODO: Create snackbar for surfacing success
 
       if(userDataCopy.profile_picture_url) {
         setProfilePictureUrl(userDataCopy.profile_picture_url);
       }
 
-      // Update the user data context being used for the app
+      // Refresh the global user state
       loadUser();
 
-      // TODO: change this with something else 
-      console.log("success")
+      showSuccess("Successfully saved changes")
 
     } catch(error) {
-      // TODO: Create snackbar for surfacing error
-      console.error(error)
+      showError("Failed to save changes")
     }
-
   }
 
 

@@ -13,8 +13,11 @@ import { useParams, useRouter } from 'next/navigation'
 import LoadingSpinner from '@/components/loadingSpinner';
 import ErrorPage from '@/components/errorPage';
 import ProtectedPage from '@/components/ProtectedPage';
+import { useToast } from '@/components/toastProvider';
 
 const page = () => {
+    const { showError, showSuccess } = useToast();
+
     const [page, setPage] = useState<string>("description")
     const [pageData, setPageData] = useState<EditQuiz | null>(null)
     const [loading, setLoading] = useState<boolean>(true)
@@ -31,9 +34,8 @@ const page = () => {
             try {
                 const tags = await fetchTags()
                 await fetchQuiz(tags)
-            } catch(error) {
-                //TODO: create an error.tsx page and let this propogate
-                console.warn(error);
+            } catch {
+                // If the client fails to fetch the resources error page UI will be shown
             } finally {
                 setLoading(false);
             }
@@ -389,7 +391,7 @@ const page = () => {
 
             // Save cover images
             if(pageDataCopy.coverImageBlob) {
-                pageDataCopy.cover_image_url = await saveImageInFirebase(pageDataCopy.coverImageBlob, `users/${uid}/quizzes/${quizId}/icon.jpg`)
+                pageDataCopy.cover_image_url = await saveImageInFirebase(pageDataCopy.coverImageBlob, `users/${uid}/quizzes/${quizId}/icon.jpg`);
             }
 
             // Save question images
@@ -400,10 +402,10 @@ const page = () => {
                     return {
                         ...question,
                         question_image_url: new_image_url
-                    }
+                    };
                 }
 
-                return question
+                return question;
             }));
             
             ({ coverImageBlob, ...updateData } =  pageDataCopy);
@@ -414,7 +416,7 @@ const page = () => {
                     const { questionImageBlob, ...cleanedQuestion } = question
                     return cleanedQuestion
                 })
-            }
+            };
 
             // Save new firebase image urls in firebase
             response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/quizzes/quiz/${quizId}/update`, {
@@ -424,18 +426,21 @@ const page = () => {
                     "Authorization": `Bearer ${token}`
                 },
                 body: JSON.stringify(updateData)
-            })
+            });
 
-            data = await response.json()
+            data = await response.json();
 
             if(!response.ok) {
-                throw new Error("Failed to save quiz")
+                throw new Error("Failed to save quiz");
             }
 
-            setPageData(pageDataCopy)
-            router.push('/quiz/view/all')
+            setPageData(pageDataCopy);
+            showSuccess("Successfully saved quiz");
+
+
+            router.push('/quiz/view/all');
         } catch(error) {
-            console.warn(error)
+            showError("Failed to save quiz")
         }
     }
 

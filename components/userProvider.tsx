@@ -6,8 +6,9 @@ import { createContext, Dispatch, useContext, useEffect, useState } from "react"
 
 type userContextType = {
     user: User | null,
-    loadUser: () => void,
-    setUser: React.Dispatch<React.SetStateAction<User | null>>
+    loadUser: () => Promise<void>,
+    setUser: React.Dispatch<React.SetStateAction<User | null>>,
+    userLoading: boolean,
 }
 
 export const UserContext = createContext<null | userContextType>(null)
@@ -25,6 +26,7 @@ export const useUser = () => {
 export const UserProvider = ({children}: {children: React.ReactNode}) => {
     const router = useRouter();
     const [user, setUser] = useState<null | User>(null);
+    const [userLoading, setUserLoading] = useState<boolean>(true);
 
     useEffect(() => {
         const loadData = async () => {
@@ -38,7 +40,7 @@ export const UserProvider = ({children}: {children: React.ReactNode}) => {
 
                 await loadUser(); 
             } catch(error) {
-                // If it crashes the access token is expired, so remove it
+                // If it crashes the access token is expired or invalid, so remove it
                 localStorage.removeItem("access_token");
                 localStorage.removeItem("refresh_token");
                 setUser(null);
@@ -51,6 +53,7 @@ export const UserProvider = ({children}: {children: React.ReactNode}) => {
     }, [])
 
     const loadUser = async () => {
+        setUserLoading(true);
         const token = localStorage.getItem("access_token")
 
         const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/accounts/user`, {
@@ -69,10 +72,11 @@ export const UserProvider = ({children}: {children: React.ReactNode}) => {
         const data: User = await response.json();
 
         setUser(data);
+        setUserLoading(false);
     }
 
     return (
-        <UserContext.Provider value={{ user, loadUser, setUser }}>
+        <UserContext.Provider value={{ user, loadUser, setUser, userLoading }}>
             {children}
         </UserContext.Provider>
     )

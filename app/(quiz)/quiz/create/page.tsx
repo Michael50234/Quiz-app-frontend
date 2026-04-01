@@ -10,11 +10,17 @@ import QuestionsPage from '@/components/createQuizPage/questionsPage';
 import { useRouter } from 'next/navigation';
 import { saveImageInFirebase } from '@/utils';
 import ProtectedPage from '@/components/ProtectedPage';
+import { useToast } from '@/components/toastProvider';
 
 const page = () => {
   const router = useRouter();
+  
+  const { showError, showSuccess } = useToast()
+
   const [saveDialogOpen, setSaveDialogOpen] = useState<boolean>(false);
+
   const [page, setPage] = useState<string>("description");
+
   const [pageData, setPageData] = useState<CreateQuiz>({
     title: "",
     is_public: false,
@@ -350,15 +356,13 @@ const page = () => {
 
       if(!updateResponse.ok){
         throw new Error("Updating Quiz Failed")
-      } else {
-        console.log("Successfully saved quiz")
-      }
+      } 
 
+      showSuccess("Successfully saved quiz")
 
       router.push("/quiz/view/all");
     } catch(error) {
-      // TODO: Change this to a snackbar error
-      console.warn(error)
+      showError("Failed to update quiz")
     }
   }
 

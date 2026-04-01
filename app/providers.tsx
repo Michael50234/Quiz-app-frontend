@@ -6,6 +6,7 @@ import { theme } from "./theme";
 import Navbar from "@/components/navbar";
 import { usePathname } from 'next/navigation';
 import { UserProvider } from "@/components/userProvider";
+import { ToastProvider } from "@/components/toastProvider";
 
 //Only show navbar for these addresses
 const navbarAddresses = new Set<string>(['/profile', '/quiz/create', '/quiz/view/all', '/profile', '/quiz/submissions'])
@@ -18,9 +19,11 @@ export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <ThemeProvider theme={theme}>
       <UserProvider>
-        <CssBaseline />
-        { (navbarAddresses.has(pathName) || viewQuizPagePattern.test(pathName) || editQuizPagePattern.test(pathName)) && <Navbar></Navbar>}
-        {children}
+        <ToastProvider>
+          <CssBaseline />
+          { (navbarAddresses.has(pathName) || viewQuizPagePattern.test(pathName) || editQuizPagePattern.test(pathName)) && <Navbar></Navbar>}
+          {children}
+        </ToastProvider>
       </UserProvider>
     </ThemeProvider>
   );

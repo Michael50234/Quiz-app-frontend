@@ -1,5 +1,6 @@
 'use client';
 
+import ErrorPage from '@/components/errorPage';
 import LoadingSpinner from '@/components/loadingSpinner'
 import ProtectedPage from '@/components/ProtectedPage';
 import { useUser } from '@/components/userProvider';
@@ -21,8 +22,7 @@ const QuizView = () => {
       try {
         await loadQuiz();
       } catch(error) {
-        // TODO: Change this to snackbar error and redirect
-        console.warn(error)
+        // If the client fails to load the quiz, error page UI will be shown
       } finally {
         setLoading(false);
       }
@@ -64,7 +64,7 @@ const QuizView = () => {
         {
           loading ? (
             <LoadingSpinner />
-          ) : (
+          ) : quizData ? (
             <Container sx={{
               width: "50vw",
               display: "flex",
@@ -149,6 +149,8 @@ const QuizView = () => {
                 </Box>
               </Stack>
             </Container>
+          ) : (
+            <ErrorPage errorMessage="Quiz Not Found"/>
           )
         }
       </ProtectedPage>

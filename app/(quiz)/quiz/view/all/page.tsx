@@ -9,6 +9,7 @@ import TagFilter from '@/components/tagFilter';
 import SearchField from '@/components/searchBar';
 import LoadingSpinner from '@/components/loadingSpinner';
 import ProtectedPage from '@/components/ProtectedPage';
+import ErrorPage from '@/components/errorPage';
 
 type Quiz = {
   id: number
@@ -21,6 +22,9 @@ type Quiz = {
 }
 
 const pages = () => {
+  // Used to indicate whether there was an issue loading the resources
+  const [resourceLoadingError, setResourceLoadingError] = useState<boolean>(false);
+
   // Loading states
   const [isQuizListLoading, setIsQuizListLoading] = useState<boolean>(true);
   const [isTagsLoading, setIsTagsLoading] = useState<boolean>(true);
@@ -43,8 +47,7 @@ const pages = () => {
         setIsTagsLoading(true);
         await fetchTags();
       } catch(error) {
-        // TODO: Show toast to users for errors after implementation
-        // Also add a redirect here as the page cannot work without quizzes
+        setResourceLoadingError(true);
       } finally {
         setIsTagsLoading(false);
       }
@@ -196,13 +199,15 @@ const pages = () => {
       <ProtectedPage>
         { isQuizListLoading || isTagsLoading ? (
           <LoadingSpinner />
-        ) : (<>
+        ) : !resourceLoadingError ? (<>
           <Toolbar variant="dense"></Toolbar>
           <Box sx={{
             height: "70px"
           }}></Box>
           <QuizDisplayGrid deleteQuizHandler={deleteQuizHandler} quizzes={quizzes}></QuizDisplayGrid>
-        </>)}
+        </>) : (
+          <ErrorPage errorMessage="Failed to load quizzes"/>
+        )}
       </ProtectedPage>
     </Box>
   )

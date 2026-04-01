@@ -2,6 +2,7 @@
 
 import LoadingSpinner from '@/components/loadingSpinner';
 import ProtectedPage from '@/components/ProtectedPage';
+import { useToast } from '@/components/toastProvider';
 import { ErrorResponse, SubmissionResponse } from '@/types';
 import { Box, Stack, Toolbar, Typography } from '@mui/material'
 import { useEffect, useState } from 'react';
@@ -10,12 +11,14 @@ const page = () => {
     const [submissions, setSubmissions] = useState<SubmissionResponse[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
 
+    const { showError, showSuccess } = useToast();
+
     useEffect(() => {
         const loadData = async () => {
             try {
                 await fetchSubmissions();
             } catch(error) {
-                // Use Dialog here
+                showError("Failed to load submissions")
             } finally {
                 setLoading(false)
             }

@@ -8,8 +8,11 @@ import { Box, Button, ButtonGroup, Container, Stack, TextField, Typography } fro
 import { useRouter } from "next/navigation";
 import { ErrorResponse, User } from "@/types";
 import { useUser } from "@/components/userProvider";
+import { useToast } from "@/components/toastProvider";
 
 export default function Login() {
+  const { showSuccess, showError } = useToast();
+
   const [page, setPage] = useState<string>("Sign-up");
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -70,13 +73,16 @@ export default function Login() {
       // Log into firebase
       await firebaseLogin()
 
-      // TODO: Add a successful snackbar message here
+      showError("Successfully logged in")
 
       redirectToHome();
     }
     catch(error) {
-      // TODO: Make this set the snackbar state instead
-      console.error(error);
+      if(error instanceof Error) {
+        showError(error.message);
+      } else {
+        showError("Something went wrong")
+      }
     }
   };
 
@@ -111,15 +117,18 @@ export default function Login() {
       loadUser();
 
       // Log the user into firebase
-      await firebaseLogin()
+      await firebaseLogin();
 
       redirectToHome();
 
-      // TODO: Add a successful snackbar message here
+      showSuccess("Successfully signed up");
     }
     catch(error) {
-      // TODO: Make this set the snack bar state instead
-      alert(error);
+      if(error instanceof Error) {
+        showError(error.message);
+      } else {
+        showError("Something went wrong")
+      }
     }
   };
 

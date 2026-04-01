@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react'
 import { useUser } from './userProvider'
 import LoadingSpinner from './loadingSpinner';
 import { useRouter } from 'next/navigation';
-import ErrorPage from './errorPage';
 
 // The props object contains the children and data needed to enforce permissions
 type ProtectedPageProps = {
@@ -12,21 +11,20 @@ type ProtectedPageProps = {
 }
 
 const ProtectedPage = ({ children }: ProtectedPageProps ) => {
-    const [authLoading, setAuthLoading] = useState<boolean>(true);
     const router = useRouter();   
 
-    const { user } = useUser();
+    const { user, userLoading } = useUser();
 
     useEffect(() => {
-        if(!user) {
-            router.replace('/')
-        }
+        if(userLoading) return;
 
-        setAuthLoading(false);
-    }, [])
+        if(!user) {
+            router.replace('/');
+        }
+    }, [userLoading])
 
     return (
-        authLoading ? (
+        userLoading ? (
             <LoadingSpinner />
         ) : (
             children

@@ -4,6 +4,7 @@ import { ErrorResponse } from '@/types';
 import { Box, Button, keyframes, Stack, Typography } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
+import { useToast } from '../toastProvider';
 
 type QuizResultPageProps = {
   quizName: string,
@@ -27,6 +28,8 @@ const resultAnimation = keyframes`
 const QuizResultPage = ({quiz_id, numQuestions, quizName, coverImageUrl, score} : QuizResultPageProps) => {
   const router = useRouter();
 
+  const { showError, showInfo } = useToast();
+
   useEffect(() => {
     const createSubmission = async () => {
       const access_token = localStorage.getItem("access_token");
@@ -45,7 +48,9 @@ const QuizResultPage = ({quiz_id, numQuestions, quizName, coverImageUrl, score} 
       });
 
       if(!response.ok) {
-        throw new Error("Failed to create quiz submission");
+        showError("Failed to save quiz attempt")
+      } else {
+        showInfo("Quiz attempt has been saved")
       }
 
     };
