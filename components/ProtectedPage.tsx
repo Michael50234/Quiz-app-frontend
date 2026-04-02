@@ -1,35 +1,29 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react'
-import { useUser } from './userProvider'
-import LoadingSpinner from './loadingSpinner';
-import { useRouter } from 'next/navigation';
+import { useEffect, useState } from "react";
+import { useUser } from "./userProvider";
+import LoadingSpinner from "./loadingSpinner";
+import { useRouter } from "next/navigation";
 
 // The props object contains the children and data needed to enforce permissions
 type ProtectedPageProps = {
-    children: React.ReactNode,
-}
+  children: React.ReactNode;
+};
 
-const ProtectedPage = ({ children }: ProtectedPageProps ) => {
-    const router = useRouter();   
+const ProtectedPage = ({ children }: ProtectedPageProps) => {
+  const router = useRouter();
 
-    const { user, userLoading } = useUser();
+  const { user, userLoading } = useUser();
 
-    useEffect(() => {
-        if(userLoading) return;
+  useEffect(() => {
+    if (userLoading) return;
 
-        if(!user) {
-            router.replace('/');
-        }
-    }, [userLoading])
+    if (!user) {
+      router.replace("/");
+    }
+  }, [userLoading]);
 
-    return (
-        userLoading ? (
-            <LoadingSpinner />
-        ) : (
-            children
-        )
-    )
-}
+  return userLoading ? <LoadingSpinner /> : children;
+};
 
-export default ProtectedPage
+export default ProtectedPage;

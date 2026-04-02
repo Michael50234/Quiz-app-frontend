@@ -24,12 +24,13 @@
   --info: HSL(246, 83, 75);
 
   /* used for soft-sectioning, low-emphasis containers */
-  --muted-surface: rgba(0,0,0,0.03);
+  --muted-surface: rgba(0, 0, 0, 0.03);
 
   --accent: HSL(246, 83, 75);
 }
 
-html, body {
+html,
+body {
   box-sizing: border-box;
   font-family: "Poppins", sans-serif;
   color: var(--text-main);
