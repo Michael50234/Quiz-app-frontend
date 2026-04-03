@@ -73,15 +73,6 @@ const page = () => {
             justifyContent="center"
             spacing={4}
           >
-            <Typography
-              sx={{
-                pt: "10px",
-                fontSize: "2rem",
-                fontWeight: "600",
-              }}
-            >
-              Submissions
-            </Typography>
             { submissions.length === 0 ? (
                 <Box sx={{
                   display: "flex",
@@ -95,7 +86,7 @@ const page = () => {
                     fontSize: "3rem",
                     fontWeight: 600
                   }}>
-                    You have no submissions
+                    You Have No Submissions
                   </Typography>
                   <Button><Link href="/quiz/create">Play One Here</Link></Button>
                 </Box>
@@ -108,6 +99,15 @@ const page = () => {
                     width: "100%",
                   }}
                 >
+                  <Typography
+                    sx={{
+                      pt: "10px",
+                      fontSize: "2rem",
+                      fontWeight: "600",
+                    }}
+                  >
+                    Submissions
+                  </Typography>
                   {submissions.map((submission) => {
                     return (
                       <Stack
