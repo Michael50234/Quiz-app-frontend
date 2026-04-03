@@ -186,7 +186,6 @@ const pages = () => {
   return (
     <Box
       sx={{
-        mt: "10px",
         pl: "10px",
         pr: "10px",
         minHeight: "100vh",
@@ -242,12 +241,29 @@ const pages = () => {
         {isQuizListLoading || isTagsLoading ? (
           <LoadingSpinner />
         ) : !resourceLoadingError ? (
-          <>
-            <QuizDisplayGrid
-              deleteQuizHandler={deleteQuizHandler}
-              quizzes={quizzes}
-            />
-          </>
+          quizzes.length === 0 ? (
+            <Box sx={{
+              display: "flex",
+              flexDirection: "column",
+              height: "75vh",
+              alignItems: "center",
+              justifyContent: "center"
+
+            }}>
+              <Typography sx={{
+                fontSize: "3rem",
+                fontWeight: 600
+              }}>There Are No Quizzes</Typography>
+              <Button><Link href="/quiz/create">Create One Here</Link></Button>
+            </Box>
+          ) : (
+            <>
+              <QuizDisplayGrid
+                deleteQuizHandler={deleteQuizHandler}
+                quizzes={quizzes}
+              />
+            </>
+          )
         ) : (
           <ErrorPage errorMessage="Failed to load quizzes" />
         )}

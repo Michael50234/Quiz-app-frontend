@@ -4,7 +4,8 @@ import LoadingSpinner from "@/components/loadingSpinner";
 import ProtectedPage from "@/components/ProtectedPage";
 import { useToast } from "@/components/toastProvider";
 import { ErrorResponse, SubmissionResponse } from "@/types";
-import { Box, Stack, Toolbar, Typography } from "@mui/material";
+import { Box, Button, Stack, Toolbar, Typography } from "@mui/material";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 const page = () => {
@@ -81,48 +82,68 @@ const page = () => {
             >
               Submissions
             </Typography>
-            <Stack
-              spacing={2}
-              alignItems="center"
-              justifyContent="center"
-              sx={{
-                width: "100%",
-              }}
-            >
-              {submissions.map((submission) => {
-                return (
-                  <Stack
-                    alignItems="center"
-                    justifyContent="center"
-                    sx={{
-                      width: "40%",
-                      backgroundColor: "var(--bg-light)",
-                      borderRadius: "10px",
-                      height: "100px",
-                      boxShadow:
-                        "0px 2px 10px 1px rgba(0,0,0, 0.1), 0px 10px 50px 5px rgba(0,0,0, 0.08)",
-                    }}
-                    key={submission.id}
-                  >
-                    <Typography sx={{ fontWeight: "600" }}>
-                      {submission.quiz_title}
-                    </Typography>
-                    <Typography>
-                      Score:{" "}
-                      {`${submission.score} / ${submission.number_of_questions}`}
-                    </Typography>
-                    <Typography
-                      sx={{
-                        color: "var(--text-muted)",
-                        fontSize: "0.9rem",
-                      }}
-                    >
-                      Played On {submission.submission_time}
-                    </Typography>
-                  </Stack>
-                );
-              })}
-            </Stack>
+            { submissions.length === 0 ? (
+                <Box sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  height: "75vh",
+                  alignItems: "center",
+                  justifyContent: "center"
+
+                }}>
+                  <Typography sx={{
+                    fontSize: "3rem",
+                    fontWeight: 600
+                  }}>
+                    You have no submissions
+                  </Typography>
+                  <Button><Link href="/quiz/create">Play One Here</Link></Button>
+                </Box>
+              ) : (
+                <Stack
+                  spacing={2}
+                  alignItems="center"
+                  justifyContent="center"
+                  sx={{
+                    width: "100%",
+                  }}
+                >
+                  {submissions.map((submission) => {
+                    return (
+                      <Stack
+                        alignItems="center"
+                        justifyContent="center"
+                        sx={{
+                          width: "40%",
+                          backgroundColor: "var(--bg-light)",
+                          borderRadius: "10px",
+                          height: "100px",
+                          boxShadow:
+                            "0px 2px 10px 1px rgba(0,0,0, 0.1), 0px 10px 50px 5px rgba(0,0,0, 0.08)",
+                        }}
+                        key={submission.id}
+                      >
+                        <Typography sx={{ fontWeight: "600" }}>
+                          {submission.quiz_title}
+                        </Typography>
+                        <Typography>
+                          Score:{" "}
+                          {`${submission.score} / ${submission.number_of_questions}`}
+                        </Typography>
+                        <Typography
+                          sx={{
+                            color: "var(--text-muted)",
+                            fontSize: "0.9rem",
+                          }}
+                        >
+                          Played On {submission.submission_time}
+                        </Typography>
+                      </Stack>
+                    );
+                  })}
+              </Stack>
+              )
+            }
           </Stack>
         )}
       </ProtectedPage>
