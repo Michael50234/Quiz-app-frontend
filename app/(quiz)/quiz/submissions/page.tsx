@@ -77,7 +77,7 @@ const page = () => {
                 <Box sx={{
                   display: "flex",
                   flexDirection: "column",
-                  height: "75vh",
+                  height: "85vh",
                   alignItems: "center",
                   justifyContent: "center"
 
@@ -88,7 +88,7 @@ const page = () => {
                   }}>
                     You Have No Submissions
                   </Typography>
-                  <Button><Link href="/quiz/create">Play One Here</Link></Button>
+                  <Button><Link href="/quiz/view/all">Play One Here</Link></Button>
                 </Box>
               ) : (
                 <Stack
