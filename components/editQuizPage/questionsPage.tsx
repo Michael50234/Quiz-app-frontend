@@ -69,33 +69,6 @@ const QuestionsPage = ({
           ></QuestionCard>
         );
       })}
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          gap: 2,
-        }}
-      >
-        <Button variant="contained" onClick={addNewQuestion}>
-          Add New Question
-        </Button>
-        <Button variant="contained" onClick={() => setSaveDialogOpen(true)}>
-          {" "}
-          Save
-        </Button>
-        <Dialog open={saveDialogOpen} onClose={() => setSaveDialogOpen(false)}>
-          <DialogTitle>Confirm Save</DialogTitle>
-          <DialogContent>
-            <DialogContentText>
-              Are you sure you want to save your changes? This action cannot be
-              undone.
-            </DialogContentText>
-            <DialogActions>
-              <Button onClick={saveQuiz}>Save</Button>
-            </DialogActions>
-          </DialogContent>
-        </Dialog>
-      </Box>
     </Stack>
   );
 };
