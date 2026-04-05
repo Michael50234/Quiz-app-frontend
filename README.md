@@ -1,5 +1,8 @@
+<h1>Overview</h1>
+
 **Quiz App** is a full-stack web application that enables users to create, share, and play interactive quizzes. The backend is built using Django and the Django REST Framework (DRF), with a MySQL database for data persistence.
 
+<h1>Features</h1>
 
 **User Features & Activity Tracking:**
 Supports user profiles and tracks quiz attempts, enabling users to view their past activity and performance history.
