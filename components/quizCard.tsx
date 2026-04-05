@@ -65,6 +65,7 @@ const QuizCard = ({ quiz, id, deleteQuizHandler }: QuizCard) => {
               minHeight: "100px",
               display: "flex",
               flexDirection: "column",
+              pb: "10px"
             }}
           >
             <IconButton
@@ -112,7 +113,7 @@ const QuizCard = ({ quiz, id, deleteQuizHandler }: QuizCard) => {
               {quiz.title}
             </Typography>
             <Typography sx={{ color: "var(--text-muted)", fontSize: "0.9rem" }}>
-              Created by {quiz.owner.nickname}
+              Created by {quiz.owner.nickname || "Anonymous"}
             </Typography>
           </Box>
           <Box
