@@ -97,6 +97,7 @@ export default function Login() {
       redirectToHome();
     } catch (error) {
       if (error instanceof Error && error.message.trim()) {
+        console.log(error.message)
         showError(error.message);
       } else {
         showError("Something went wrong");
