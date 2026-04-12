@@ -151,7 +151,7 @@ export default function Login() {
 
       showSuccess("Successfully signed up");
     } catch (error) {
-      if (error instanceof Error) {
+      if (error instanceof Error && error.message.trim()) {
         showError(error.message);
       } else {
         showError("Something went wrong");
