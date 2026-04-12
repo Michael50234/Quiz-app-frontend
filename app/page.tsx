@@ -8,6 +8,7 @@ import {
   Box,
   Button,
   ButtonGroup,
+  CircularProgress,
   Container,
   Stack,
   TextField,
@@ -20,6 +21,7 @@ import { useToast } from "@/components/toastProvider";
 
 export default function Login() {
   const { showSuccess, showError } = useToast();
+  const [loginLoading, setLoginLoading] = useState(false);
 
   const [page, setPage] = useState<string>("Sign-up");
   const [username, setUsername] = useState<string>("");
@@ -54,6 +56,8 @@ export default function Login() {
     password: string,
   ): Promise<void> => {
     try {
+      setLoginLoading(true);
+
       let response = await fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/accounts/login`,
         {
@@ -97,6 +101,8 @@ export default function Login() {
       } else {
         showError("Something went wrong");
       }
+    } finally {
+      setLoginLoading(false);
     }
   };
 
@@ -105,6 +111,8 @@ export default function Login() {
     password: string,
   ): Promise<void> => {
     try {
+      setLoginLoading(true);
+
       let response = await fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/accounts/register`,
         {
@@ -148,6 +156,8 @@ export default function Login() {
       } else {
         showError("Something went wrong");
       }
+    } finally {
+      setLoginLoading(false);
     }
   };
 
@@ -267,7 +277,7 @@ export default function Login() {
                 fontSize: "1.3rem",
               }}
             >
-              Submit
+              { loginLoading ? <CircularProgress /> : "Submit" }
             </Button>
           </Stack>
         </Container>
