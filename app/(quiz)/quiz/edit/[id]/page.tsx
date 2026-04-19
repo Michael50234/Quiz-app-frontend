@@ -546,7 +546,7 @@ const page = () => {
         ) : pageData ? (
           <Box
             sx={{
-              minHeight: "100vh",
+              minHeight: "90vh",
               pl: "20px",
               pr: "20px",
               display: "flex",

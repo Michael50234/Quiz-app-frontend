@@ -230,18 +230,16 @@ const page = () => {
                     >
                       Select An Image
                     </Button>
-                    <Dialog open={dialogOpen} onClose={handleDialogClose}>
-                      <DialogContent>
-                        <DialogActions>
-                          <ImageCropper
-                            aspectRatio={1}
-                            changeImageBlob={setProfilePictureBlob}
-                            changeImageUrl={setProfilePictureUrl}
-                            handleDialogClose={handleDialogClose}
-                            cropShape="round"
-                          ></ImageCropper>
-                        </DialogActions>
-                      </DialogContent>
+                    <Dialog open={dialogOpen} maxWidth="sm" onClose={handleDialogClose} fullWidth={true}>
+                      <DialogActions>
+                        <ImageCropper
+                          aspectRatio={1}
+                          changeImageBlob={setProfilePictureBlob}
+                          changeImageUrl={setProfilePictureUrl}
+                          handleDialogClose={handleDialogClose}
+                          cropShape="round"
+                        ></ImageCropper>
+                      </DialogActions>
                     </Dialog>
                   </Stack>
                   <Stack

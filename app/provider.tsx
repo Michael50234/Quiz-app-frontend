@@ -19,7 +19,7 @@ const navbarAddresses = new Set<string>([
 const viewQuizPagePattern = /^\/quiz\/view\/\d+$/;
 const editQuizPagePattern = /^\/quiz\/edit\/\d+$/;
 
-export function Providers({ children }: { children: React.ReactNode }) {
+export function Provider({ children }: { children: React.ReactNode }) {
   const pathName = usePathname();
 
   return (

@@ -69,6 +69,12 @@ const QuestionsPage = ({
           ></QuestionCard>
         );
       })}
+      <Box 
+        sx={{
+          height: "100px",
+          width: "200px"
+        }}
+      />
     </Stack>
   );
 };
