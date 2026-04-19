@@ -40,10 +40,9 @@ const page = () => {
   // Redirect user to quiz view page if the quiz has no questions
   useEffect(() => {
     if (quizData && numQuestions === 0) {
+      showError("This quiz has no questions");
       router.replace("/quiz/view/all");
     }
-
-    showError("This quiz has no questions");
   }, [loading]);
 
   // Fetch data

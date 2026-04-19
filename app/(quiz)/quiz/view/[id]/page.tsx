@@ -171,7 +171,14 @@ const QuizView = () => {
                       }}
                     >
                       {quizData?.tags.map((tag) => {
-                        return <Chip key={tag.id} label={tag.name} />;
+                        return (
+                          <Chip key={tag.id} label={tag.name} sx={{
+                            backgroundColor: "var(--secondary)",
+                            borderRadius: "2px",
+                            my: "2px",
+                            mx: "3px"
+                          }}/>
+                        )
                       })}
                     </Box>
                   </Stack>
@@ -206,7 +213,7 @@ const QuizView = () => {
           </Container>
         ) : (
           <ErrorPage errorMessage="Quiz Not Found" />
-        )}
+        )} 
       </ProtectedPage>
     </Box>
   );
