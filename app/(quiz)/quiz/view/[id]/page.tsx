@@ -59,7 +59,6 @@ const QuizView = () => {
     }
 
     const data: QuizDetailViewResponse = await response.json();
-    console.log(data);
 
     setQuizData(data);
   };
