@@ -207,7 +207,7 @@ const QuizView = () => {
                     color: "var(--text-muted)",
                   }}
                 >
-                  Created by {quizData?.owner.nickname ?? "Anonymous"}
+                  {`Created by ${owner?.nickname || "Anonymous"}`}
                 </Typography>
               </Box>
             </Stack>
