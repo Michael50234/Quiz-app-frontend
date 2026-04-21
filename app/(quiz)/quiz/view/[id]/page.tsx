@@ -16,15 +16,17 @@ import {
   Typography,
 } from "@mui/material";
 import { useParams, useRouter } from "next/navigation";
-import React, { use, useEffect, useState } from "react";
+import React, { use, useEffect, useMemo, useState } from "react";
 
 const QuizView = () => {
   const router = useRouter();
   const quizId = useParams().id;
   const [quizData, setQuizData] = useState<QuizDetailViewResponse | null>(null);
-  const [numSelectedQuestions, setNumSelectedQuestions] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(true);
-  const { user } = useUser();
+  
+  const owner = useMemo(() => {
+    return quizData?.owner
+  }, [quizData])
 
   useEffect(() => {
     const loadData = async () => {
@@ -198,7 +200,7 @@ const QuizView = () => {
                   height: "object-fit",
                 }}
               >
-                <Avatar src={user?.profile_picture_url}></Avatar>
+                <Avatar src={owner?.profile_picture_url}></Avatar>
                 <Typography
                   sx={{
                     fontSize: "0.9rem",

@@ -139,7 +139,7 @@ const DescriptionPage = ({
               slotProps={{
                 input: {
                   inputProps: {
-                    maxLength: 20,
+                    maxLength: 30,
                   },
                 },
               }}

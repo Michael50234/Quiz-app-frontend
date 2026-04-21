@@ -62,7 +62,7 @@ const QuizCard = ({ quiz, id, deleteQuizHandler }: QuizCard) => {
         >
           <Box
             sx={{
-              minHeight: "100px",
+              height: "150px",
               display: "flex",
               flexDirection: "column",
               pb: "10px"
