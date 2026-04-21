@@ -106,12 +106,12 @@ const QuestionPage = ({
                 data-correct={choice.id === correctChoiceId || undefined}
                 data-incorrect={
                   (choice.id === selectedChoiceId &&
-                    choice.id !== correctChoiceId) ||
+                    choice.id !== correctChoiceId && correctChoiceId !== null) ||
                   undefined
                 }
                 onClick={async () => {
-                  setSelectedChoiceId(choice.id);
                   await checkQuestion(choice.id);
+                  setSelectedChoiceId(choice.id);
                 }}
                 disabled={selectedChoiceId !== null}
                 variant="outlined"
